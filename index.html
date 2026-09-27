@@ -67,16 +67,6 @@
           <p><strong class="text-amber-950 font-mono">TAMANHO (CALADO):</strong> <span id="docSize" class="font-bold text-amber-900"></span></p>
         </div>
 
-        <!-- Narração e Fala -->
-        <div class="mt-3 space-y-2">
-          <div class="bg-amber-100/90 p-2 rounded border border-amber-300 text-amber-950 italic text-xs sm:text-sm">
-            📢 <strong>Narração:</strong> <span id="docNarrative"></span>
-          </div>
-          <div class="bg-blue-50 p-2 rounded border border-blue-200 text-blue-950 italic text-xs sm:text-sm">
-            💬 <strong>Fala da Embarcação:</strong> "<span id="docQuote"></span>"
-          </div>
-        </div>
-
         <!-- Botões de Ação -->
         <div class="mt-4 flex gap-2 sm:gap-3 font-mono">
           <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 sm:py-2 px-2 rounded border-b-2 sm:border-b-4 border-emerald-800 active:border-b-0 active:translate-y-1 text-xs sm:text-base transition flex items-center justify-center gap-1">
@@ -170,9 +160,7 @@
         toxicity: "Nulo (0/5)",
         isHazard: false,
         size: "Pequeno (3m de calado)",
-        isLarge: false,
-        narration: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
-        quote: "Minha carga é preciosa. Cada entrega pode fazer a diferença."
+        isLarge: false
       },
       {
         typeCategory: "NAVIO DE ALIMENTOS",
@@ -181,9 +169,7 @@
         toxicity: "Nulo (0/5)",
         isHazard: false,
         size: "Grande (10m a 12m de calado)",
-        isLarge: true,
-        narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
-        quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?"
+        isLarge: true
       },
       {
         typeCategory: "NAVIO DE EQUIPAMENTOS",
@@ -192,9 +178,7 @@
         toxicity: "Baixo (1/5 - óleos de maquinário selados)",
         isHazard: false,
         size: "Médio (6m a 8m de calado)",
-        isLarge: false,
-        narration: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
-        quote: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença."
+        isLarge: false
       },
       {
         typeCategory: "NAVIO COM ESPÉCIES INVASORAS",
@@ -203,9 +187,7 @@
         toxicity: "Médio-Alto (3/5 - Risco Biológico)",
         isHazard: true,
         size: "Médio (6m de calado)",
-        isLarge: false,
-        narration: "São espécies que chegam a um ambiente onde não pertencem, podendo se espalhar e competir com espécies nativas.",
-        quote: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações."
+        isLarge: false
       },
       {
         typeCategory: "PESCA IRREGULAR",
@@ -214,9 +196,7 @@
         toxicity: "Baixo-Médio (2/5 - Impacto Direto na Fauna)",
         isHazard: true,
         size: "Pequeno (4m de calado)",
-        isLarge: false,
-        narration: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas.",
-        quote: "Apenas uma pesca rápida na costa, sem problemas por aqui..."
+        isLarge: false
       },
       {
         typeCategory: "MATERIAIS PERIGOSOS",
@@ -225,9 +205,7 @@
         toxicity: "Crítico (5/5 - Alto Risco de Contaminação)",
         isHazard: true,
         size: "Grande (11m de calado)",
-        isLarge: true,
-        narration: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água.",
-        quote: "Algumas cargas exigem cuidados especiais. Se forem armazenadas incorretamente, colocam a vida costeira em risco."
+        isLarge: true
       }
     ];
 
@@ -264,9 +242,7 @@
         toxicity: template.toxicity,
         size: template.size,
         isLarge: template.isLarge,
-        isHazard: template.isHazard,
-        narration: template.narration,
-        quote: template.quote
+        isHazard: template.isHazard
       };
     }
 
@@ -405,8 +381,6 @@
       toxEl.className = data.isHazard ? "font-bold text-rose-600" : "font-bold text-emerald-600";
 
       document.getElementById('docSize').innerText = data.size;
-      document.getElementById('docNarrative').innerText = data.narration;
-      document.getElementById('docQuote').innerText = data.quote;
 
       docPanel.classList.remove('hidden');
     }
