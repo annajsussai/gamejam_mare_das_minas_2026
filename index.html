@@ -35,7 +35,7 @@
 
   <div class="w-full max-w-5xl max-h-[100dvh] bg-slate-900 border-2 sm:border-4 border-amber-600 rounded-lg p-1.5 sm:p-3 shadow-2xl flex flex-col gap-1.5 sm:gap-3 my-auto">
     
-    <!-- Top Bar Status (Sem controle manual da maré) -->
+    <!-- Top Bar Status -->
     <div class="flex justify-between items-center bg-slate-800 p-1.5 sm:p-3 rounded border border-slate-700 text-xs sm:text-base">
       <div class="flex items-center gap-2 sm:gap-4">
         <span class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
@@ -64,10 +64,10 @@
           <p><strong class="text-amber-950 font-mono">ROTA:</strong> <span id="docRoute" class="text-slate-800"></span></p>
           <p><strong class="text-amber-950 font-mono">CARGA:</strong> <span id="docCargo" class="font-semibold text-slate-900"></span></p>
           <p><strong class="text-amber-950 font-mono">NÍVEL DE TOXICIDADE:</strong> <span id="docToxicity" class="font-bold"></span></p>
-          <p><strong class="text-amber-950 font-mono">TAMANHO (CALADO / PROFUNDIDADE NECESSÁRIA):</strong> <span id="docSize" class="font-bold text-amber-900"></span></p>
+          <p><strong class="text-amber-950 font-mono">TAMANHO (CALADO):</strong> <span id="docSize" class="font-bold text-amber-900"></span></p>
         </div>
 
-        <!-- Narração / Fala Integradas -->
+        <!-- Narração e Fala -->
         <div class="mt-3 space-y-2">
           <div class="bg-amber-100/90 p-2 rounded border border-amber-300 text-amber-950 italic text-xs sm:text-sm">
             📢 <strong>Narração:</strong> <span id="docNarrative"></span>
@@ -77,13 +77,19 @@
           </div>
         </div>
 
-        <!-- Botões de Ação -->
-        <div class="mt-4 flex gap-2 sm:gap-3 font-mono">
-          <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 sm:py-2 px-2 rounded border-b-2 sm:border-b-4 border-emerald-800 active:border-b-0 active:translate-y-1 text-xs sm:text-base transition">
-            ✓ ACEITAR ENTRADA
+        <!-- BONECO DO INSPETOR (Localizado logo acima dos botões de decisão) -->
+        <div class="mt-4 flex flex-col items-center justify-center">
+          <img id="inspectorAvatar" src="assets/personagem.png" alt="Inspetor do Porto" class="w-16 h-16 sm:w-20 sm:h-20 object-contain image-rendering-pixelated mb-1 bg-amber-100/50 p-1 rounded-full border border-amber-300 shadow-sm" onerror="this.style.display='none'">
+          <span class="text-[10px] sm:text-xs font-mono font-bold text-amber-950 uppercase tracking-widest">Inspetor do Porto</span>
+        </div>
+
+        <!-- Botões de Ação (Certo / Errado) -->
+        <div class="mt-2 flex gap-2 sm:gap-3 font-mono">
+          <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 sm:py-2 px-2 rounded border-b-2 sm:border-b-4 border-emerald-800 active:border-b-0 active:translate-y-1 text-xs sm:text-base transition flex items-center justify-center gap-1">
+            <span>✓</span> ACEITAR ENTRADA
           </button>
-          <button id="rejectBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-1.5 sm:py-2 px-2 rounded border-b-2 sm:border-b-4 border-rose-800 active:border-b-0 active:translate-y-1 text-xs sm:text-base transition">
-            ✕ RECUSAR (RETORNAR)
+          <button id="rejectBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-1.5 sm:py-2 px-2 rounded border-b-2 sm:border-b-4 border-rose-800 active:border-b-0 active:translate-y-1 text-xs sm:text-base transition flex items-center justify-center gap-1">
+            <span>✕</span> RECUSAR (RETORNAR)
           </button>
         </div>
       </div>
@@ -121,9 +127,9 @@
 
     </div>
 
-    <!-- Dica de gameplay -->
+    <!-- Dica -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>💡 A maré varia involuntariamente a cada navio. Fique de olho no Tamanho/Calado e no Nível de Toxicidade!</span>
+      <span>💡 Avalie as condições da embarcação e valide as informações com o Inspetor antes de autorizar.</span>
     </div>
 
   </div>
@@ -140,11 +146,17 @@
     const nextDayBtn = document.getElementById('nextDayBtn');
 
     // Assets
-    const images = { cenario: new Image(), mar: new Image(), marfrente: new Image(), boia: new Image() };
+    const images = { cenario: new Image(), mar: new Image(), marfrente: new Image(), boia: new Image(), personagem: new Image() };
     let assetsLoaded = false;
 
     function loadAssets(callback) {
-      const sources = { cenario: 'assets/cenario.png', mar: 'assets/mar.png', marfrente: 'assets/marfrente.png', boia: 'assets/boia.png' };
+      const sources = { 
+        cenario: 'assets/cenario.png', 
+        mar: 'assets/mar.png', 
+        marfrente: 'assets/marfrente.png', 
+        boia: 'assets/boia.png',
+        personagem: 'assets/personagem.png'
+      };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
         images[k] = new Image();
@@ -153,76 +165,70 @@
       }
     }
 
-    // Configuração dos 6 Tipos de Navios (Bons e Ruins)
+    // Configuração dos 6 Tipos de Navios
     const SHIP_TYPES = [
-      // 1. MEDICAMENTOS (Bom)
       {
         typeCategory: "NAVIO DE MEDICAMENTOS",
         names: ["MV Esperança", "Anjo dos Mares", "Vida Marítima"],
         cargo: "Medicamentos, Vacinas e Insumos Hospitalares",
         toxicity: "Nulo (0/5)",
         isHazard: false,
-        size: "Pequeno (3m de calado - navega em maré baixa ou alta)",
+        size: "Pequeno (3m de calado)",
         isLarge: false,
         narration: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
         quote: "Minha carga é preciosa. Cada entrega pode fazer a diferença."
       },
-      // 2. ALIMENTOS (Bom)
       {
         typeCategory: "NAVIO DE ALIMENTOS",
         names: ["Sabor da Terra", "Bandeirante", "Grão de Ouro"],
         cargo: "Grãos, Cereais e Mantimentos Alimentícios",
         toxicity: "Nulo (0/5)",
         isHazard: false,
-        size: "Grande (10m a 12m de calado - exige maré alta para não encalhar)",
+        size: "Grande (10m a 12m de calado)",
         isLarge: true,
         narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
         quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?"
       },
-      // 3. EQUIPAMENTOS (Bom)
       {
         typeCategory: "NAVIO DE EQUIPAMENTOS",
         names: ["Estrutura Viva", "Gigante dos Mares", "Força Naval"],
         cargo: "Geradores, Maquinários e Ferramentas de Infraestrutura",
         toxicity: "Baixo (1/5 - óleos de maquinário selados)",
         isHazard: false,
-        size: "Médio (6m a 8m de calado - navega na maioria das marés)",
+        size: "Médio (6m a 8m de calado)",
         isLarge: false,
         narration: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
         quote: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença."
       },
-      // 4. ESPÉCIES INVASORAS (Ruim)
       {
         typeCategory: "NAVIO COM ESPÉCIES INVASORAS",
         names: ["Tritão das Marés", "Viajante Biológico", "Clandestino do Mar"],
         cargo: "Carga Geral com Água de Lastro Não Tratada / Bio-Risco",
-        toxicity: "Médio-Alto (3/5 - Risco Biológico e Ecológico)",
+        toxicity: "Médio-Alto (3/5 - Risco Biológico)",
         isHazard: true,
         size: "Médio (6m de calado)",
         isLarge: false,
         narration: "São espécies que chegam a um ambiente onde não pertencem, podendo se espalhar e competir com espécies nativas.",
         quote: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações e, quando encontram um novo ambiente, podem se espalhar e alterar o equilíbrio da vida costeira."
       },
-      // 5. PESCA IRREGULAR (Ruim)
       {
         typeCategory: "PESCA IRREGULAR",
         names: ["Pesca Certa", "Rede Sombra", "Mar Furtivo"],
         cargo: "Pescado sem Licenciamento Ambiental / Áreas Protegidas",
-        toxicity: "Baixo-Médio (2/5 - Impacto Direto na Fauna Marinha)",
+        toxicity: "Baixo-Médio (2/5 - Impacto Direto na Fauna)",
         isHazard: true,
         size: "Pequeno (4m de calado)",
         isLarge: false,
         narration: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas, reduzir os recursos pesqueiros e causar danos ao ambiente.",
         quote: "Apenas uma pesca rápida na costa, sem problemas por aqui..."
       },
-      // 6. MATERIAIS PERIGOSOS (Ruim)
       {
         typeCategory: "MATERIAIS PERIGOSOS",
         names: ["Sombra do Vento", "Risco Químico", "Tóxico Mar"],
         cargo: "Substâncias Químicas, Resíduos Industriais e Materiais Tóxicos",
         toxicity: "Crítico (5/5 - Alto Risco de Contaminação)",
         isHazard: true,
-        size: "Grande (11m de calado - exige maré alta)",
+        size: "Grande (11m de calado)",
         isLarge: true,
         narration: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco.",
         quote: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco."
@@ -238,7 +244,7 @@
     let currentDay = 1;
     let shipsEvaluated = 0;
     const maxShipsPerDay = 4;
-    let isHighTide = false; // Maré sorteada internamente por navio
+    let isHighTide = false;
     let gameState = 'APPROACHING';
 
     let dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
@@ -247,13 +253,11 @@
       x: -140, y: 335, width: 120, height: 70, speed: 2, flipped: false, data: null
     };
 
-    // Função que sorteia um navio aleatório e uma maré aleatória
     function generateRandomShip() {
       const template = SHIP_TYPES[Math.floor(Math.random() * SHIP_TYPES.length)];
       const randomName = template.names[Math.floor(Math.random() * template.names.length)];
       const randomRoute = PORTS[Math.floor(Math.random() * PORTS.length)];
 
-      // Sorteio ALEATÓRIO E INTERNO da Maré (50% de chance alta ou baixa)
       isHighTide = Math.random() < 0.5;
 
       return {
@@ -270,7 +274,6 @@
       };
     }
 
-    // Desenho do Cenário e Mar
     function drawScenario() {
       if (images.cenario.complete && images.cenario.naturalWidth > 0) {
         ctx.drawImage(images.cenario, 0, 0, 800, 450);
@@ -319,11 +322,9 @@
       const x = currentShip.x;
       const y = currentShip.y;
 
-      // Casco
       ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
       ctx.fillRect(x, y + 20, currentShip.width, 35);
 
-      // Proa
       ctx.beginPath();
       ctx.moveTo(x + currentShip.width, y + 20);
       ctx.lineTo(x + currentShip.width + 20, y + 20);
@@ -331,7 +332,6 @@
       ctx.fillStyle = currentShip.data.isHazard ? "#7f1d1d" : "#1e40af";
       ctx.fill();
 
-      // Cabine
       ctx.fillStyle = "#f8fafc"; ctx.fillRect(x + 15, y, 35, 20);
       ctx.fillStyle = "#0284c7"; ctx.fillRect(x + 35, y + 4, 10, 8);
       ctx.fillStyle = "#dc2626"; ctx.fillRect(x + 20, y - 8, 8, 8);
@@ -349,7 +349,6 @@
         if (currentShip.x >= 380) {
           currentShip.x = 380;
 
-          // Validação da Mecânica de Maré Baixa x Navio Grande (Encalhe)
           if (currentShip.data.isLarge && !isHighTide) {
             gameState = 'GROUNDED';
             handleGroundedShip();
@@ -371,7 +370,7 @@
       dayStats.groundedShips++;
       dayStats.total++;
       setTimeout(() => {
-        alert(`🚨 ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" era GRANDE DEMAIS e ENCALHOU pois a maré estava BAIXA!`);
+        alert(`🚨 ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" ENCALHOU pois a maré estava BAIXA!`);
         gameState = 'LEAVING_REJECT';
         currentShip.flipped = true;
       }, 300);
@@ -443,7 +442,7 @@
       }
 
       if (dayStats.groundedShips > 0) {
-        impactBox.innerHTML += `<p class="text-amber-400">⚓ INCIDENTES: ${dayStats.groundedShips} navio(s) de grande calado encalharam no canal.</p>`;
+        impactBox.innerHTML += `<p class="text-amber-400">⚓ INCIDENTES: ${dayStats.groundedShips} navio(s) encalharam no canal.</p>`;
       }
 
       reportModal.classList.remove('hidden');
@@ -454,7 +453,7 @@
       if (currentDay < 3) {
         currentDay++;
       } else {
-        alert("🎉 Turno de 3 dias encerrado com sucesso! Reiniciando simulação...");
+        alert("🎉 Turno de 3 dias encerrado com sucesso!");
         currentDay = 1;
       }
       shipsEvaluated = 0;
