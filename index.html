@@ -309,6 +309,58 @@
   @keyframes introFadeOut {
     to { opacity: 0; }
   }
+
+  /* ---------- TELA DE TÍTULO ---------- */
+  #titleScreen {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: radial-gradient(ellipse at center, rgba(4,12,18,0.35) 0%, rgba(2,7,11,0.75) 100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+  }
+
+  #titleScreen.visible {
+    opacity: 1;
+  }
+
+  #titleScreen .titleLine {
+    width: 46%;
+    max-width: 220px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #d97706, transparent);
+    opacity: 0.8;
+  }
+
+  #titleScreen .titleMain {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(20px, 5.2vw, 46px);
+    color: #facc15;
+    letter-spacing: 3px;
+    text-align: center;
+    text-shadow: 3px 3px 0 #7c2d12, 0 0 22px rgba(250,204,21,.45);
+    animation: titlePulse 2.6s ease-in-out infinite;
+  }
+
+  #titleScreen .titleSub {
+    font-family: 'VT323', monospace;
+    font-size: clamp(13px, 2vw, 19px);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(244, 241, 234, 0.8);
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  @keyframes titlePulse {
+    0%, 100% { text-shadow: 3px 3px 0 #7c2d12, 0 0 18px rgba(250,204,21,.4); transform: scale(1); }
+    50%      { text-shadow: 3px 3px 0 #7c2d12, 0 0 34px rgba(250,204,21,.75); transform: scale(1.015); }
+  }
 </style>
 </head>
 <body>
@@ -318,6 +370,13 @@
     <div id="introBg"></div>
     <div id="introVinheta"></div>
     <div id="introScan"></div>
+
+    <div id="titleScreen">
+      <div class="titleLine"></div>
+      <div class="titleMain">ENTRE MARÉS</div>
+      <div class="titleSub">um porto, três dias, muitas decisões</div>
+      <div class="titleLine"></div>
+    </div>
 
     <div id="introContent">
 
@@ -346,6 +405,7 @@
 
 <script>
   var introScreen = document.getElementById('introScreen');
+  var titleScreen = document.getElementById('titleScreen');
   var introNarrationBox = document.getElementById('introNarrationBox');
   var introNarration = document.getElementById('introNarration');
   var advanceBtn = document.getElementById('advanceBtn');
@@ -467,9 +527,18 @@
     }, 600);
   });
 
-  setTimeout(function() {
-    mostrarTexto(0);
-  }, 1500);
+  function mostrarTitulo() {
+    titleScreen.classList.add('visible');
+    setTimeout(function () {
+      titleScreen.classList.remove('visible');
+      setTimeout(function () {
+        titleScreen.style.display = 'none';
+        mostrarTexto(0);
+      }, 1000); // duração do fade-out
+    }, 3000); // tempo em que o título fica visível
+  }
+
+  setTimeout(mostrarTitulo, 500);
 </script>
 </body>
 </html>
