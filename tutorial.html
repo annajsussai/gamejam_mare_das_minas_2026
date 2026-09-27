@@ -498,8 +498,8 @@
       marfrente: new Image(), 
       boia: new Image(), 
       personagem: new Image(),
-      navio: new Image(),
       navioGrande: new Image(),
+      navioGrandeIrregular: new Image(),
       cargueiro: new Image(),
       cargueiroIrregular: new Image(),
       pesqueiroRegular: new Image(),
@@ -513,8 +513,8 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        navio: 'assets/navio.png',
         navioGrande: 'assets/navio_grande.png',
+        navioGrandeIrregular: 'assets/navio_grande_irregular.png',
         cargueiro: 'assets/cargueiro.png',
         cargueiroIrregular: 'assets/cargueiro_irregular.png',
         pesqueiroRegular: 'assets/pesqueiro_regular.png',
@@ -554,7 +554,7 @@
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false,
-        sprite: "navio",
+        sprite: "cargueiro",
         lesson: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
         shipLine: "Minha carga é preciosa. Cada entrega pode fazer a diferença."
       },
@@ -640,7 +640,7 @@
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true,
-        sprite: "navioGrande",
+        sprite: "navioGrandeIrregular",
         lesson: "São embarcações que transportam cargas potencialmente perigosas, como substâncias químicas, resíduos industriais ou materiais tóxicos. Um vazamento ou manejo inadequado pode causar impactos ao ambiente costeiro.",
         voice: "narrator",
         shipLine: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco."
@@ -1015,7 +1015,7 @@
         ctx.translate(-x, -y);
       }
 
-      const shipImg = images[currentShip.data.sprite] || images.navio;
+      const shipImg = images[currentShip.data.sprite] || images.cargueiro;
 
       if (shipImg && shipImg.complete && shipImg.naturalWidth > 0) {
         ctx.drawImage(shipImg, x, y, w, h);
