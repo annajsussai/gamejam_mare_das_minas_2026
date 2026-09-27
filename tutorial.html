@@ -970,7 +970,7 @@
     };
 
     let currentShip = {
-      x: -160, y: 335, width: 336, height: 180, speed: 2, flipped: false, data: null
+      x: -280, y: 335, width: 520, height: 278, speed: 2, flipped: false, data: null
     };
 
     function updateTideDisplay() {
@@ -1075,7 +1075,7 @@
     function drawShip() {
       if (!currentShip.data) return;
       ctx.save();
-      currentShip.y = (canvas.seaY || 370) - 108;
+      currentShip.y = (canvas.seaY || 370) - 167;
 
       const x = currentShip.x;
       const y = currentShip.y;
@@ -1112,8 +1112,8 @@
       if (gameState === 'APPROACHING') {
         currentShip.x += currentShip.speed;
 
-        if (currentShip.x >= 380) {
-          currentShip.x = 380;
+        if (currentShip.x >= 300) {
+          currentShip.x = 300;
           gameState = 'ARRIVED';
           handleShipArrival();
         }
@@ -1122,7 +1122,7 @@
         if (currentShip.x > 850) nextShip();
       } else if (gameState === 'LEAVING_REJECT') {
         currentShip.x -= currentShip.speed * 1.5;
-        if (currentShip.x < -150) nextShip();
+        if (currentShip.x < -320) nextShip();
       }
     }
 
@@ -1265,7 +1265,7 @@
 
     function spawnShip() {
       if (shipsEvaluated < shipsPerDay(currentDay)) {
-        currentShip.x = -160;
+        currentShip.x = -280;
         currentShip.flipped = false;
         currentShip.data = generateRandomShip();
         gameState = 'APPROACHING';
