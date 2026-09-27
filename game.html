@@ -433,7 +433,6 @@ document.querySelectorAll('button').forEach(button => {
         toxicityText: "Baixo",
         isHazard: true,
         size: "Pequeno (4m)",
-        isLarge: false,
         imgKey: "cargueiro",
         width: 240,
         height: 130
@@ -500,11 +499,11 @@ document.querySelectorAll('button').forEach(button => {
       if (pImg && pImg.complete && pImg.naturalWidth > 0) {
         const frameWidth = 120; 
         const frameHeight = 84;
-        const totalFrames = 11;
-        
-        const currentFrameIndex = Math.floor(Date.now() / 150) % totalFrames;
         const sheetColumns = 3; 
-        
+
+        // Personagem estática: sempre exibe o primeiro quadro (sem animação de troca de frames)
+        const currentFrameIndex = 0;
+
         const sx = (currentFrameIndex % sheetColumns) * frameWidth;
         const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
 
