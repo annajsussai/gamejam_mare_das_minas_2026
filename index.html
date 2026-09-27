@@ -61,38 +61,41 @@
       <!-- Canvas -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel Com Espaçamento Adaptado À Lupa -->
-      <div id="docPanel" class="hidden absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-md doc-bg text-slate-900 pt-4 sm:pt-5 pb-6 sm:pb-8 pl-5 sm:pl-7 pr-10 sm:pr-14 shadow-2xl z-20">
-        <div class="border-b-2 border-purple-900/30 pb-1.5 mb-2 flex justify-between items-center">
+      <!-- Document Modal / Panel Ajustado -->
+      <div id="docPanel" class="hidden absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-lg doc-bg text-slate-900 pt-3 sm:pt-4 pb-6 sm:pb-8 px-4 sm:px-6 shadow-2xl z-20">
+        
+        <!-- Header ajustado para não encostar nas bordas da imagem -->
+        <div class="border-b-2 border-purple-900/30 pb-1 mb-2 flex justify-between items-center pr-10 sm:pr-12">
           <h2 class="pixel-font text-[9px] sm:text-[11px] text-purple-950 uppercase tracking-tight">MANIFESTO DE CARGA</h2>
           <span class="bg-purple-200 text-purple-950 text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded font-bold border border-purple-400">OFICIAL</span>
         </div>
 
-        <div class="space-y-1 text-sm sm:text-base font-sans">
+        <!-- Conteúdo dos textos com margem interna à direita para desviar totalmente da lupa -->
+        <div class="space-y-1 text-xs sm:text-sm font-sans pr-14 sm:pr-16">
           <div class="flex justify-between border-b border-purple-900/10 pb-0.5">
-            <span class="text-purple-950 font-semibold">NOME:</span>
-            <span id="docName" class="font-bold text-blue-900"></span>
+            <span class="text-purple-950 font-semibold shrink-0">NOME:</span>
+            <span id="docName" class="font-bold text-blue-900 text-right truncate pl-2"></span>
           </div>
           <div class="flex justify-between border-b border-purple-900/10 pb-0.5">
-            <span class="text-purple-950 font-semibold">ROTA:</span>
-            <span id="docRoute" class="text-slate-800"></span>
+            <span class="text-purple-950 font-semibold shrink-0">ROTA:</span>
+            <span id="docRoute" class="text-slate-800 text-right truncate pl-2"></span>
           </div>
           <div class="flex justify-between border-b border-purple-900/10 pb-0.5">
-            <span class="text-purple-950 font-semibold">CARGA:</span>
-            <span id="docCargo" class="font-medium text-slate-900"></span>
+            <span class="text-purple-950 font-semibold shrink-0">CARGA:</span>
+            <span id="docCargo" class="font-medium text-slate-900 text-right truncate pl-2"></span>
           </div>
           <div class="flex justify-between border-b border-purple-900/10 pb-0.5">
-            <span class="text-purple-950 font-semibold">TOXICIDADE:</span>
-            <span id="docToxicity" class="font-bold"></span>
+            <span class="text-purple-950 font-semibold shrink-0">TOXICIDADE:</span>
+            <span id="docToxicity" class="font-bold text-right truncate pl-2"></span>
           </div>
           <div class="flex justify-between pb-0.5">
-            <span class="text-purple-950 font-semibold">CALADO:</span>
-            <span id="docSize" class="font-bold text-purple-900"></span>
+            <span class="text-purple-950 font-semibold shrink-0">CALADO:</span>
+            <span id="docSize" class="font-bold text-purple-900 text-right truncate pl-2"></span>
           </div>
         </div>
 
-        <!-- Botões de Ação Reposicionados para Não Colidir Com a Lupa -->
-        <div class="mt-3 sm:mt-4 flex gap-2 font-mono pr-2 sm:pr-4">
+        <!-- Botões de Ação posicionados à esquerda da lupa -->
+        <div class="mt-2 sm:mt-3 flex gap-2 font-mono pr-16 sm:pr-20 max-w-[85%]">
           <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 px-1.5 rounded border-b-2 border-emerald-800 active:translate-y-0.5 text-[10px] sm:text-xs transition flex items-center justify-center gap-1 shadow-md">
             ✓ ACEITAR
           </button>
@@ -175,7 +178,7 @@
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
         fundoFeedback: 'assets/fundo_feedback.png',
-        navioPadrao: 'assets/navio.png'
+        navioPadrao: 'assets/navio_padrao.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
