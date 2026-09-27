@@ -9,7 +9,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
     body {
-      background-color: #0d1b2a;
+      background-color: #0b131d;
       font-family: 'VT323', monospace;
       user-select: none;
       touch-action: manipulation;
@@ -30,7 +30,7 @@
       border-radius: 3px;
     }
 
-    /* Manifesto com a proporção correta baseada no asset original */
+    /* Design do Manifesto com asset original da raiz */
     .doc-bg {
       background-image: url('assets/manifesto_carga.png');
       background-size: 100% 100%;
@@ -40,8 +40,8 @@
     }
 
     .pixel-box {
-      background-color: rgba(84, 61, 43, 0.12);
-      border: 2px solid rgba(84, 61, 43, 0.35);
+      background-color: rgba(84, 61, 43, 0.08);
+      border: 2px solid rgba(84, 61, 43, 0.25);
     }
 
     .report-bg {
@@ -147,19 +147,18 @@
     }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen min-h-[100dvh] text-white p-1 sm:p-3 overflow-hidden">
+<body class="flex items-center justify-center min-h-screen min-h-[100dvh] text-white p-2 overflow-hidden bg-[#0b131d]">
 
-  <div class="w-full max-w-5xl max-h-[100dvh] bg-slate-900 border-2 sm:border-4 border-amber-600 rounded-lg p-1.5 sm:p-3 shadow-2xl flex flex-col gap-1.5 sm:gap-3 my-auto">
+  <div class="w-full max-w-4xl bg-[#0f172a] border-4 border-amber-600 rounded-md p-3 shadow-2xl flex flex-col gap-2 my-auto">
     
-    <!-- Top Bar Status -->
-    <div class="flex justify-between items-center bg-slate-800 p-1.5 sm:p-3 rounded border border-slate-700 text-xs sm:text-base">
-      <div class="flex items-center gap-2 sm:gap-4">
-        <span class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
-      </div>
+    <!-- Top Bar Status / Header igual ao Tutorial -->
+    <div class="bg-[#131f33] p-2.5 rounded border border-amber-600/40 text-cyan-400 text-xs sm:text-sm pixel-font tracking-wide flex justify-between items-center">
+      <span>GERENCIADOR DO PORTO</span>
+      <span class="text-amber-400">DIA <span id="currentDay">1</span> / 3</span>
     </div>
 
     <!-- GAME CANVAS CONTAINER -->
-    <div class="relative w-full aspect-[16/9] bg-sky-900 rounded overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
+    <div class="relative w-full aspect-[16/9] bg-sky-900 rounded overflow-hidden border-2 border-amber-600/50 shadow-inner flex items-center justify-center">
       
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
@@ -170,49 +169,49 @@
         <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-6 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider">CONTINUAR INSPEÇÃO</button>
       </div>
 
-      <!-- Manifesto de Carga com Proporção e Cores Originais -->
-      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[620px] aspect-[1.3/1] doc-bg text-[#3b281a] p-6 sm:p-10 z-20 flex flex-col justify-between shadow-2xl">
-        <div class="text-center pt-2">
-          <span class="pixel-font text-[7px] sm:text-[9px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
-          <h2 class="pixel-font text-[11px] sm:text-[14px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
+      <!-- Manifesto de Carga (Asset original da raiz) -->
+      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm shadow-2xl">
+        <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
+          <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
+          <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
-        <div class="my-auto space-y-2 font-mono px-2 sm:px-6">
-          <div class="pixel-box p-2 rounded-sm">
-            <div class="flex justify-between items-baseline border-b border-[#543d2b]/20 pb-1 mb-1">
+        <div class="my-auto space-y-2.5 font-mono">
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
+            <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
               <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
-              <span id="docName" class="text-[14px] sm:text-[17px] font-bold text-[#2b1b10]"></span>
+              <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-[#2b1b10]"></span>
             </div>
             <div class="flex justify-between items-baseline">
               <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
-              <span id="docRoute" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10]"></span>
+              <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
             </div>
           </div>
 
-          <div class="pixel-box p-2 rounded-sm flex flex-col">
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
             <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
-            <span id="docCargo" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-0.5 leading-tight"></span>
+            <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
-            <div class="pixel-box p-2 rounded-sm flex flex-col justify-between">
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Porte</span>
-              <span id="docSize" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10] mt-0.5"></span>
+              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-1"></span>
             </div>
 
-            <div class="pixel-box p-2 rounded-sm flex flex-col justify-between">
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <div class="flex justify-between items-center gap-1">
                 <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
-                <span id="docToxicityText" class="text-[11px] sm:text-[13px] font-bold"></span>
+                <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
               </div>
-              <div class="w-full h-2 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
+              <div class="w-full h-2.5 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
                 <div id="toxicityBar" class="h-full rounded-xs transition-all duration-300" style="width: 20%;"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="flex gap-4 pb-2 px-2 sm:px-6">
+        <div class="flex gap-3 pt-2 border-t-2 border-[#543d2b]/30">
           <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
             AUTORIZAR
           </button>
@@ -263,9 +262,9 @@
     </div>
 
     <!-- Rodapé -->
-    <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
-      <span class="text-xs sm:text-base text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / 4</span>
+    <div class="bg-[#131f33] p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-3 border border-amber-600/40">
+      <span>DICA: observe a maré e leia a documentação antes de decidir.</span>
+      <span class="text-xs sm:text-sm text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / 4</span>
     </div>
 
   </div>
