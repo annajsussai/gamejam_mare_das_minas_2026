@@ -162,7 +162,8 @@
       marfrente: new Image(), 
       boia: new Image(), 
       personagem: new Image(),
-      fundoFeedback: new Image()
+      fundoFeedback: new Image(),
+      navioPadrao: new Image()
     };
     let assetsLoaded = false;
 
@@ -173,7 +174,8 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        fundoFeedback: 'assets/fundo_feedback.png'
+        fundoFeedback: 'assets/fundo_feedback.png',
+        navioPadrao: 'assets/navio_padrao.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
@@ -251,7 +253,7 @@
     let dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
 
     let currentShip = {
-      x: -140, y: 335, width: 120, height: 70, speed: 2, flipped: false, data: null
+      x: -160, y: 335, width: 140, height: 75, speed: 2, flipped: false, data: null
     };
 
     function generateRandomShip() {
@@ -311,30 +313,27 @@
     function drawShip() {
       if (!currentShip.data) return;
       ctx.save();
-      currentShip.y = (canvas.seaY || 370) - 35;
-
-      if (currentShip.flipped) {
-        ctx.translate(currentShip.x + currentShip.width, currentShip.y);
-        ctx.scale(-1, 1);
-        ctx.translate(-currentShip.x, -currentShip.y);
-      }
+      currentShip.y = (canvas.seaY || 370) - 45;
 
       const x = currentShip.x;
       const y = currentShip.y;
+      const w = currentShip.width;
+      const h = currentShip.height;
 
-      ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
-      ctx.fillRect(x, y + 20, currentShip.width, 35);
+      if (currentShip.flipped) {
+        ctx.translate(x + w, y);
+        ctx.scale(-1, 1);
+        ctx.translate(-x, -y);
+      }
 
-      ctx.beginPath();
-      ctx.moveTo(x + currentShip.width, y + 20);
-      ctx.lineTo(x + currentShip.width + 20, y + 20);
-      ctx.lineTo(x + currentShip.width, y + 55);
-      ctx.fillStyle = currentShip.data.isHazard ? "#7f1d1d" : "#1e40af";
-      ctx.fill();
-
-      ctx.fillStyle = "#f8fafc"; ctx.fillRect(x + 15, y, 35, 20);
-      ctx.fillStyle = "#0284c7"; ctx.fillRect(x + 35, y + 4, 10, 8);
-      ctx.fillStyle = "#dc2626"; ctx.fillRect(x + 20, y - 8, 8, 8);
+      // Renderiza a imagem do navio padrão
+      if (images.navioPadrao.complete && images.navioPadrao.naturalWidth > 0) {
+        ctx.drawImage(images.navioPadrao, x, y, w, h);
+      } else {
+        // Fallback caso a imagem falhe no carregamento
+        ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
+        ctx.fillRect(x, y + 20, w, 35);
+      }
 
       ctx.restore();
     }
@@ -410,7 +409,7 @@
 
     function spawnShip() {
       if (shipsEvaluated < maxShipsPerDay) {
-        currentShip.x = -130;
+        currentShip.x = -160;
         currentShip.flipped = false;
         currentShip.data = generateRandomShip();
         gameState = 'APPROACHING';
