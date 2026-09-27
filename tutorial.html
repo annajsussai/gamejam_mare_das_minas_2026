@@ -897,7 +897,7 @@
     };
 
     let currentShip = {
-      x: -160, y: 335, width: 168, height: 90, speed: 2, flipped: false, data: null
+      x: -160, y: 335, width: 336, height: 180, speed: 2, flipped: false, data: null
     };
 
     function updateTideDisplay() {
@@ -948,8 +948,6 @@
         ctx.fillRect(0, seaY, 800, 450 - seaY);
       }
 
-      drawShip();
-
       if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
@@ -967,6 +965,8 @@
 
         ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
       }
+
+      drawShip();
 
       drawRegua();
     }
@@ -1002,7 +1002,7 @@
     function drawShip() {
       if (!currentShip.data) return;
       ctx.save();
-      currentShip.y = (canvas.seaY || 370) - 54;
+      currentShip.y = (canvas.seaY || 370) - 108;
 
       const x = currentShip.x;
       const y = currentShip.y;
