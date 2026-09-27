@@ -75,6 +75,20 @@
       box-shadow: 0 2px 0 rgba(0,0,0,0.3);
     }
 
+    /* Botão personalizado com fundo assets/bg_btn.png */
+    .bg-btn-custom {
+      background-image: url('assets/bg_btn.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+      color: #ffffff;
+      text-shadow: 1px 1px #000;
+    }
+    .bg-btn-custom:active {
+      transform: translateY(2px);
+    }
+
     .pixel-card {
       background-color: rgba(255, 255, 255, 0.85);
       border: 2px solid #543d2b;
@@ -103,7 +117,7 @@
       background: #0f172a;
       border: 4px solid #d97706;
       border-radius: 8px;
-      padding: 20px sm: 30px;
+      padding: 20px;
     }
 
     /* Animação de chacoalhar para encalhe */
@@ -142,7 +156,8 @@
       <div id="alertBox" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md bg-slate-950/95 border-4 border-rose-600 rounded p-4 text-center z-40 shadow-2xl">
         <h3 class="pixel-font text-rose-500 text-xs sm:text-sm mb-2">ALERTA AMBIENTAL</h3>
         <p id="alertMessage" class="font-mono text-sm sm:text-base text-slate-200 mb-4 leading-relaxed"></p>
-        <button id="closeAlertBtn" class="pixel-font pixel-btn-purple px-4 py-1.5 text-[10px] sm:text-xs">OK</button>
+        <!-- Botão customizado com assets/bg_btn.png -->
+        <button id="closeAlertBtn" class="pixel-font bg-btn-custom px-6 py-2 text-xs sm:text-sm font-bold uppercase">OK</button>
       </div>
 
       <!-- Document Modal / Panel -->
@@ -296,13 +311,13 @@
     const alertMessage = document.getElementById('alertMessage');
     const closeAlertBtn = document.getElementById('closeAlertBtn');
 
+    // Mapeamento atualizado sem o navio.png antigo
     const images = { 
       cenario: new Image(), 
       mar: new Image(), 
       marfrente: new Image(), 
       boia: new Image(), 
       personagem: new Image(),
-      navioPadrao: new Image(),
       cargueiro: new Image(),
       pesqueiroIrregular: new Image()
     };
@@ -314,9 +329,8 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        navioPadrao: 'assets/navio.png',
         cargueiro: 'assets/cargueiro.png',
-        pesqueiroIrregular: 'assets/cargueiro.png' // Corrigido para garantir proporção correta do navio de químicos/cargueiro
+        pesqueiroIrregular: 'assets/cargueiro.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
@@ -336,7 +350,7 @@
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false,
-        imgKey: "navioPadrao",
+        imgKey: "cargueiro",
         width: 250,
         height: 135
       },
@@ -388,7 +402,7 @@
         isHazard: true,
         size: "Pequeno (4m)",
         isLarge: false,
-        imgKey: "navioPadrao",
+        imgKey: "cargueiro",
         width: 240,
         height: 130
       },
@@ -566,7 +580,7 @@
 
     function handleGroundedShip() {
       isShaking = true;
-      shakeTimer = 120; // Duração do chacoalhar (quadros)
+      shakeTimer = 120;
       dayStats.groundedShips++;
       dayStats.falseAccepts++;
       dayStats.total++;
@@ -575,7 +589,7 @@
 
       setTimeout(() => {
         isShaking = false;
-        currentShip.x = -500; // Desaparece da tela
+        currentShip.x = -500;
         showAlert(pendingAlertMessage);
       }, 1500);
     }
