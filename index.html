@@ -62,40 +62,40 @@
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
       <!-- Document Modal / Panel -->
-      <div id="docPanel" class="hidden absolute top-1.5 sm:top-2 left-1/2 -translate-x-1/2 w-[98%] max-w-4xl doc-bg text-purple-950 pt-5 sm:pt-7 pb-10 sm:pb-14 px-8 sm:px-12 shadow-2xl z-20 pixel-font">
+      <div id="docPanel" class="hidden absolute top-1.5 sm:top-2 left-1/2 -translate-x-1/2 w-[95%] max-w-3xl doc-bg text-purple-950 pt-5 sm:pt-7 pb-10 sm:pb-14 px-6 sm:px-10 shadow-2xl z-20 pixel-font">
         
         <!-- Cabeçalho do Manifesto -->
-        <div class="border-b-2 border-purple-900/30 pb-2 mb-4 flex justify-between items-center pr-28 sm:pr-36">
+        <div class="border-b-2 border-purple-900/30 pb-2 mb-4 flex justify-between items-center w-full">
           <h2 class="text-[11px] sm:text-[14px] uppercase tracking-tight font-bold">MANIFESTO DE CARGA</h2>
           <span class="bg-purple-200/60 text-purple-950 text-[8px] sm:text-[10px] px-2 py-0.5 rounded font-bold border border-purple-400/50">OFICIAL</span>
         </div>
 
-        <!-- Dados do Manifesto em Layout Centralizado com Menor Gap -->
-        <div class="space-y-2.5 text-[9px] sm:text-[11px] pr-28 sm:pr-36 max-w-2xl mx-auto">
-          <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-4">
+        <!-- Dados do Manifesto em Layout Centralizado e Equilibrado -->
+        <div class="space-y-2 text-[9px] sm:text-[11px] w-full max-w-lg mx-auto">
+          <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-3">
             <span class="font-bold opacity-80 w-32 text-right shrink-0">NOME:</span>
-            <span id="docName" class="font-bold w-64 text-left truncate"></span>
+            <span id="docName" class="font-bold w-60 text-left truncate"></span>
           </div>
-          <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-4">
+          <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-3">
             <span class="font-bold opacity-80 w-32 text-right shrink-0">ROTA:</span>
-            <span id="docRoute" class="font-bold w-64 text-left truncate"></span>
+            <span id="docRoute" class="font-bold w-60 text-left truncate"></span>
           </div>
-          <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-4">
+          <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-3">
             <span class="font-bold opacity-80 w-32 text-right shrink-0">CARGA:</span>
-            <span id="docCargo" class="font-bold w-64 text-left truncate"></span>
+            <span id="docCargo" class="font-bold w-60 text-left truncate"></span>
           </div>
-          <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-4">
+          <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-3">
             <span class="font-bold opacity-80 w-32 text-right shrink-0">TOXICIDADE:</span>
-            <span id="docToxicity" class="font-bold w-64 text-left truncate"></span>
+            <span id="docToxicity" class="font-bold w-60 text-left truncate"></span>
           </div>
-          <div class="flex justify-center items-center pb-1 gap-4">
+          <div class="flex justify-center items-center pb-1 gap-3">
             <span class="font-bold opacity-80 w-32 text-right shrink-0">CALADO:</span>
-            <span id="docSize" class="font-bold w-64 text-left truncate"></span>
+            <span id="docSize" class="font-bold w-60 text-left truncate"></span>
           </div>
         </div>
 
-        <!-- Botões Aceitar / Recusar -->
-        <div class="mt-4 sm:mt-6 flex gap-4 pr-28 sm:pr-36 max-w-md mx-auto">
+        <!-- Botões Aceitar / Recusar Centralizados -->
+        <div class="mt-4 sm:mt-6 flex gap-4 w-full max-w-xs mx-auto justify-center">
           <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded border-b-2 border-emerald-800 active:translate-y-0.5 text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
             ✓ ACEITAR
           </button>
