@@ -77,14 +77,8 @@
           </div>
         </div>
 
-        <!-- BONECO DO INSPETOR (Localizado logo acima dos botões de decisão) -->
-        <div class="mt-4 flex flex-col items-center justify-center">
-          <img id="inspectorAvatar" src="assets/personagem.png" alt="Inspetor do Porto" class="w-16 h-16 sm:w-20 sm:h-20 object-contain image-rendering-pixelated mb-1 bg-amber-100/50 p-1 rounded-full border border-amber-300 shadow-sm" onerror="this.style.display='none'">
-          <span class="text-[10px] sm:text-xs font-mono font-bold text-amber-950 uppercase tracking-widest">Inspetor do Porto</span>
-        </div>
-
-        <!-- Botões de Ação (Certo / Errado) -->
-        <div class="mt-2 flex gap-2 sm:gap-3 font-mono">
+        <!-- Botões de Ação -->
+        <div class="mt-4 flex gap-2 sm:gap-3 font-mono">
           <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 sm:py-2 px-2 rounded border-b-2 sm:border-b-4 border-emerald-800 active:border-b-0 active:translate-y-1 text-xs sm:text-base transition flex items-center justify-center gap-1">
             <span>✓</span> ACEITAR ENTRADA
           </button>
@@ -129,7 +123,7 @@
 
     <!-- Dica -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>💡 Avalie as condições da embarcação e valide as informações com o Inspetor antes de autorizar.</span>
+      <span>💡 Avalie as condições da embarcação e valide as informações antes de autorizar.</span>
     </div>
 
   </div>
@@ -137,6 +131,9 @@
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+
+    // Desativa a suavização de imagem para manter o visual Pixel Art
+    ctx.imageSmoothingEnabled = false;
 
     // UI Elements
     const docPanel = document.getElementById('docPanel');
@@ -165,7 +162,7 @@
       }
     }
 
-    // Configuração dos 6 Tipos de Navios
+    // Configuração dos Tipos de Navios
     const SHIP_TYPES = [
       {
         typeCategory: "NAVIO DE MEDICAMENTOS",
@@ -209,7 +206,7 @@
         size: "Médio (6m de calado)",
         isLarge: false,
         narration: "São espécies que chegam a um ambiente onde não pertencem, podendo se espalhar e competir com espécies nativas.",
-        quote: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações e, quando encontram um novo ambiente, podem se espalhar e alterar o equilíbrio da vida costeira."
+        quote: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações."
       },
       {
         typeCategory: "PESCA IRREGULAR",
@@ -219,7 +216,7 @@
         isHazard: true,
         size: "Pequeno (4m de calado)",
         isLarge: false,
-        narration: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas, reduzir os recursos pesqueiros e causar danos ao ambiente.",
+        narration: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas.",
         quote: "Apenas uma pesca rápida na costa, sem problemas por aqui..."
       },
       {
@@ -230,8 +227,8 @@
         isHazard: true,
         size: "Grande (11m de calado)",
         isLarge: true,
-        narration: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco.",
-        quote: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco."
+        narration: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água.",
+        quote: "Algumas cargas exigem cuidados especiais. Se forem armazenadas incorretamente, colocam a vida costeira em risco."
       }
     ];
 
@@ -275,11 +272,18 @@
     }
 
     function drawScenario() {
+      // 1. Desenha a arte do cenário original
       if (images.cenario.complete && images.cenario.naturalWidth > 0) {
         ctx.drawImage(images.cenario, 0, 0, 800, 450);
       } else {
         ctx.fillStyle = "#1e3a8a"; ctx.fillRect(0, 0, 800, 250);
         ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
+      }
+
+      // 2. Desenha o personagem posicionado exatamente acima dos botões (placa)
+      if (images.personagem.complete && images.personagem.naturalWidth > 0) {
+        // Coordenadas ajustadas para repousar sobre o quadro da placa amarela (x: 520, y: 40)
+        ctx.drawImage(images.personagem, 520, 40, 210, 110);
       }
     }
 
