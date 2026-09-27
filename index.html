@@ -30,6 +30,15 @@
       border-radius: 3px;
     }
 
+    /* Estilo do Relatório - usa o pergaminho fundo_feedback.png embutido */
+    .report-bg {
+      background-image: url("data:image/png;base64,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");
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+    }
+
     /* Fundo do Documento / Manifesto de Carga */
     .doc-bg {
       background-color: #e2d3a3;
@@ -43,14 +52,6 @@
       border: 2px solid rgba(84, 61, 43, 0.25);
     }
 
-    /* Estilo do Relatório Mantendo a Proporção Exata + 10% de tamanho */
-    .report-bg {
-      background-image: url('assets/fundo_feedback.png');
-      background-size: 100% 100%;
-      background-position: center;
-      background-repeat: no-repeat;
-      image-rendering: pixelated;
-    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen min-h-[100dvh] text-white p-1 sm:p-3 overflow-hidden">
@@ -58,14 +59,8 @@
   <div class="w-full max-w-5xl max-h-[100dvh] bg-slate-900 border-2 sm:border-4 border-amber-600 rounded-lg p-1.5 sm:p-3 shadow-2xl flex flex-col gap-1.5 sm:gap-3 my-auto">
     
     <!-- Top Bar Status -->
-    <div class="flex justify-between items-center bg-slate-800 p-1.5 sm:p-3 rounded border border-slate-700 text-xs sm:text-base">
-      <div class="flex items-center gap-2 sm:gap-4">
-        <span class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
-        <span class="text-sm sm:text-xl text-cyan-300">NAVIO: <span id="shipCount">1</span> / 4</span>
-      </div>
-      <div class="flex items-center gap-2 sm:gap-3">
-        <span id="tideIndicator" class="text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-sky-900 text-sky-200 border border-sky-600">MARÉ: CARREGANDO...</span>
-      </div>
+    <div class="flex justify-center items-center bg-slate-800 p-1.5 sm:p-3 rounded border border-slate-700 text-xs sm:text-base">
+      <span class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
     </div>
 
     <!-- GAME CANVAS CONTAINER -->
@@ -131,50 +126,50 @@
 
       </div>
 
-      <!-- Relatório de Fim de Dia (+10% Maior e Otimizado para Lupa) -->
-      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-xs z-30 flex flex-col justify-center items-center p-2 sm:p-3 text-center">
-        <div class="report-bg relative p-3 sm:p-5 pb-5 sm:pb-7 w-[98%] max-w-2xl aspect-[2.1/1] flex flex-col justify-between text-slate-900 shadow-2xl overflow-hidden">
-          
-          <!-- Container Útil (Margem à direita reservada para a lupa) -->
-          <div class="w-full h-full flex flex-col justify-between pr-14 sm:pr-20">
-            
-            <!-- Título + Estrelas -->
-            <div class="mt-0.5 text-center flex flex-col items-center">
-              <h2 class="pixel-font text-[#4a154b] text-[11px] sm:text-base uppercase tracking-wider font-bold">RELATÓRIO DE INSPEÇÃO</h2>
-              <div class="flex items-center justify-center gap-2 mt-0.5">
-                <span class="pixel-font text-[#791d84] text-[8px] sm:text-[11px] uppercase">DIA <span id="reportDay">1</span></span>
-                <span id="starRating" class="text-amber-500 text-xs sm:text-base tracking-widest font-bold">★★★</span>
+      <!-- Relatório de Fim de Dia -->
+      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex justify-center items-center p-2 sm:p-4">
+        <div class="report-bg relative w-[96%] max-w-2xl aspect-[2/1] p-3 sm:p-6 shadow-2xl">
+
+          <!-- Coluna de conteúdo (reserva espaço à direita/baixo p/ a lupa do fundo) -->
+          <div class="w-full h-full flex flex-col justify-between pr-12 sm:pr-20 pb-2 sm:pb-4">
+
+            <!-- Cabeçalho -->
+            <div class="text-center">
+              <h2 class="pixel-font text-slate-800 text-[10px] sm:text-base uppercase tracking-wider">Relatório de Inspeção</h2>
+              <div class="flex items-center justify-center gap-2 mt-1 sm:mt-2">
+                <span class="pixel-font text-slate-500 text-[7px] sm:text-[10px] uppercase">DIA <span id="reportDay">1</span></span>
+                <span id="starRating" class="text-amber-500 text-xs sm:text-lg tracking-widest leading-none">★★★</span>
               </div>
             </div>
 
             <!-- Métricas Principais -->
-            <div class="grid grid-cols-4 gap-1 sm:gap-2 my-auto px-1">
-              <div class="bg-white/95 border border-slate-300 p-1 rounded text-center shadow-xs">
-                <div class="pixel-font text-[6px] sm:text-[8px] text-slate-600 font-bold">AVALIADOS</div>
-                <div id="repTotal" class="pixel-font text-xs sm:text-lg font-bold text-slate-800 mt-0.5">0</div>
+            <div class="grid grid-cols-4 gap-1 sm:gap-2 my-1 sm:my-2">
+              <div class="bg-slate-50 border border-slate-300 rounded p-1 sm:p-2 text-center">
+                <div class="pixel-font text-[5px] sm:text-[7px] text-slate-500 uppercase mb-0.5 sm:mb-1 leading-tight">Avaliados</div>
+                <div id="repTotal" class="pixel-font text-[11px] sm:text-xl text-slate-800">0</div>
               </div>
-              <div class="bg-white/95 border border-emerald-400 p-1 rounded text-center shadow-xs">
-                <div class="pixel-font text-[6px] sm:text-[8px] text-emerald-700 font-bold">APROV. CERTA</div>
-                <div id="repCorrectAccept" class="pixel-font text-xs sm:text-lg font-bold text-emerald-600 mt-0.5">0</div>
+              <div class="bg-emerald-50 border border-emerald-400 rounded p-1 sm:p-2 text-center">
+                <div class="pixel-font text-[5px] sm:text-[7px] text-emerald-700 uppercase mb-0.5 sm:mb-1 leading-tight">Aprov. Certa</div>
+                <div id="repCorrectAccept" class="pixel-font text-[11px] sm:text-xl text-emerald-700">0</div>
               </div>
-              <div class="bg-white/95 border border-amber-400 p-1 rounded text-center shadow-xs">
-                <div class="pixel-font text-[6px] sm:text-[8px] text-amber-700 font-bold">RECUSA CERTA</div>
-                <div id="repCorrectReject" class="pixel-font text-xs sm:text-lg font-bold text-amber-600 mt-0.5">0</div>
+              <div class="bg-amber-50 border border-amber-400 rounded p-1 sm:p-2 text-center">
+                <div class="pixel-font text-[5px] sm:text-[7px] text-amber-700 uppercase mb-0.5 sm:mb-1 leading-tight">Recusa Certa</div>
+                <div id="repCorrectReject" class="pixel-font text-[11px] sm:text-xl text-amber-700">0</div>
               </div>
-              <div class="bg-white/95 border border-rose-400 p-1 rounded text-center shadow-xs">
-                <div class="pixel-font text-[6px] sm:text-[8px] text-rose-700 font-bold">ERROS</div>
-                <div id="repErrors" class="pixel-font text-xs sm:text-lg font-bold text-rose-600 mt-0.5">0</div>
+              <div class="bg-rose-50 border border-rose-400 rounded p-1 sm:p-2 text-center">
+                <div class="pixel-font text-[5px] sm:text-[7px] text-rose-700 uppercase mb-0.5 sm:mb-1 leading-tight">Erros</div>
+                <div id="repErrors" class="pixel-font text-[11px] sm:text-xl text-rose-700">0</div>
               </div>
             </div>
 
             <!-- Parecer da Avaliação do Dia -->
-            <div class="bg-white/95 border border-purple-300 p-1.5 sm:p-2 mx-0.5 rounded text-left min-h-[42px] flex items-center shadow-xs">
-              <div id="reportImpact" class="pixel-font text-[7px] sm:text-[9.5px] leading-relaxed w-full"></div>
+            <div id="reportImpactBox" class="bg-slate-50 border-l-4 border-slate-400 rounded p-1.5 sm:p-2.5 text-left">
+              <div id="reportImpact" class="text-[10px] sm:text-sm leading-snug text-slate-700"></div>
             </div>
 
             <!-- Botão Continuar -->
-            <div class="flex justify-center mt-0.5">
-              <button id="nextDayBtn" class="pixel-font bg-[#5c1363] hover:bg-[#4a154b] text-white font-bold px-4 sm:px-8 py-1.5 rounded border-b-2 border-[#320836] text-[8px] sm:text-[10px] active:translate-y-0.5 transition shadow-md flex items-center gap-1">
+            <div class="flex justify-center mt-1 sm:mt-2">
+              <button id="nextDayBtn" class="pixel-font bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 sm:px-8 py-1.5 sm:py-2 rounded border-b-4 border-amber-600 active:translate-y-0.5 active:border-b-0 transition text-[7px] sm:text-[10px] shadow-md">
                 CONTINUAR &rarr;
               </button>
             </div>
@@ -187,8 +182,9 @@
     </div>
 
     <!-- Dica rodapé -->
-    <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
+    <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center gap-2 px-2 sm:px-4">
       <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
+      <span class="pixel-font text-cyan-300 text-[8px] sm:text-[10px] whitespace-nowrap">NAVIO <span id="shipCount">1</span>/4</span>
     </div>
 
   </div>
@@ -205,7 +201,6 @@
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
-    const tideIndicator = document.getElementById('tideIndicator');
 
     // Imagens do jogo
     const images = { 
@@ -319,19 +314,8 @@
       x: -160, y: 335, width: 140, height: 75, speed: 2, flipped: false, data: null
     };
 
-    function updateTideDisplay() {
-      if (isHighTide) {
-        tideIndicator.innerText = "MARÉ: ALTA (Segura para Navios Grandes)";
-        tideIndicator.className = "text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-emerald-950 text-emerald-300 border border-emerald-600";
-      } else {
-        tideIndicator.innerText = "MARÉ: BAIXA (Risco de Encalhe para Grandes)";
-        tideIndicator.className = "text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-amber-950 text-amber-300 border border-amber-600";
-      }
-    }
-
     function generateRandomShip() {
       isHighTide = Math.random() < 0.5;
-      updateTideDisplay();
 
       if (shipsEvaluated === 0 && currentDay === 1) {
         return { ...SHIP_TYPES[0] };
@@ -538,14 +522,20 @@
       document.getElementById('repErrors').innerText = totalErrors;
 
       const impactBox = document.getElementById('reportImpact');
+      const impactWrapper = document.getElementById('reportImpactBox');
       const starRating = document.getElementById('starRating');
+      const borderClasses = ['border-emerald-500', 'border-amber-500', 'border-rose-500'];
 
       // Sistema de Estrelas e Diagnóstico
       if (totalErrors === 0) {
         starRating.innerText = "★★★";
+        impactWrapper.classList.remove(...borderClasses);
+        impactWrapper.classList.add('border-emerald-500');
         impactBox.innerHTML = `<span class="text-emerald-700 font-bold">EXCELENTE:</span> Inspeção perfeita! Autorizou navios seguros e bloqueou todos os riscos sem prejuízos.`;
       } else if (totalErrors === 1) {
         starRating.innerText = "★★☆";
+        impactWrapper.classList.remove(...borderClasses);
+        impactWrapper.classList.add('border-amber-500');
         if (dayStats.falseRejects > 0) {
           impactBox.innerHTML = `<span class="text-amber-700 font-bold">ATENÇÃO:</span> Bloqueou os perigos, mas recusou <span class="font-bold">${dayStats.falseRejects}</span> navio(s) regular(es) e seguro(s) sem motivo!`;
         } else {
@@ -553,6 +543,8 @@
         }
       } else {
         starRating.innerText = "★☆☆";
+        impactWrapper.classList.remove(...borderClasses);
+        impactWrapper.classList.add('border-rose-500');
         impactBox.innerHTML = `<span class="text-rose-800 font-bold">DESEMPENHO CRÍTICO:</span> Vários erros cometidos! (${dayStats.falseRejects} recusas indevidas e ${dayStats.falseAccepts} autorizações perigosas).`;
       }
 
