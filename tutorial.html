@@ -498,7 +498,12 @@
       marfrente: new Image(), 
       boia: new Image(), 
       personagem: new Image(),
-      navioPadrao: new Image()
+      navio: new Image(),
+      navioGrande: new Image(),
+      cargueiro: new Image(),
+      cargueiroIrregular: new Image(),
+      pesqueiroRegular: new Image(),
+      pesqueiroIrregular: new Image()
     };
 
     function loadAssets(callback) {
@@ -508,7 +513,12 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        navioPadrao: 'assets/navio_padrao.png'
+        navio: 'assets/navio.png',
+        navioGrande: 'assets/navio_grande.png',
+        cargueiro: 'assets/cargueiro.png',
+        cargueiroIrregular: 'assets/cargueiro_irregular.png',
+        pesqueiroRegular: 'assets/pesqueiro_regular.png',
+        pesqueiroIrregular: 'assets/pesqueiro_irregular.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
@@ -544,6 +554,7 @@
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false,
+        sprite: "navio",
         lesson: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
         shipLine: "Minha carga é preciosa. Cada entrega pode fazer a diferença."
       },
@@ -560,6 +571,7 @@
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true,
+        sprite: "navioGrande",
         lesson: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
         shipLine: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?"
       },
@@ -576,6 +588,7 @@
         isHazard: false,
         size: "Médio (7m)",
         isLarge: false,
+        sprite: "cargueiro",
         lesson: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
         shipLine: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença."
       },
@@ -592,6 +605,7 @@
         isHazard: true,
         size: "Médio (6m)",
         isLarge: false,
+        sprite: "cargueiroIrregular",
         lesson: "São espécies que chegam a um ambiente onde não pertencem, podendo se espalhar e competir com espécies nativas.",
         shipLine: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações e, quando encontram um novo ambiente, podem se espalhar e alterar o equilíbrio da vida costeira."
       },
@@ -608,6 +622,7 @@
         isHazard: true,
         size: "Pequeno (4m)",
         isLarge: false,
+        sprite: "pesqueiroIrregular",
         lesson: "São embarcações envolvidas em atividades de pesca que não seguem as regras estabelecidas, podendo atuar em áreas protegidas ou utilizar práticas que prejudicam os recursos e o ambiente marinho.",
         voice: "narrator",
         shipLine: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas, reduzir os recursos pesqueiros e causar danos ao ambiente."
@@ -625,6 +640,7 @@
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true,
+        sprite: "navioGrande",
         lesson: "São embarcações que transportam cargas potencialmente perigosas, como substâncias químicas, resíduos industriais ou materiais tóxicos. Um vazamento ou manejo inadequado pode causar impactos ao ambiente costeiro.",
         voice: "narrator",
         shipLine: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco."
@@ -999,8 +1015,10 @@
         ctx.translate(-x, -y);
       }
 
-      if (images.navioPadrao.complete && images.navioPadrao.naturalWidth > 0) {
-        ctx.drawImage(images.navioPadrao, x, y, w, h);
+      const shipImg = images[currentShip.data.sprite] || images.navio;
+
+      if (shipImg && shipImg.complete && shipImg.naturalWidth > 0) {
+        ctx.drawImage(shipImg, x, y, w, h);
       } else {
         ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
         ctx.fillRect(x, y + 20, w, 35);
