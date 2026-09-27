@@ -155,13 +155,13 @@
 
     let assetsLoaded = false;
 
-    // Carregamento dos Assets da pasta assets/
+    // Carregamento direto dos ficheiros da raiz do projeto
     function loadAssets(callback) {
       const sources = {
-        cenario: 'assets/cenario.png',
-        mar: 'assets/mar.png',
-        marfrente: 'assets/marfrente.png',
-        boia: 'assets/boia.png'
+        cenario: 'cenario.png',
+        mar: 'mar.png',
+        marfrente: 'marfrente.png',
+        boia: 'boia.png'
       };
 
       let loadedCount = 0;
@@ -178,7 +178,7 @@
           }
         };
         images[key].onerror = () => {
-          console.warn(`Asset assets/${key}.png não encontrado, utilizando fallback visual.`);
+          console.warn(`Asset ${sources[key]} não encontrado, a utilizar fallback visual.`);
           loadedCount++;
           if (loadedCount === totalImages) {
             assetsLoaded = true;
@@ -193,6 +193,15 @@
     let shipIndex = 0;
     let isHighTide = false; // Começa na Maré Baixa
     let gameState = 'APPROACHING'; // APPROACHING, INSPECTING, LEAVING_ACCEPT, LEAVING_REJECT, GROUNDED, DAY_END
+
+    // Mapeamento de frames conforme boia.json
+    const buoyFrames = [
+      { x: 0, y: 0, w: 64, h: 64 },   // Frame 0: Luz branca (estático na Maré Alta)
+      { x: 64, y: 0, w: 64, h: 64 },  // Frame 1
+      { x: 0, y: 64, w: 64, h: 64 },  // Frame 2: Luz vermelha
+      { x: 64, y: 64, w: 64, h: 64 }  // Frame 3
+    ];
+    let buoyAnimTimer = 0;
 
     // Estatísticas do dia
     let dayStats = {
@@ -279,10 +288,25 @@
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
-      // Desenhar Bóia Flutuando na Água (Corrigido para 64x64px sem cortar)
+      // Lógica de Animação da Bóia baseada no boia.json
       if (images.boia.complete && images.boia.naturalWidth > 0) {
         const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
-        ctx.drawImage(images.boia, 0, 0, 64, 64, 680, buoyY, 48, 48);
+        
+        let currentFrameIndex = 0; // Padrão: estático (Maré Alta)
+        
+        if (!isHighTide) {
+          // Maré Baixa: Anima entre os 4 frames do sprite sheet
+          buoyAnimTimer += 0.08;
+          currentFrameIndex = Math.floor(buoyAnimTimer) % buoyFrames.length;
+        }
+
+        const frame = buoyFrames[currentFrameIndex];
+
+        ctx.drawImage(
+          images.boia, 
+          frame.x, frame.y, frame.w, frame.h, 
+          680, buoyY, 48, 48
+        );
       }
     }
 
