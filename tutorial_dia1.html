@@ -88,9 +88,10 @@
     /* ---------- GESTOR (caixa de diálogo do narrador do tutorial) ---------- */
     #gestorBox {
       position: absolute;
-      left: 3%;
-      right: 3%;
-      bottom: 4%;
+      left: 4%;
+      right: 4%;
+      top: 50%;
+      transform: translateY(-50%);
       z-index: 40;
       display: none;
       background: rgba(4, 12, 18, 0.88);
@@ -140,17 +141,19 @@
     #gestorBtn {
       font-family: 'Press Start 2P', monospace;
       font-size: clamp(9px, 1.5vw, 12px);
-      background: #d97706;
+      background-image: url('assets/bg_btn.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
       color: #2b1b10;
       border: none;
       padding: 8px 16px;
-      border-bottom: 4px solid #7c2d12;
       border-radius: 3px;
       cursor: pointer;
     }
     #gestorBtn:active {
       transform: translateY(2px);
-      border-bottom: 2px solid #7c2d12;
     }
 
     /* ---------- Balão de fala do navio ---------- */
@@ -165,7 +168,7 @@
       border-radius: 8px;
       padding: 8px 12px;
       font-family: 'VT323', monospace;
-      font-size: clamp(12px, 2vw, 16px);
+      font-size: clamp(15px, 2.6vw, 20px);
       line-height: 1.2;
       box-shadow: 2px 2px 0px rgba(0,0,0,0.25);
       opacity: 0;
@@ -197,7 +200,7 @@
       border-radius: 6px;
       padding: 8px 14px;
       font-family: 'VT323', monospace;
-      font-size: clamp(13px, 2.1vw, 17px);
+      font-size: clamp(16px, 2.8vw, 22px);
       color: #a5f3fc;
       line-height: 1.25;
       opacity: 0;
@@ -208,6 +211,19 @@
       border-color: #dc2626;
       color: #fecaca;
     }
+    #lessonCaption, #shipBubble {
+      cursor: pointer;
+    }
+    .captionHint {
+      margin-top: 4px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.4vw, 11px);
+      opacity: 0.65;
+      letter-spacing: 0.5px;
+    }
+    #lessonCaption .captionHint { color: #facc15; }
+    #lessonCaption.alert .captionHint { color: #fecaca; }
+    #shipBubble .captionHint { color: #7c2d12; }
 
     /* ---------- Realces (spotlights) ---------- */
     .spotlight {
@@ -235,29 +251,6 @@
       color: #7c2d12;
       font-style: italic;
       line-height: 1.25;
-    }
-
-    .doc-field-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 6px;
-      border-bottom: 1px solid rgba(84,61,43,0.15);
-      padding: 2px 0;
-    }
-    .doc-field-row:last-child { border-bottom: none; }
-    .doc-field-label {
-      font-size: 10px;
-      font-weight: bold;
-      color: #543d2b;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    .doc-field-value {
-      font-size: 12px;
-      font-weight: bold;
-      color: #2b1b10;
-      text-align: right;
     }
 
     #actionHint {
@@ -298,6 +291,20 @@
       25% { transform: scale(1); }
       80% { opacity: 1; }
       100% { opacity: 0; }
+    }
+
+    /* ---------- Overlay de fade (transição fim do tutorial -> Dia 2) ---------- */
+    #fadeOverlay {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease;
+    }
+    #fadeOverlay.visible {
+      opacity: 1;
     }
   </style>
 </head>
@@ -350,37 +357,33 @@
         </div>
 
         <!-- Corpo do Documento -->
-        <div class="my-auto space-y-1.5 sm:space-y-2 font-mono overflow-y-auto custom-scroll pr-1" style="max-height: 62vh;">
+        <div class="my-auto space-y-2 sm:space-y-2.5 font-mono overflow-y-auto custom-scroll pr-1" style="max-height: 62vh;">
           <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
-            <div class="doc-field-row">
-              <span class="doc-field-label">🚢 Nome</span>
-              <span id="docName" class="doc-field-value text-[14px] sm:text-[16px]"></span>
+            <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
+              <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-[#2b1b10]"></span>
             </div>
-            <div class="doc-field-row">
-              <span class="doc-field-label">🌎 Origem</span>
-              <span id="docOrigem" class="doc-field-value"></span>
-            </div>
-            <div class="doc-field-row">
-              <span class="doc-field-label">⚓ Destino</span>
-              <span id="docDestino" class="doc-field-value"></span>
+            <div class="flex justify-between items-baseline">
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
+              <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
             </div>
           </div>
 
           <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
-            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">📦 Carga</span>
-            <span id="docCargo" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
+            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
+            <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
-              <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">📏 Tamanho</span>
-              <span id="docSize" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10] mt-1"></span>
+              <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Porte</span>
+              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-1"></span>
             </div>
 
             <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <div class="flex justify-between items-center gap-1">
-                <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">☣️ Toxicid.</span>
-                <span id="docToxicityText" class="text-[11px] sm:text-[13px] font-bold"></span>
+                <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
+                <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
               </div>
               <div class="w-full h-2.5 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
                 <div id="toxicityBar" class="h-full rounded-xs transition-all duration-300" style="width: 20%;"></div>
@@ -389,7 +392,7 @@
           </div>
 
           <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
-            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">🌱 Risco Ambiental</span>
+            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Risco Ambiental</span>
             <span id="docRisco" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
@@ -447,6 +450,11 @@
             <div id="reportImpact" class="pixel-font text-[8px] sm:text-[11px] leading-relaxed w-full"></div>
           </div>
 
+          <!-- Frase de encorajamento exibida apenas ao concluir o tutorial -->
+          <div id="readyLine" class="hidden pixel-font text-[9px] sm:text-[12px] text-[#4a154b] font-bold tracking-wide mb-1">
+            AGORA VOCÊ ESTÁ PRONTO!
+          </div>
+
           <!-- Botão Estilizado em Pixel Art Retrô 2D -->
           <div class="flex justify-center mb-1">
             <button id="nextDayBtn" class="pixel-font pixel-btn-purple px-6 sm:px-10 py-1.5 text-[9px] sm:text-[11px] font-bold tracking-wide transition-transform flex items-center gap-2">
@@ -456,6 +464,9 @@
 
         </div>
       </div>
+
+      <!-- Overlay de fade (transição suave entre o fim do tutorial e o Dia 2) -->
+      <div id="fadeOverlay"></div>
 
     </div>
 
@@ -762,45 +773,78 @@
     }
 
     // --------- Legenda educativa (antes de cada novo tipo de navio) ---------
+    // Duração padrão maior (era 4200ms) para dar mais tempo de leitura;
+    // um toque na legenda sempre permite adiantar, como a seta "→" dos
+    // botões CONTINUAR / INICIAR DIA 2.
     function showLessonCaption(text, duration) {
       lessonCaption.classList.remove('alert');
-      lessonCaption.textContent = text;
+      lessonCaption.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
       lessonCaption.classList.add('visible');
-      setTimeout(() => lessonCaption.classList.remove('visible'), duration || 4200);
+
+      clearTimeout(lessonCaption._hideTimer);
+      lessonCaption.onclick = null;
+
+      const hide = () => {
+        clearTimeout(lessonCaption._hideTimer);
+        lessonCaption.onclick = null;
+        lessonCaption.classList.remove('visible');
+      };
+
+      lessonCaption._hideTimer = setTimeout(hide, duration || 6800);
+      lessonCaption.onclick = hide;
     }
 
     // Variante em tom de alerta, usada para a "Narração" de aviso de
     // navios de pesca irregular / materiais perigosos (fala do gestor,
-    // não do navio).
+    // não do navio). Duração maior (era 3400ms) + toque para adiantar.
     function showAlertCaption(text, onDone) {
       lessonCaption.classList.add('alert');
-      lessonCaption.textContent = text;
+      lessonCaption.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
       lessonCaption.classList.add('visible');
-      setTimeout(() => {
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        lessonCaption.onclick = null;
         lessonCaption.classList.remove('visible');
         setTimeout(() => {
           lessonCaption.classList.remove('alert');
           if (onDone) onDone();
         }, 500);
-      }, 3400);
+      }
+
+      const timer = setTimeout(finish, 5800);
+      lessonCaption.onclick = finish;
     }
 
     // --------- Balão de fala do navio ---------
+    // Duração maior (era 3400ms) + toque no balão para adiantar.
     function showShipBubble(text, onDone) {
-      shipBubble.textContent = text;
+      shipBubble.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
       const bx = Math.min(currentShip.x + currentShip.width * 0.15, 620);
       const by = Math.max(currentShip.y - 70, 20);
       shipBubble.style.left = (bx / 800 * 100) + '%';
       shipBubble.style.top = (by / 450 * 100) + '%';
       shipBubble.style.display = 'block';
       requestAnimationFrame(() => shipBubble.classList.add('visible'));
-      setTimeout(() => {
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        shipBubble.onclick = null;
         shipBubble.classList.remove('visible');
         setTimeout(() => {
           shipBubble.style.display = 'none';
           if (onDone) onDone();
         }, 400);
-      }, 3400);
+      }
+
+      const timer = setTimeout(finish, 5800);
+      shipBubble.onclick = finish;
     }
 
     function showDayStartBanner(text) {
@@ -845,7 +889,13 @@
     }
 
     function generateRandomShip() {
-      isHighTide = Math.random() < 0.5;
+      if (currentDay === 1 && shipsEvaluated === 0) {
+        // O tutorial sempre começa com maré baixa, para a régua aparecer
+        // bem destacada logo no primeiro navio (etapa guiada).
+        isHighTide = false;
+      } else {
+        isHighTide = Math.random() < 0.5;
+      }
       updateTideDisplay();
 
       if (currentDay === 1) {
@@ -928,7 +978,7 @@
       ctx.textAlign = "center";
       ctx.fillStyle = "#02070b";
       ctx.fillText(isHighTide ? "MARÉ ALTA" : "MARÉ BAIXA", r.x + r.w / 2 + 1, r.y - 7);
-      ctx.fillStyle = isHighTide ? "#7dd3fc" : "#fca5a5";
+      ctx.fillStyle = isHighTide ? "#facc15" : "#fca5a5";
       ctx.fillText(isHighTide ? "MARÉ ALTA" : "MARÉ BAIXA", r.x + r.w / 2, r.y - 8);
       ctx.restore();
     }
@@ -985,16 +1035,6 @@
       }
     }
 
-    function handleGroundedShip() {
-      dayStats.groundedShips++;
-      dayStats.falseAccepts++;
-      dayStats.total++;
-      setTimeout(() => {
-        gameState = 'LEAVING_REJECT';
-        currentShip.flipped = true;
-      }, 300);
-    }
-
     // O primeiro navio do Dia 1 (medicamentos) recebe o tutorial guiado
     // completo, com destaques na régua e no navio antes de abrir a
     // documentação, e uma fala extra do GESTOR dentro do documento.
@@ -1035,8 +1075,7 @@
     function openInspectionPanel() {
       const data = currentShip.data;
       document.getElementById('docName').innerText = data.name;
-      document.getElementById('docOrigem').innerText = data.origem;
-      document.getElementById('docDestino').innerText = data.destino;
+      document.getElementById('docRoute').innerText = data.route;
       document.getElementById('docCargo').innerText = data.cargo;
       document.getElementById('docSize').innerText = data.size;
       document.getElementById('docRisco').innerText = data.riscoAmbiental;
@@ -1050,13 +1089,13 @@
       toxBar.style.width = `${percentage}%`;
 
       if (data.toxicityVal === 0) {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-emerald-800";
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-emerald-800";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-emerald-600";
       } else if (data.toxicityVal <= 2) {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-amber-800";
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-amber-800";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-amber-500";
       } else {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-rose-900";
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-rose-900";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-rose-600";
       }
 
@@ -1096,20 +1135,21 @@
       if (acceptBtn.disabled) return;
       if (isFirstGuidedShip()) showBannerOnNextShip = true;
       docPanel.classList.add('hidden');
+
+      // A decisão é sempre do jogador: aceitar sempre faz o navio seguir
+      // em frente, mesmo que seja um navio ruim (perigoso ou grande em
+      // maré baixa). Isso só é contabilizado como erro no relatório —
+      // o navio não é forçado a voltar/encalhar sozinho.
       const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
 
-      if (currentShip.data.isLarge && !isHighTide) {
-        gameState = 'GROUNDED';
-        handleGroundedShip();
+      dayStats.total++;
+      if (isBadShip) {
+        dayStats.falseAccepts++;
+        if (currentShip.data.isLarge && !isHighTide) dayStats.groundedShips++;
       } else {
-        dayStats.total++;
-        if (isBadShip) {
-          dayStats.falseAccepts++;
-        } else {
-          dayStats.correctAccepts++;
-        }
-        gameState = 'LEAVING_ACCEPT';
+        dayStats.correctAccepts++;
       }
+      gameState = 'LEAVING_ACCEPT';
     });
 
     rejectBtn.addEventListener('click', () => {
@@ -1164,6 +1204,7 @@
       nextDayBtn.innerHTML = currentDay === 1
         ? 'INICIAR DIA 2 &rarr;'
         : 'CONTINUAR &rarr;';
+      document.getElementById('readyLine').classList.toggle('hidden', currentDay !== 1);
       document.getElementById('repTotal').innerText = dayStats.total;
       document.getElementById('repCorrectAccept').innerText = dayStats.correctAccepts;
       document.getElementById('repCorrectReject').innerText = dayStats.correctRejects;
@@ -1188,13 +1229,29 @@
       reportModal.classList.remove('hidden');
     }
 
-    nextDayBtn.addEventListener('click', () => {
-      reportModal.classList.add('hidden');
+    const fadeOverlay = document.getElementById('fadeOverlay');
+
+    function goToNextDay() {
       currentDay++;
       shipsEvaluated = 0;
       dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
       updateHeaderForDay();
       spawnShip();
+    }
+
+    nextDayBtn.addEventListener('click', () => {
+      const isEndOfTutorial = currentDay === 1;
+      reportModal.classList.add('hidden');
+
+      if (isEndOfTutorial) {
+        // Fadeout suave e, ao final, redireciona para o jogo completo
+        fadeOverlay.classList.add('visible');
+        setTimeout(() => {
+          window.location.href = 'game.html';
+        }, 700);
+      } else {
+        goToNextDay();
+      }
     });
 
     function gameLoop() {
