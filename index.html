@@ -413,6 +413,40 @@
   var showObjectivesBtn = document.getElementById('showObjectivesBtn');
   var objectiveBox = document.getElementById('objectiveBox');
   var startIntroBtn = document.getElementById('startIntroBtn');
+  var somClick = new Audio('assets/button_click.wav');
+var somJogo = new Audio('assets/som_oficial.mp3');
+
+somClick.volume = 0.5;
+somJogo.volume = 0.6;
+somJogo.loop = true;
+
+function tocarSom(som) {
+  som.currentTime = 0;
+  som.play().catch(function () {});
+}
+
+/* A música começa na primeira interação do jogador.
+   Isso evita o bloqueio de autoplay dos navegadores. */
+var musicaIniciada = false;
+
+function iniciarMusica() {
+  if (musicaIniciada) return;
+
+  musicaIniciada = true;
+  somJogo.currentTime = 0;
+  somJogo.play().catch(function () {
+    musicaIniciada = false;
+  });
+}
+
+document.addEventListener('pointerdown', iniciarMusica, { once: true });
+
+document.querySelectorAll('button').forEach(function (button) {
+  button.addEventListener('click', function () {
+    iniciarMusica();
+    tocarSom(somClick);
+  });
+});
 
   var introTexts = [
     "“O porto desperta antes mesmo do sol. Embarcações começam a surgir no horizonte. Algumas trazem alimentos, medicamentos e equipamentos essenciais. Outras podem carregar ameaças para as águas e para a vida costeira.”",
@@ -528,6 +562,7 @@
   });
 
   function mostrarTitulo() {
+    
     titleScreen.classList.add('visible');
     setTimeout(function () {
       titleScreen.classList.remove('visible');
