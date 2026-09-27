@@ -61,42 +61,42 @@
       <!-- Canvas -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel Com Imagem de Fundo -->
-      <div id="docPanel" class="hidden absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-sm doc-bg text-slate-900 p-5 sm:p-6 shadow-2xl z-20">
-        <div class="border-b-2 border-purple-900/30 pb-2 mb-3 flex justify-between items-center">
-          <h2 class="pixel-font text-[10px] sm:text-xs text-purple-950 uppercase">MANIFESTO DE CARGA</h2>
-          <span class="bg-purple-200 text-purple-950 text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-bold border border-purple-400">OFICIAL</span>
+      <!-- Document Modal / Panel Com Espaçamento Adaptado À Lupa -->
+      <div id="docPanel" class="hidden absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-md doc-bg text-slate-900 pt-4 sm:pt-5 pb-6 sm:pb-8 pl-5 sm:pl-7 pr-10 sm:pr-14 shadow-2xl z-20">
+        <div class="border-b-2 border-purple-900/30 pb-1.5 mb-2 flex justify-between items-center">
+          <h2 class="pixel-font text-[9px] sm:text-[11px] text-purple-950 uppercase tracking-tight">MANIFESTO DE CARGA</h2>
+          <span class="bg-purple-200 text-purple-950 text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded font-bold border border-purple-400">OFICIAL</span>
         </div>
 
-        <div class="space-y-1.5 text-base sm:text-lg font-sans">
-          <div class="flex justify-between border-b border-purple-900/10 pb-1">
+        <div class="space-y-1 text-sm sm:text-base font-sans">
+          <div class="flex justify-between border-b border-purple-900/10 pb-0.5">
             <span class="text-purple-950 font-semibold">NOME:</span>
             <span id="docName" class="font-bold text-blue-900"></span>
           </div>
-          <div class="flex justify-between border-b border-purple-900/10 pb-1">
+          <div class="flex justify-between border-b border-purple-900/10 pb-0.5">
             <span class="text-purple-950 font-semibold">ROTA:</span>
             <span id="docRoute" class="text-slate-800"></span>
           </div>
-          <div class="flex justify-between border-b border-purple-900/10 pb-1">
+          <div class="flex justify-between border-b border-purple-900/10 pb-0.5">
             <span class="text-purple-950 font-semibold">CARGA:</span>
             <span id="docCargo" class="font-medium text-slate-900"></span>
           </div>
-          <div class="flex justify-between border-b border-purple-900/10 pb-1">
+          <div class="flex justify-between border-b border-purple-900/10 pb-0.5">
             <span class="text-purple-950 font-semibold">TOXICIDADE:</span>
             <span id="docToxicity" class="font-bold"></span>
           </div>
-          <div class="flex justify-between pb-1">
+          <div class="flex justify-between pb-0.5">
             <span class="text-purple-950 font-semibold">CALADO:</span>
             <span id="docSize" class="font-bold text-purple-900"></span>
           </div>
         </div>
 
-        <!-- Botões de Ação -->
-        <div class="mt-4 flex gap-2 font-mono pr-6">
-          <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 px-2 rounded border-b-2 border-emerald-800 active:translate-y-0.5 text-xs sm:text-sm transition flex items-center justify-center gap-1 shadow-md">
+        <!-- Botões de Ação Reposicionados para Não Colidir Com a Lupa -->
+        <div class="mt-3 sm:mt-4 flex gap-2 font-mono pr-2 sm:pr-4">
+          <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 px-1.5 rounded border-b-2 border-emerald-800 active:translate-y-0.5 text-[10px] sm:text-xs transition flex items-center justify-center gap-1 shadow-md">
             ✓ ACEITAR
           </button>
-          <button id="rejectBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-1.5 px-2 rounded border-b-2 border-rose-800 active:translate-y-0.5 text-xs sm:text-sm transition flex items-center justify-center gap-1 shadow-md">
+          <button id="rejectBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-1 px-1.5 rounded border-b-2 border-rose-800 active:translate-y-0.5 text-[10px] sm:text-xs transition flex items-center justify-center gap-1 shadow-md">
             ✕ RECUSAR
           </button>
         </div>
@@ -326,11 +326,9 @@
         ctx.translate(-x, -y);
       }
 
-      // Renderiza a imagem do navio padrão
       if (images.navioPadrao.complete && images.navioPadrao.naturalWidth > 0) {
         ctx.drawImage(images.navioPadrao, x, y, w, h);
       } else {
-        // Fallback caso a imagem falhe no carregamento
         ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
         ctx.fillRect(x, y + 20, w, 35);
       }
@@ -387,7 +385,6 @@
     acceptBtn.addEventListener('click', () => {
       docPanel.classList.add('hidden');
 
-      // Se tentar aceitar um navio grande na maré baixa, ele encalha
       if (currentShip.data.isLarge && !isHighTide) {
         gameState = 'GROUNDED';
         handleGroundedShip();
