@@ -30,11 +30,12 @@
       border-radius: 3px;
     }
 
-    /* Fundo do Documento / Manifesto de Carga */
+    /* Fundo do Documento / Manifesto de Carga usando a Imagem 'assets/manifesto_carga.png' */
     .doc-bg {
-      background-color: #e2d3a3;
-      border: 4px solid #543d2b;
-      box-shadow: inset 0 0 15px rgba(84, 61, 43, 0.3), 0 10px 25px rgba(0, 0, 0, 0.6);
+      background-image: url('assets/manifesto_carga.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
       image-rendering: pixelated;
     }
 
@@ -102,8 +103,8 @@
       <!-- Canvas do Jogo -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel -->
-      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm">
+      <!-- Document Modal / Panel (Usando a imagem assets/manifesto_carga.png como fundo) -->
+      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm shadow-2xl">
         
         <!-- Cabeçalho Centralizado -->
         <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
@@ -339,7 +340,7 @@
     };
 
     function updateTideDisplay() {
-      // Maré alternada internamente sem exibir texto no topo
+      // Controle interno de maré
     }
 
     function generateRandomShip() {
