@@ -30,7 +30,7 @@
       border-radius: 3px;
     }
 
-    /* Fundo do Documento / Manifesto de Carga */
+    /* Fundo do Documento / Manifesto de Carga usando a Imagem 'assets/manifesto_carga.png' */
     .doc-bg {
       background-image: url('assets/manifesto_carga.png');
       background-size: 100% 100%;
@@ -222,7 +222,7 @@
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
 
-    // Mapeamento completo de imagens do jogo incluindo as texturas específicas dos navios
+    // Mapeamento de imagens
     const images = { 
       cenario: new Image(), 
       mar: new Image(), 
@@ -253,7 +253,7 @@
       }
     }
 
-    // Configuração dos tipos de navio com suas respectivas imagens e tamanhos proporcionais maiores
+    // Configuração dos tipos de navio (com imagens grandes e proporcionais)
     const SHIP_TYPES = [
       {
         name: "MV Esperança",
@@ -351,12 +351,15 @@
     };
 
     let currentShip = {
-      x: -300, y: 300, width: 260, height: 140, speed: 2, flipped: false, data: null
+      x: -300, y: 335, width: 260, height: 140, speed: 2, flipped: false, data: null
     };
 
-    function updateTideDisplay() {}
+    function updateTideDisplay() {
+      // Mantido original
+    }
 
     function generateRandomShip() {
+      // Maré original do primeiro código (315 se alta, 370 se baixa)
       isHighTide = Math.random() < 0.5;
       updateTideDisplay();
 
@@ -381,7 +384,8 @@
     }
 
     function drawSeaAndBuoy() {
-      const targetSeaY = isHighTide ? 295 : 345;
+      // Altura da maré exatamente como no código original (315 para maré alta, 370 para maré baixa)
+      const targetSeaY = isHighTide ? 315 : 370;
       if (!canvas.seaY) canvas.seaY = targetSeaY;
       canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
       const seaY = canvas.seaY;
@@ -421,7 +425,9 @@
       const shipData = currentShip.data;
       currentShip.width = shipData.width || 260;
       currentShip.height = shipData.height || 140;
-      currentShip.y = (canvas.seaY || 345) - (currentShip.height - 62);
+      
+      // Posicionamento perfeitamente alinhado com a linha d'água original
+      currentShip.y = (canvas.seaY || 370) - 45;
 
       const x = currentShip.x;
       const y = currentShip.y;
@@ -434,15 +440,14 @@
         ctx.translate(-x, -y);
       }
 
-      // Renderização dinâmica baseada na imagem específica associada ao navio (cargueiro ou pesqueiro)
       const specificImg = images[shipData.imgKey];
       if (specificImg && specificImg.complete && specificImg.naturalWidth > 0) {
-        ctx.drawImage(specificImg, x, y, w, h);
+        ctx.drawImage(specificImg, x, y - 35, w, h);
       } else if (images.navioPadrao.complete && images.navioPadrao.naturalWidth > 0) {
-        ctx.drawImage(images.navioPadrao, x, y, w, h);
+        ctx.drawImage(images.navioPadrao, x, y - 35, w, h);
       } else {
         ctx.fillStyle = shipData.isHazard ? "#991b1b" : "#1d4ed8";
-        ctx.fillRect(x, y + 20, w, 70);
+        ctx.fillRect(x, y, w, 75);
       }
 
       ctx.restore();
@@ -455,8 +460,8 @@
       if (gameState === 'APPROACHING') {
         currentShip.x += currentShip.speed;
 
-        if (currentShip.x >= 280) {
-          currentShip.x = 280;
+        if (currentShip.x >= 380) {
+          currentShip.x = 380;
           gameState = 'INSPECTING';
           openInspectionPanel();
         }
