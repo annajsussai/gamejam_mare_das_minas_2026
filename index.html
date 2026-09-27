@@ -44,7 +44,7 @@
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
         <span class="text-sm sm:text-xl hidden xs:inline">MARÉ:</span>
-        <span id="tideStatusBadge" class="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm font-bold rounded pixel-font bg-blue-600 text-white">BAIXA</span>
+        <span id="tideStatusBadge" class="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm font-bold rounded pixel-font bg-cyan-500 text-slate-950">ALTA</span>
         <button id="toggleTideBtn" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-2 sm:px-3 py-1 rounded border border-amber-300 text-[9px] sm:text-xs pixel-font transition active:scale-95">
           ALTERAR MARÉ
         </button>
@@ -191,7 +191,7 @@
     // Game Config & State
     let currentDay = 1;
     let shipIndex = 0;
-    let isHighTide = false; // Começa na Maré Baixa
+    let isHighTide = true; // Alterado para iniciar na Maré Alta
     let gameState = 'APPROACHING'; // APPROACHING, INSPECTING, LEAVING_ACCEPT, LEAVING_REJECT, GROUNDED, DAY_END
 
     // Estatísticas do dia
@@ -291,7 +291,7 @@
 
       ctx.save();
 
-      currentShip.y = (canvas.seaY || 315) - 35;
+      currentShip.y = (canvas.seaY || 260) - 35;
 
       if (currentShip.flipped) {
         ctx.translate(currentShip.x + currentShip.width, currentShip.y);
