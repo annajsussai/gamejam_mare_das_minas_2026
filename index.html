@@ -132,7 +132,6 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Desativa a suavização de imagem para manter o visual Pixel Art
     ctx.imageSmoothingEnabled = false;
 
     // UI Elements
@@ -272,7 +271,7 @@
     }
 
     function drawScenario() {
-      // 1. Desenha a arte do cenário original
+      // 1. Cenário principal
       if (images.cenario.complete && images.cenario.naturalWidth > 0) {
         ctx.drawImage(images.cenario, 0, 0, 800, 450);
       } else {
@@ -280,10 +279,9 @@
         ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
       }
 
-      // 2. Desenha o personagem posicionado exatamente acima dos botões (placa)
+      // 2. Personagem alinhado perfeitamente com os botões verde/vermelho do painel
       if (images.personagem.complete && images.personagem.naturalWidth > 0) {
-        // Coordenadas ajustadas para repousar sobre o quadro da placa amarela (x: 520, y: 40)
-        ctx.drawImage(images.personagem, 520, 40, 210, 110);
+        ctx.drawImage(images.personagem, 522, 22, 215, 125);
       }
     }
 
