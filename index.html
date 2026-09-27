@@ -304,22 +304,21 @@
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
-      // Desenho animado da Bóia
+      // Desenho animado da Bóia (Efeito Pisca-Pisca em Maré Baixa)
       if (images.boia.complete && images.boia.naturalWidth > 0) {
         const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
         
         let srcX = 0;
         let srcY = 0;
 
-        // Se for maré baixa (!isHighTide), alterna os frames da luz acesa (linha inferior do sprite)
         if (!isHighTide) {
-          const frameIndex = Math.floor(Date.now() / 300) % 2; // alterna entre frame 2 e 3 a cada 300ms
-          srcX = frameIndex * 64;
-          srcY = 64; // Linha inferior onde fica a luz acesa
+          // Maré Baixa: Luz pisca rápido alternando ligado (linha inferior) / desligado (linha superior)
+          const isLuzAcesa = (Math.floor(Date.now() / 250) % 2) === 0;
+          srcX = 0;
+          srcY = isLuzAcesa ? 64 : 0; 
         } else {
-          // Maré alta: bóia normal/apagada (linha superior do sprite)
-          const frameIndex = Math.floor(Date.now() / 500) % 2;
-          srcX = frameIndex * 64;
+          // Maré Alta: Apagada e estável
+          srcX = 0;
           srcY = 0;
         }
 
