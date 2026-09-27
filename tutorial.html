@@ -293,20 +293,7 @@
       100% { opacity: 0; }
     }
 
-    /* ---------- Overlay de fade inicial e de transição ---------- */
-    #pageFadeIn {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: #0d1b2a;
-      pointer-events: none;
-      opacity: 1;
-      transition: opacity 0.8s ease;
-    }
-    #pageFadeIn.loaded {
-      opacity: 0;
-    }
-
+    /* ---------- Overlay de fade (transição fim do tutorial -> Dia 2) ---------- */
     #fadeOverlay {
       position: absolute;
       inset: 0;
@@ -322,9 +309,6 @@
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen min-h-[100dvh] text-white p-1 sm:p-3 overflow-hidden">
-
-  <!-- Fade-in inicial ao carregar a página -->
-  <div id="pageFadeIn"></div>
 
   <div class="w-full max-w-5xl max-h-[100dvh] bg-slate-900 border-2 sm:border-4 border-amber-600 rounded-lg p-1.5 sm:p-3 shadow-2xl flex flex-col gap-1.5 sm:gap-3 my-auto">
     
@@ -364,52 +348,52 @@
       </div>
 
       <!-- Document Modal / Panel (Usando a imagem assets/manifesto_carga.png como fundo) -->
-      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md max-h-[94%] doc-bg text-[#3b281a] p-3 sm:p-4 z-20 flex flex-col justify-between rounded-sm shadow-2xl overflow-hidden">
+      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md max-h-[94%] doc-bg text-[#3b281a] p-4 sm:p-6 z-20 flex flex-col justify-between rounded-sm shadow-2xl overflow-hidden">
         
         <!-- Cabeçalho Centralizado -->
-        <div class="border-b-2 border-[#543d2b]/40 pb-1 text-center">
-          <span class="pixel-font text-[7px] sm:text-[9px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
-          <h2 class="pixel-font text-[10px] sm:text-[13px] uppercase tracking-tight text-[#2b1b10] mt-0.5">MANIFESTO DE CARGA</h2>
+        <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
+          <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
+          <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
-        <!-- Corpo do Documento (Espaçamento e padding reduzidos para o manifesto não demorar a rolar / ser compacto) -->
-        <div class="my-auto space-y-1.5 sm:space-y-2 font-mono overflow-y-auto custom-scroll pr-1" style="max-height: 58vh;">
-          <div class="pixel-box p-1.5 sm:p-2 rounded-sm">
-            <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-0.5 mb-0.5">
-              <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
-              <span id="docName" class="text-[13px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
+        <!-- Corpo do Documento -->
+        <div class="my-auto space-y-2 sm:space-y-2.5 font-mono overflow-y-auto custom-scroll pr-1" style="max-height: 62vh;">
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
+            <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
+              <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-[#2b1b10]"></span>
             </div>
             <div class="flex justify-between items-baseline">
-              <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
-              <span id="docRoute" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10]"></span>
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
+              <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
             </div>
           </div>
 
-          <div class="pixel-box p-1.5 sm:p-2 rounded-sm flex flex-col">
-            <span class="text-[9px] sm:text-[11px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
-            <span id="docCargo" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
+            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
+            <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
-          <div class="grid grid-cols-2 gap-1.5">
-            <div class="pixel-box p-1.5 sm:p-2 rounded-sm flex flex-col justify-between">
-              <span class="text-[9px] sm:text-[11px] font-bold text-[#543d2b] uppercase">Porte</span>
-              <span id="docSize" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10] mt-0.5"></span>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
+              <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Porte</span>
+              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-1"></span>
             </div>
 
-            <div class="pixel-box p-1.5 sm:p-2 rounded-sm flex flex-col justify-between">
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <div class="flex justify-between items-center gap-1">
-                <span class="text-[9px] sm:text-[11px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
-                <span id="docToxicityText" class="text-[11px] sm:text-[13px] font-bold"></span>
+                <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
+                <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
               </div>
-              <div class="w-full h-2 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
+              <div class="w-full h-2.5 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
                 <div id="toxicityBar" class="h-full rounded-xs transition-all duration-300" style="width: 20%;"></div>
               </div>
             </div>
           </div>
 
-          <div class="pixel-box p-1.5 sm:p-2 rounded-sm flex flex-col">
-            <span class="text-[9px] sm:text-[11px] font-bold text-[#543d2b] uppercase">Risco Ambiental</span>
-            <span id="docRisco" class="text-[11px] sm:text-[13px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
+            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Risco Ambiental</span>
+            <span id="docRisco" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
           <div id="docGestorLine" class="doc-gestor-line hidden">
@@ -418,12 +402,12 @@
         </div>
 
         <!-- Botões de Ação -->
-        <div class="flex flex-col gap-1 pt-1.5 border-t-2 border-[#543d2b]/30">
+        <div class="flex flex-col gap-1 pt-2 border-t-2 border-[#543d2b]/30">
           <div class="flex gap-3">
-            <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-1.5 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
+            <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
               AUTORIZAR
             </button>
-            <button id="rejectBtn" class="flex-1 bg-rose-900 hover:bg-rose-800 text-white font-bold py-1.5 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
+            <button id="rejectBtn" class="flex-1 bg-rose-900 hover:bg-rose-800 text-white font-bold py-2 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
               RECUSAR
             </button>
           </div>
@@ -495,14 +479,6 @@
   </div>
 
   <script>
-    // Fade-in inicial ao carregar a página
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        const pageFade = document.getElementById('pageFadeIn');
-        if (pageFade) pageFade.classList.add('loaded');
-      }, 50);
-    });
-
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -514,17 +490,6 @@
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
-
-    // Modificação no botão final do tutorial para redirecionar para game.html com efeito de fade
-    nextDayBtn.addEventListener('click', () => {
-      if (currentDay === 1 && shipsEvaluated >= SHIP_TYPES.length) {
-        const fade = document.getElementById('fadeOverlay');
-        fade.classList.add('visible');
-        setTimeout(() => {
-          window.location.href = 'game.html';
-        }, 700);
-      }
-    });
 
     // Imagens do jogo
     const images = { 
@@ -563,8 +528,18 @@
       }
     }
 
+    // ---------------------------------------------------------------
+    // A régua de maré já faz parte da arte de fundo (assets/cenario.png),
+    // no canto inferior direito. Estas coordenadas mapeiam essa régua
+    // dentro do espaço de 800x450 do canvas, para desenharmos por cima
+    // dela o nível de água atual e para posicionar o realce do tutorial.
+    // ---------------------------------------------------------------
     const REGUA_RECT = { x: 730, y: 338, w: 44, h: 112 };
 
+    // Configuração dos tipos de navio
+    // (a ordem abaixo é a ordem fixa usada no Dia 1 / tutorial:
+    //  medicamentos -> alimentos -> equipamentos -> espécie invasora ->
+    //  pesca irregular -> materiais perigosos)
     const SHIP_TYPES = [
       {
         id: "medicamentos",
@@ -672,15 +647,20 @@
       }
     ];
 
+    // Variáveis de Estado
     let currentDay = 1;
     let shipsEvaluated = 0;
     let isHighTide = false;
     let gameState = 'APPROACHING';
 
+    // O Dia 1 é o dia-tutorial: todos os 6 tipos de navio aparecem, em
+    // ordem fixa, cada um com uma lição. A partir do Dia 2 o jogo volta
+    // ao funcionamento normal (4 navios aleatórios por dia).
     function shipsPerDay(day) {
       return day === 1 ? SHIP_TYPES.length : 4;
     }
 
+    // --------- Controle do tutorial guiado (apenas no 1º navio) ---------
     const gestorBox = document.getElementById('gestorBox');
     const gestorTextEl = document.getElementById('gestorText');
     const gestorHint = document.getElementById('gestorHint');
@@ -698,6 +678,7 @@
     const tutorialLabel = document.getElementById('tutorialLabel');
     const dayLabel = document.getElementById('dayLabel');
 
+    // Passos do diálogo guiado exibido apenas no primeiro navio (medicamentos)
     const GUIDED_STEPS = [
       { text: "Antes de decidir, observe o mar." },
       { text: "A maré muda as condições do porto. Navios maiores precisam de mais profundidade para entrar com segurança.", highlight: 'regua' },
@@ -785,6 +766,7 @@
     }
 
     gestorBox.addEventListener('click', function (e) {
+      // Clicar avança o texto (ou completa a digitação em curso)
       if (e.target === gestorBtn) return;
       const step = GUIDED_STEPS[guidedIndex];
       if (isTyping) {
@@ -792,7 +774,7 @@
         if (step.button) gestorBtnWrap.style.display = 'flex';
         return;
       }
-      if (step.button) return;
+      if (step.button) return; // espera clique no botão ENTENDI
       runGuidedStep(guidedIndex + 1);
     });
 
@@ -805,6 +787,504 @@
       onGuidedFinished = onFinished;
       runGuidedStep(0);
     }
+
+    // --------- Legenda educativa (antes de cada novo tipo de navio) ---------
+    // Duração padrão maior (era 4200ms) para dar mais tempo de leitura;
+    // um toque na legenda sempre permite adiantar, como a seta "→" dos
+    // botões CONTINUAR / INICIAR DIA 2.
+    function showLessonCaption(text, duration) {
+      lessonCaption.classList.remove('alert');
+      lessonCaption.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
+      lessonCaption.classList.add('visible');
+
+      clearTimeout(lessonCaption._hideTimer);
+      lessonCaption.onclick = null;
+
+      const hide = () => {
+        clearTimeout(lessonCaption._hideTimer);
+        lessonCaption.onclick = null;
+        lessonCaption.classList.remove('visible');
+      };
+
+      lessonCaption._hideTimer = setTimeout(hide, duration || 6800);
+      lessonCaption.onclick = hide;
+    }
+
+    // Variante em tom de alerta, usada para a "Narração" de aviso de
+    // navios de pesca irregular / materiais perigosos (fala do gestor,
+    // não do navio). Duração maior (era 3400ms) + toque para adiantar.
+    function showAlertCaption(text, onDone) {
+      lessonCaption.classList.add('alert');
+      lessonCaption.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
+      lessonCaption.classList.add('visible');
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        lessonCaption.onclick = null;
+        lessonCaption.classList.remove('visible');
+        setTimeout(() => {
+          lessonCaption.classList.remove('alert');
+          if (onDone) onDone();
+        }, 500);
+      }
+
+      const timer = setTimeout(finish, 5800);
+      lessonCaption.onclick = finish;
+    }
+
+    // --------- Balão de fala do navio ---------
+    // Duração maior (era 3400ms) + toque no balão para adiantar.
+    function showShipBubble(text, onDone) {
+      shipBubble.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
+      const bx = Math.min(currentShip.x + currentShip.width * 0.15, 620);
+      const by = Math.max(currentShip.y - 70, 20);
+      shipBubble.style.left = (bx / 800 * 100) + '%';
+      shipBubble.style.top = (by / 450 * 100) + '%';
+      shipBubble.style.display = 'block';
+      requestAnimationFrame(() => shipBubble.classList.add('visible'));
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        shipBubble.onclick = null;
+        shipBubble.classList.remove('visible');
+        setTimeout(() => {
+          shipBubble.style.display = 'none';
+          if (onDone) onDone();
+        }, 400);
+      }
+
+      const timer = setTimeout(finish, 5800);
+      shipBubble.onclick = finish;
+    }
+
+    function showDayStartBanner(text) {
+      dayStartBannerText.textContent = text;
+      dayStartBanner.style.display = 'flex';
+      dayStartBannerText.style.animation = 'none';
+      void dayStartBannerText.offsetWidth;
+      dayStartBannerText.style.animation = '';
+      setTimeout(() => { dayStartBanner.style.display = 'none'; }, 1800);
+    }
+
+    function updateHeaderForDay() {
+      if (currentDay === 1) {
+        tutorialLabel.classList.remove('hidden');
+        dayLabel.classList.add('hidden');
+      } else {
+        tutorialLabel.classList.add('hidden');
+        dayLabel.classList.remove('hidden');
+      }
+      document.getElementById('shipTotal').innerText = shipsPerDay(currentDay);
+      document.getElementById('footerHint').innerText = currentDay === 1
+        ? 'DICA: observe a maré e leia a documentação antes de decidir.'
+        : 'DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!';
+    }
+
+    // Estatísticas Detalhadas
+    let dayStats = {
+      total: 0,
+      correctAccepts: 0, 
+      correctRejects: 0, 
+      falseRejects: 0,   
+      falseAccepts: 0,   
+      groundedShips: 0
+    };
+
+    let currentShip = {
+      x: -160, y: 335, width: 336, height: 180, speed: 2, flipped: false, data: null
+    };
+
+    function updateTideDisplay() {
+      // Controle interno de maré
+    }
+
+    function generateRandomShip() {
+      if (currentDay === 1 && shipsEvaluated === 0) {
+        // O tutorial sempre começa com maré baixa, para a régua aparecer
+        // bem destacada logo no primeiro navio (etapa guiada).
+        isHighTide = false;
+      } else {
+        isHighTide = Math.random() < 0.5;
+      }
+      updateTideDisplay();
+
+      if (currentDay === 1) {
+        // Dia-tutorial: ordem fixa, um de cada tipo, para ensinar todas as categorias.
+        return { ...SHIP_TYPES[shipsEvaluated % SHIP_TYPES.length] };
+      }
+      const template = SHIP_TYPES[Math.floor(Math.random() * SHIP_TYPES.length)];
+      return { ...template };
+    }
+
+    function drawScenario() {
+      if (images.cenario.complete && images.cenario.naturalWidth > 0) {
+        ctx.drawImage(images.cenario, 0, 0, 800, 450);
+      } else {
+        ctx.fillStyle = "#1e3a8a"; ctx.fillRect(0, 0, 800, 250);
+        ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
+      }
+
+      if (images.personagem.complete && images.personagem.naturalWidth > 0) {
+        ctx.drawImage(images.personagem, 485, 80, 215, 125);
+      }
+    }
+
+    function drawSeaAndBuoy() {
+      const targetSeaY = isHighTide ? 315 : 370;
+      if (!canvas.seaY) canvas.seaY = targetSeaY;
+      canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
+      const seaY = canvas.seaY;
+
+      if (images.mar.complete && images.mar.naturalWidth > 0) {
+        ctx.drawImage(images.mar, 0, seaY, 800, 450 - seaY);
+      } else {
+        ctx.fillStyle = "rgba(14, 116, 144, 0.75)";
+        ctx.fillRect(0, seaY, 800, 450 - seaY);
+      }
+
+      if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
+        ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
+      }
+
+      if (images.boia.complete && images.boia.naturalWidth > 0) {
+        const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
+        let srcX = 0;
+        let srcY = 0;
+
+        if (!isHighTide) {
+          const isLuzAcesa = (Math.floor(Date.now() / 250) % 2) === 0;
+          srcX = 0;
+          srcY = isLuzAcesa ? 64 : 0; 
+        }
+
+        ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
+      }
+
+      drawShip();
+
+      drawRegua();
+    }
+
+    // Desenha, por cima da régua já pintada no cenário de fundo, uma
+    // marca de nível de água que sobe e desce junto com a maré, além do
+    // rótulo de texto (MARÉ ALTA / MARÉ BAIXA).
+    function drawRegua() {
+      const r = REGUA_RECT;
+      const fill = isHighTide ? 0.30 : 0.72; // fração da régua "submersa"
+      const waterY = r.y + r.h * (1 - fill);
+
+      ctx.save();
+      ctx.fillStyle = isHighTide ? "rgba(56, 189, 248, 0.55)" : "rgba(8, 47, 73, 0.55)";
+      ctx.fillRect(r.x, waterY, r.w, r.y + r.h - waterY);
+
+      ctx.strokeStyle = "rgba(255,255,255,0.85)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(r.x - 3, waterY);
+      ctx.lineTo(r.x + r.w + 3, waterY);
+      ctx.stroke();
+
+      ctx.font = "bold 12px 'VT323', monospace";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#02070b";
+      ctx.fillText(isHighTide ? "MARÉ ALTA" : "MARÉ BAIXA", r.x + r.w / 2 + 1, r.y - 7);
+      ctx.fillStyle = isHighTide ? "#facc15" : "#fca5a5";
+      ctx.fillText(isHighTide ? "MARÉ ALTA" : "MARÉ BAIXA", r.x + r.w / 2, r.y - 8);
+      ctx.restore();
+    }
+
+    function drawShip() {
+      if (!currentShip.data) return;
+      ctx.save();
+      currentShip.y = (canvas.seaY || 370) - 108;
+
+      const x = currentShip.x;
+      const y = currentShip.y;
+      const w = currentShip.width;
+      const h = currentShip.height;
+
+      if (currentShip.flipped) {
+        ctx.translate(x + w, y);
+        ctx.scale(-1, 1);
+        ctx.translate(-x, -y);
+      }
+
+      const shipImg = images[currentShip.data.sprite] || images.cargueiro;
+
+      if (shipImg && shipImg.complete && shipImg.naturalWidth > 0) {
+        ctx.drawImage(shipImg, x, y, w, h);
+      } else {
+        ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
+        ctx.fillRect(x, y + 20, w, 35);
+      }
+
+      ctx.restore();
+    }
+
+    function updateGame() {
+      document.getElementById('currentDay').innerText = currentDay;
+      document.getElementById('shipCount').innerText = Math.min(shipsEvaluated + 1, shipsPerDay(currentDay));
+
+      // Enquanto o realce está sobre o navio (tutorial guiado), acompanha a posição dele
+      if (spotNavio.style.display === 'block') {
+        showSpotlight('navio');
+      }
+
+      if (gameState === 'APPROACHING') {
+        currentShip.x += currentShip.speed;
+
+        if (currentShip.x >= 380) {
+          currentShip.x = 380;
+          gameState = 'ARRIVED';
+          handleShipArrival();
+        }
+      } else if (gameState === 'LEAVING_ACCEPT') {
+        currentShip.x += currentShip.speed * 1.5;
+        if (currentShip.x > 850) nextShip();
+      } else if (gameState === 'LEAVING_REJECT') {
+        currentShip.x -= currentShip.speed * 1.5;
+        if (currentShip.x < -150) nextShip();
+      }
+    }
+
+    // O primeiro navio do Dia 1 (medicamentos) recebe o tutorial guiado
+    // completo, com destaques na régua e no navio antes de abrir a
+    // documentação, e uma fala extra do GESTOR dentro do documento.
+    function isFirstGuidedShip() {
+      return currentDay === 1 && shipsEvaluated === 0;
+    }
+
+    function handleShipArrival() {
+      if (isFirstGuidedShip()) {
+        gameState = 'TUTORIAL_INTRO';
+        startGuidedTutorial(function () {
+          gameState = 'INSPECTING';
+          openInspectionPanel();
+        });
+      } else if (currentDay === 1) {
+        // Demais navios do dia-tutorial: uma fala aparece antes de o
+        // jogador abrir a documentação sozinho — vinda do navio (1ª
+        // pessoa) ou do gestor, como um alerta (para pesca irregular e
+        // materiais perigosos, que trazem uma "Narração" de aviso).
+        gameState = 'SHIP_TALK';
+        if (currentShip.data.voice === 'narrator') {
+          showAlertCaption(currentShip.data.shipLine, function () {
+            gameState = 'INSPECTING';
+            openInspectionPanel();
+          });
+        } else {
+          showShipBubble(currentShip.data.shipLine, function () {
+            gameState = 'INSPECTING';
+            openInspectionPanel();
+          });
+        }
+      } else {
+        gameState = 'INSPECTING';
+        openInspectionPanel();
+      }
+    }
+
+    function openInspectionPanel() {
+      const data = currentShip.data;
+      document.getElementById('docName').innerText = data.name;
+      document.getElementById('docRoute').innerText = data.route;
+      document.getElementById('docCargo').innerText = data.cargo;
+      document.getElementById('docSize').innerText = data.size;
+      document.getElementById('docRisco').innerText = data.riscoAmbiental;
+
+      const toxText = document.getElementById('docToxicityText');
+      const toxBar = document.getElementById('toxicityBar');
+      
+      toxText.innerText = data.toxicityText;
+
+      const percentage = Math.max((data.toxicityVal / 5) * 100, 8);
+      toxBar.style.width = `${percentage}%`;
+
+      if (data.toxicityVal === 0) {
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-emerald-800";
+        toxBar.className = "h-full rounded-full transition-all duration-300 bg-emerald-600";
+      } else if (data.toxicityVal <= 2) {
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-amber-800";
+        toxBar.className = "h-full rounded-full transition-all duration-300 bg-amber-500";
+      } else {
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-rose-900";
+        toxBar.className = "h-full rounded-full transition-all duration-300 bg-rose-600";
+      }
+
+      docPanel.classList.remove('hidden');
+
+      if (isFirstGuidedShip()) {
+        // Mostra a fala extra do gestor e bloqueia a decisão até ela terminar.
+        docGestorLine.classList.remove('hidden');
+        docGestorLineText.textContent = '';
+        acceptBtn.disabled = true;
+        rejectBtn.disabled = true;
+        actionHint.classList.remove('hidden');
+        let i = 0;
+        const full = DOC_INTRO_LINE;
+        (function typeDoc() {
+          if (i < full.length) {
+            docGestorLineText.textContent += full.charAt(i);
+            i++;
+            setTimeout(typeDoc, 26);
+          } else {
+            acceptBtn.disabled = false;
+            rejectBtn.disabled = false;
+            actionHint.classList.add('hidden');
+          }
+        })();
+      } else {
+        docGestorLine.classList.add('hidden');
+        acceptBtn.disabled = false;
+        rejectBtn.disabled = false;
+        actionHint.classList.add('hidden');
+      }
+    }
+
+    let showBannerOnNextShip = false;
+
+    acceptBtn.addEventListener('click', () => {
+      if (acceptBtn.disabled) return;
+      if (isFirstGuidedShip()) showBannerOnNextShip = true;
+      docPanel.classList.add('hidden');
+
+      // A decisão é sempre do jogador: aceitar sempre faz o navio seguir
+      // em frente, mesmo que seja um navio ruim (perigoso ou grande em
+      // maré baixa). Isso só é contabilizado como erro no relatório —
+      // o navio não é forçado a voltar/encalhar sozinho.
+      const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
+
+      dayStats.total++;
+      if (isBadShip) {
+        dayStats.falseAccepts++;
+        if (currentShip.data.isLarge && !isHighTide) dayStats.groundedShips++;
+      } else {
+        dayStats.correctAccepts++;
+      }
+      gameState = 'LEAVING_ACCEPT';
+    });
+
+    rejectBtn.addEventListener('click', () => {
+      if (rejectBtn.disabled) return;
+      if (isFirstGuidedShip()) showBannerOnNextShip = true;
+      docPanel.classList.add('hidden');
+      dayStats.total++;
+      
+      const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
+
+      if (isBadShip) {
+        dayStats.correctRejects++;
+      } else {
+        dayStats.falseRejects++;
+      }
+
+      currentShip.flipped = true;
+      gameState = 'LEAVING_REJECT';
+    });
+
+    function spawnShip() {
+      if (shipsEvaluated < shipsPerDay(currentDay)) {
+        currentShip.x = -160;
+        currentShip.flipped = false;
+        currentShip.data = generateRandomShip();
+        gameState = 'APPROACHING';
+
+        // Do 2º ao 6º navio do dia-tutorial: uma legenda educativa
+        // aparece enquanto a embarcação se aproxima.
+        if (currentDay === 1 && shipsEvaluated > 0) {
+          showLessonCaption(currentShip.data.lesson);
+        }
+      } else {
+        triggerEndOfDay();
+      }
+    }
+
+    function nextShip() {
+      shipsEvaluated++;
+      if (showBannerOnNextShip) {
+        showBannerOnNextShip = false;
+        showDayStartBanner('DIA 1 COMEÇOU');
+      }
+      spawnShip();
+    }
+
+    function triggerEndOfDay() {
+      gameState = 'DAY_END';
+      document.getElementById('reportTitle').innerText = currentDay === 1
+        ? 'TUTORIAL CONCLUÍDO'
+        : 'RELATÓRIO DE INSPEÇÃO';
+      nextDayBtn.innerHTML = currentDay === 1
+        ? 'INICIAR DIA 2 &rarr;'
+        : 'CONTINUAR &rarr;';
+      document.getElementById('readyLine').classList.toggle('hidden', currentDay !== 1);
+      document.getElementById('repTotal').innerText = dayStats.total;
+      document.getElementById('repCorrectAccept').innerText = dayStats.correctAccepts;
+      document.getElementById('repCorrectReject').innerText = dayStats.correctRejects;
+      
+      const totalErrors = dayStats.falseAccepts + dayStats.falseRejects;
+      document.getElementById('repErrors').innerText = totalErrors;
+
+      const impactBox = document.getElementById('reportImpact');
+
+      if (totalErrors === 0) {
+        impactBox.innerHTML = `<span class="text-emerald-800 font-bold">DESEMPENHO PERFEITO:</span> Todas as decisões foram corretas! O porto funcionou em segurança total.`;
+      } else if (totalErrors === 1) {
+        if (dayStats.falseRejects > 0) {
+          impactBox.innerHTML = `<span class="text-amber-800 font-bold">ATENÇÃO:</span> Bloqueou os perigos, mas recusou <span class="font-bold">${dayStats.falseRejects}</span> navio(s) regular(es) sem motivo!`;
+        } else {
+          impactBox.innerHTML = `<span class="text-rose-800 font-bold">ALERTA:</span> Deixou passar <span class="font-bold">${dayStats.falseAccepts}</span> embarcação com irregularidades ou risco de encalhe!`;
+        }
+      } else {
+        impactBox.innerHTML = `<span class="text-rose-900 font-bold">DESEMPENHO CRÍTICO:</span> Vários erros cometidos! (${dayStats.falseRejects} recusas indevidas e ${dayStats.falseAccepts} autorizações perigosas).`;
+      }
+
+      reportModal.classList.remove('hidden');
+    }
+
+    const fadeOverlay = document.getElementById('fadeOverlay');
+
+    function goToNextDay() {
+      currentDay++;
+      shipsEvaluated = 0;
+      dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
+      updateHeaderForDay();
+      spawnShip();
+    }
+
+    nextDayBtn.addEventListener('click', () => {
+      const isEndOfTutorial = currentDay === 1;
+      reportModal.classList.add('hidden');
+
+      if (isEndOfTutorial) {
+        // Fadeout suave e, ao final, redireciona para o jogo completo
+        fadeOverlay.classList.add('visible');
+        setTimeout(() => {
+          window.location.href = 'game.html';
+        }, 700);
+      } else {
+        goToNextDay();
+      }
+    });
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, 800, 450);
+      drawScenario();
+      drawSeaAndBuoy();
+      updateGame();
+      requestAnimationFrame(gameLoop);
+    }
+
+    loadAssets(() => {
+      updateHeaderForDay();
+      spawnShip();
+      gameLoop();
+    });
   </script>
 </body>
 </html>
