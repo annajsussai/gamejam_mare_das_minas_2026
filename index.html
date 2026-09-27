@@ -867,7 +867,13 @@
     }
 
     function generateRandomShip() {
-      isHighTide = Math.random() < 0.5;
+      if (currentDay === 1 && shipsEvaluated === 0) {
+        // O tutorial sempre começa com maré baixa, para a régua aparecer
+        // bem destacada logo no primeiro navio (etapa guiada).
+        isHighTide = false;
+      } else {
+        isHighTide = Math.random() < 0.5;
+      }
       updateTideDisplay();
 
       if (currentDay === 1) {
@@ -950,7 +956,7 @@
       ctx.textAlign = "center";
       ctx.fillStyle = "#02070b";
       ctx.fillText(isHighTide ? "MARÉ ALTA" : "MARÉ BAIXA", r.x + r.w / 2 + 1, r.y - 7);
-      ctx.fillStyle = isHighTide ? "#7dd3fc" : "#fca5a5";
+      ctx.fillStyle = isHighTide ? "#facc15" : "#fca5a5";
       ctx.fillText(isHighTide ? "MARÉ ALTA" : "MARÉ BAIXA", r.x + r.w / 2, r.y - 8);
       ctx.restore();
     }
