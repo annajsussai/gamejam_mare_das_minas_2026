@@ -30,22 +30,17 @@
       border-radius: 3px;
     }
 
-    /* Fundo do Manifesto de Carga */
+    /* Fundo do Documento / Manifesto de Carga */
     .doc-bg {
-      background-image: url('assets/manifesto_carga.png');
-      background-size: 100% 100%;
-      background-repeat: no-repeat;
-      background-position: center;
+      background-color: #e2d3a3;
+      border: 4px solid #543d2b;
+      box-shadow: inset 0 0 15px rgba(84, 61, 43, 0.3), 0 10px 25px rgba(0, 0, 0, 0.6);
       image-rendering: pixelated;
     }
 
-    /* Fundo do Relatório de Feedback */
-    .report-bg {
-      background-image: url('assets/fundo_feedback.png');
-      background-size: 100% 100%;
-      background-repeat: no-repeat;
-      background-position: center;
-      image-rendering: pixelated;
+    .pixel-box {
+      background-color: rgba(84, 61, 43, 0.08);
+      border: 2px solid rgba(84, 61, 43, 0.25);
     }
   </style>
 </head>
@@ -67,54 +62,56 @@
     <!-- GAME CANVAS CONTAINER -->
     <div class="relative w-full aspect-[16/9] bg-sky-900 rounded overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
       
-      <!-- Canvas -->
+      <!-- Canvas do Jogo -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel (Estilo Documento / Formulário Oficial) -->
-      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88%] sm:w-[75%] max-w-md aspect-square doc-bg text-amber-950 p-7 sm:p-10 shadow-2xl z-20 flex flex-col justify-between">
+      <!-- Document Modal / Panel (Estilo Papers, Please / Pixel Art) -->
+      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm">
         
-        <!-- Cabeçalho Centralizado -->
-        <div class="border-b-2 border-amber-950/40 pb-2 mt-1 text-center">
-          <span class="pixel-font text-[7px] sm:text-[9px] text-amber-900/80 uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
-          <h2 class="pixel-font text-[11px] sm:text-[13px] uppercase tracking-tight text-amber-950 mt-1">MANIFESTO DE CARGA</h2>
+        <!-- Cabeçalho Centralizado Sem 'OFICIAL' -->
+        <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
+          <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
+          <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
         <!-- Corpo do Documento / Ficha Técnica -->
-        <div class="my-auto space-y-2 sm:space-y-2.5 font-mono">
+        <div class="my-auto space-y-2.5 font-mono">
           
           <!-- Seção 1: Embarcação e Rota -->
-          <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15">
-            <div class="flex justify-between items-baseline border-b border-amber-950/10 pb-1 mb-1">
-              <span class="text-[11px] sm:text-[13px] font-bold text-amber-900/70 uppercase">Embarcação:</span>
-              <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-amber-950"></span>
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
+            <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
+              <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-[#2b1b10]"></span>
             </div>
             <div class="flex justify-between items-baseline">
-              <span class="text-[11px] sm:text-[13px] font-bold text-amber-900/70 uppercase">Rota Registada:</span>
-              <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-amber-950"></span>
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
+              <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
             </div>
           </div>
 
-          <!-- Seção 2: Carga Declarada -->
-          <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col">
-            <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Carga Declarada</span>
-            <span id="docCargo" class="text-[13px] sm:text-[15px] font-bold text-amber-950 mt-0.5 whitespace-normal leading-tight"></span>
+          <!-- Seção 2: Carga Declarada (Espaço Amplo sem Corte de Texto) -->
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
+            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
+            <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
-          <!-- Seção 3: Porte e Nível de Toxicidade -->
+          <!-- Seção 3: Grid de 2 Colunas (Porte à Esquerda | Toxicidade à Direita) -->
           <div class="grid grid-cols-2 gap-2">
-            <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
-              <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Porte</span>
-              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-amber-950 mt-0.5"></span>
+            <!-- Porte -->
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
+              <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Porte</span>
+              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-1"></span>
             </div>
 
-            <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
+            <!-- Toxicidade -->
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <div class="flex justify-between items-center gap-1">
-                <span class="text-[10px] sm:text-[11px] font-bold text-amber-900/70 uppercase">Toxicidade</span>
-                <span id="docToxicityText" class="text-[11px] sm:text-[13px] font-bold truncate"></span>
+                <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
+                <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
               </div>
-              <!-- Barra Visual de Risco -->
-              <div class="w-full h-2 bg-amber-950/20 rounded-full overflow-hidden flex p-0.5 border border-amber-950/20 mt-1">
-                <div id="toxicityBar" class="h-full rounded-full transition-all duration-300" style="width: 20%;"></div>
+              <!-- Barra Visual de Risco Sem Sobreposição -->
+              <div class="w-full h-2.5 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
+                <div id="toxicityBar" class="h-full rounded-xs transition-all duration-300" style="width: 20%;"></div>
               </div>
             </div>
           </div>
@@ -122,50 +119,43 @@
         </div>
 
         <!-- Botões de Ação Decisória -->
-        <div class="flex gap-3 mb-1 pt-2 border-t border-amber-950/20">
-          <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[8px] sm:text-[10px] transition flex items-center justify-center gap-1 shadow-md">
-            ✓ AUTORIZAR
+        <div class="flex gap-3 pt-2 border-t-2 border-[#543d2b]/30">
+          <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
+            AUTORIZAR
           </button>
-          <button id="rejectBtn" class="flex-1 bg-rose-800 hover:bg-rose-700 text-white font-bold py-2 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[8px] sm:text-[10px] transition flex items-center justify-center gap-1 shadow-md">
-            ✕ RECUSAR
+          <button id="rejectBtn" class="flex-1 bg-rose-900 hover:bg-rose-800 text-white font-bold py-2 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
+            RECUSAR
           </button>
         </div>
 
       </div>
 
-      <!-- Relatório de Fim de Dia (Textos ampliados e ajustados proporcionalmente) -->
-      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-30 flex flex-col justify-center items-center p-2 sm:p-4 text-center">
-        <div class="report-bg p-6 sm:p-10 rounded-lg w-[96%] sm:w-[88%] max-w-2xl aspect-[1.75/1] shadow-2xl flex flex-col justify-between text-slate-900">
-          
-          <!-- Cabeçalho do Relatório -->
-          <div class="border-b-2 border-purple-950/20 pb-2 sm:pb-3">
-            <h2 class="pixel-font text-purple-950 text-base sm:text-xl tracking-wider uppercase">RELATÓRIO DE INSPEÇÃO</h2>
-            <p class="pixel-font text-purple-900/80 text-[10px] sm:text-xs mt-1.5 uppercase">RESUMO DO DIA <span id="reportDay">1</span></p>
-          </div>
+      <!-- Relatório de Fim de Dia -->
+      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col justify-center items-center p-3 sm:p-6 text-center">
+        <div class="bg-slate-800 border-2 sm:border-4 border-amber-500 p-3 sm:p-6 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scroll shadow-2xl">
+          <h2 class="pixel-font text-yellow-400 text-sm sm:text-lg mb-1 sm:mb-2">RELATÓRIO DO DIA <span id="reportDay">1</span></h2>
+          <p class="text-slate-300 text-xs sm:text-sm mb-2">Resumo das Decisões do Porto</p>
 
-          <!-- Métricas dos Avaliados -->
-          <div class="grid grid-cols-3 gap-3 my-2 sm:my-3 text-center">
-            <div class="bg-purple-950/5 p-3 sm:p-4 rounded border border-purple-950/10">
-              <div class="pixel-font text-[9px] sm:text-[11px] font-bold text-slate-700 uppercase">AVALIADOS</div>
-              <div id="repTotal" class="pixel-font text-2xl sm:text-4xl text-slate-900 mt-2">0</div>
+          <div class="grid grid-cols-3 gap-1.5 sm:gap-2 my-2 sm:my-4 text-center">
+            <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
+              <div class="text-[10px] sm:text-xs text-slate-400">AVALIADOS</div>
+              <div id="repTotal" class="text-lg sm:text-2xl font-bold text-white">0</div>
             </div>
-            <div class="bg-emerald-950/5 p-3 sm:p-4 rounded border border-emerald-900/20">
-              <div class="pixel-font text-[9px] sm:text-[11px] font-bold text-emerald-800 uppercase">ACEITOS</div>
-              <div id="repAccepted" class="pixel-font text-2xl sm:text-4xl text-emerald-700 mt-2">0</div>
+            <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
+              <div class="text-[10px] sm:text-xs text-emerald-400">ACEITOS</div>
+              <div id="repAccepted" class="text-lg sm:text-2xl font-bold text-emerald-400">0</div>
             </div>
-            <div class="bg-rose-950/5 p-3 sm:p-4 rounded border border-rose-900/20">
-              <div class="pixel-font text-[9px] sm:text-[11px] font-bold text-rose-800 uppercase">RECUSADOS</div>
-              <div id="repRejected" class="pixel-font text-2xl sm:text-4xl text-rose-700 mt-2">0</div>
+            <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
+              <div class="text-[10px] sm:text-xs text-rose-400">RECUSADOS</div>
+              <div id="repRejected" class="text-lg sm:text-2xl font-bold text-rose-400">0</div>
             </div>
           </div>
 
-          <!-- Impactos Ambientais / Ocorrências -->
-          <div id="reportImpact" class="p-3 sm:p-4 rounded text-left text-sm sm:text-lg font-bold bg-purple-950/5 border border-purple-950/15 space-y-1"></div>
+          <div id="reportImpact" class="p-2 sm:p-3 my-2 rounded text-left text-xs sm:text-sm font-sans bg-slate-900 border border-slate-700 space-y-1"></div>
 
-          <!-- Ação / Botão Próximo Dia -->
-          <div class="pt-2 sm:pt-4 mb-2 flex justify-center">
-            <button id="nextDayBtn" class="pixel-font bg-purple-900 hover:bg-purple-800 text-white font-bold px-8 sm:px-12 py-3 sm:py-4 rounded-md border-b-4 border-purple-950 active:translate-y-0.5 text-xs sm:text-sm transition shadow-md">
-              CONTINUAR ➔
+          <div class="mt-3 sm:mt-4">
+            <button id="nextDayBtn" class="pixel-font bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 sm:px-6 py-2 sm:py-3 rounded border-b-2 sm:border-b-4 border-amber-700 text-xs sm:text-sm active:translate-y-1 transition">
+              CONTINUAR
             </button>
           </div>
         </div>
@@ -173,9 +163,9 @@
 
     </div>
 
-    <!-- Dica rodapé -->
+    <!-- Dica -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>💡 Avalie as condições da embarcação e valide as informações antes de autorizar.</span>
+      <span>Avalie a toxicidade e as especificações da embarcação antes de autorizar ou recusar.</span>
     </div>
 
   </div>
@@ -186,25 +176,22 @@
 
     ctx.imageSmoothingEnabled = false;
 
-    // UI Elements
+    // Elementos da Interface
     const docPanel = document.getElementById('docPanel');
     const acceptBtn = document.getElementById('acceptBtn');
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
 
-    // Assets
+    // Imagens do jogo
     const images = { 
       cenario: new Image(), 
       mar: new Image(), 
       marfrente: new Image(), 
       boia: new Image(), 
       personagem: new Image(),
-      manifestoCarga: new Image(),
-      navioPadrao: new Image(),
-      fundoFeedback: new Image()
+      navioPadrao: new Image()
     };
-    let assetsLoaded = false;
 
     function loadAssets(callback) {
       const sources = { 
@@ -213,15 +200,13 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        manifestoCarga: 'assets/manifesto_carga.png',
-        navioPadrao: 'assets/navio_padrao.png',
-        fundoFeedback: 'assets/fundo_feedback.png'
+        navioPadrao: 'assets/navio_padrao.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
         images[k] = new Image();
         images[k].src = sources[k];
-        images[k].onload = images[k].onerror = () => { if (++loaded === total) { assetsLoaded = true; callback(); } };
+        images[k].onload = images[k].onerror = () => { if (++loaded === total) callback(); };
       }
     }
 
@@ -232,7 +217,7 @@
         route: "Roterdã ➔ Local",
         cargo: "Insumos Hospitalares",
         toxicityVal: 0,
-        toxicityLabel: "Nulo",
+        toxicityText: "Nulo",
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false
@@ -242,7 +227,7 @@
         route: "Santos ➔ Local",
         cargo: "Grãos / Mantimentos",
         toxicityVal: 0,
-        toxicityLabel: "Nulo",
+        toxicityText: "Nulo",
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true
@@ -252,7 +237,7 @@
         route: "Vitória ➔ Local",
         cargo: "Maquinário Pesado",
         toxicityVal: 1,
-        toxicityLabel: "Baixo",
+        toxicityText: "Baixo",
         isHazard: false,
         size: "Médio (7m)",
         isLarge: false
@@ -262,7 +247,7 @@
         route: "Salvador ➔ Recife",
         cargo: "Água de Lastro",
         toxicityVal: 3,
-        toxicityLabel: "Médio",
+        toxicityText: "Médio",
         isHazard: true,
         size: "Médio (6m)",
         isLarge: false
@@ -272,7 +257,7 @@
         route: "Roterdã ➔ Local",
         cargo: "Pescado Irregular",
         toxicityVal: 2,
-        toxicityLabel: "Baixo",
+        toxicityText: "Baixo",
         isHazard: true,
         size: "Pequeno (4m)",
         isLarge: false
@@ -282,7 +267,7 @@
         route: "Internacional ➔ Local",
         cargo: "Resíduos Industriais",
         toxicityVal: 5,
-        toxicityLabel: "Crítico",
+        toxicityText: "Crítico",
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true
@@ -303,6 +288,9 @@
     };
 
     function generateRandomShip() {
+      if (shipsEvaluated === 0 && currentDay === 1) {
+        return { ...SHIP_TYPES[0] };
+      }
       const template = SHIP_TYPES[Math.floor(Math.random() * SHIP_TYPES.length)];
       isHighTide = Math.random() < 0.5;
 
@@ -407,7 +395,7 @@
       dayStats.groundedShips++;
       dayStats.total++;
       setTimeout(() => {
-        alert(`🚨 ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" ENCALHOU ao tentar entrar pois a maré estava BAIXA!`);
+        alert(`ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" ENCALHOU no canal devido à maré baixa!`);
         gameState = 'LEAVING_REJECT';
         currentShip.flipped = true;
       }, 300);
@@ -420,13 +408,12 @@
       document.getElementById('docCargo').innerText = data.cargo;
       document.getElementById('docSize').innerText = data.size;
 
-      // Exibição de Toxicidade
       const toxText = document.getElementById('docToxicityText');
       const toxBar = document.getElementById('toxicityBar');
       
-      toxText.innerText = data.toxicityLabel;
+      toxText.innerText = data.toxicityText;
 
-      const percentage = Math.max((data.toxicityVal / 5) * 100, 5);
+      const percentage = Math.max((data.toxicityVal / 5) * 100, 8);
       toxBar.style.width = `${percentage}%`;
 
       if (data.toxicityVal === 0) {
@@ -492,13 +479,13 @@
       impactBox.innerHTML = "";
 
       if (dayStats.hazardsAccepted > 0) {
-        impactBox.innerHTML += `<p class="text-rose-800">⚠️ ALERTA: ${dayStats.hazardsAccepted} embarcação(ões) de alto risco autorizada(s)!</p>`;
+        impactBox.innerHTML += `<p class="text-rose-800">ALERTA: ${dayStats.hazardsAccepted} embarcação(ões) de alto risco autorizada(s)!</p>`;
       } else {
-        impactBox.innerHTML += `<p class="text-emerald-800">🌱 EXCELENTE: O ecossistema marinho permaneceu protegido hoje.</p>`;
+        impactBox.innerHTML += `<p class="text-emerald-800">EXCELENTE: O ecossistema marinho permaneceu protegido hoje.</p>`;
       }
 
       if (dayStats.groundedShips > 0) {
-        impactBox.innerHTML += `<p class="text-amber-800">⚓ INCIDENTES: ${dayStats.groundedShips} navio(s) encalharam por calado/maré.</p>`;
+        impactBox.innerHTML += `<p class="text-amber-800">INCIDENTES: ${dayStats.groundedShips} navio(s) encalharam por causa da maré.</p>`;
       }
 
       reportModal.classList.remove('hidden');
@@ -506,31 +493,25 @@
 
     nextDayBtn.addEventListener('click', () => {
       reportModal.classList.add('hidden');
-      if (currentDay < 3) {
-        currentDay++;
-      } else {
-        alert("🎉 Turno de 3 dias encerrado com sucesso!");
-        currentDay = 1;
-      }
+      currentDay++;
       shipsEvaluated = 0;
       dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
       spawnShip();
     });
 
+    // Loop do jogo
     function gameLoop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, 800, 450);
       drawScenario();
       drawSeaAndBuoy();
       updateGame();
       requestAnimationFrame(gameLoop);
     }
 
-    window.onload = () => {
-      loadAssets(() => {
-        spawnShip();
-        gameLoop();
-      });
-    };
+    loadAssets(() => {
+      spawnShip();
+      gameLoop();
+    });
   </script>
 </body>
 </html>
