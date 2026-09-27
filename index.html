@@ -232,8 +232,8 @@
         mar: 'assets/mar.png', 
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
-        personagem: 'assets/personagem_3.png', // Atualizado para usar o sprite correto
-        navioPadrao: 'assets/navio_padrao.png',
+        personagem: 'assets/personagem.png',
+        navioPadrao: 'assets/navio.png',
         cargueiro: 'assets/cargueiro.png',
         pesqueiroIrregular: 'assets/pesqueiro_irregular.png'
       };
@@ -359,6 +359,7 @@
     }
 
     function drawScenario() {
+      // 1. Desenha o fundo do cenário
       if (images.cenario.complete && images.cenario.naturalWidth > 0) {
         ctx.drawImage(images.cenario, 0, 0, 800, 450);
       } else {
@@ -366,25 +367,23 @@
         ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
       }
 
-      // Desenho do sprite do personagem com animação baseada no JSON
-      if (images.personagem.complete && images.personagem.naturalWidth > 0) {
-        const frameWidth = 120;
+      // 2. Desenha e anima o personagem dentro da janela da guarita
+      const pImg = images.personagem;
+      if (pImg && pImg.complete && pImg.naturalWidth > 0) {
+        const frameWidth = 120; 
         const frameHeight = 84;
-        const totalFrames = 11; // 11 frames mapeados no seu JSON
+        const totalFrames = 11;
         
-        // Alterna o frame a cada 150 milissegundos
         const currentFrameIndex = Math.floor(Date.now() / 150) % totalFrames;
+        const sheetColumns = 3; 
         
-        // Calcula a posição X e Y na folha de sprites com base no tamanho de cada célula
-        const sheetColumns = 3; // 3 colunas na imagem personagem_3.png
         const sx = (currentFrameIndex % sheetColumns) * frameWidth;
         const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
 
-        // Desenha o frame atual recortado, centralizado perfeitamente na janela da guarita
         ctx.drawImage(
-          images.personagem, 
+          pImg, 
           sx, sy, frameWidth, frameHeight, 
-          515, 78, 150, 105
+          510, 75, 170, 110
         );
       }
     }
