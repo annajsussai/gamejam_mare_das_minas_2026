@@ -65,6 +65,7 @@
       <!-- Canvas do Jogo -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
+      <!-- Document Modal / Panel (Estilo Papers, Please / Pixel Art) -->
       <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm">
         
         <!-- Cabeçalho Centralizado Sem 'OFICIAL' -->
@@ -83,18 +84,18 @@
               <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-[#2b1b10]"></span>
             </div>
             <div class="flex justify-between items-baseline">
-              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registrada:</span>
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
               <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
             </div>
           </div>
 
-          <!-- Seção 2: Carga Declarada -->
+          <!-- Seção 2: Carga Declarada (Espaço Amplo sem Corte de Texto) -->
           <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
             <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
             <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
-          <!-- Seção 3: Grid de 2 Colunas -->
+          <!-- Seção 3: Grid de 2 Colunas (Porte à Esquerda | Toxicidade à Direita) -->
           <div class="grid grid-cols-2 gap-2">
             <!-- Porte -->
             <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
@@ -108,6 +109,7 @@
                 <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
                 <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
               </div>
+              <!-- Barra Visual de Risco Sem Sobreposição -->
               <div class="w-full h-2.5 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
                 <div id="toxicityBar" class="h-full rounded-xs transition-all duration-300" style="width: 20%;"></div>
               </div>
@@ -128,6 +130,7 @@
 
       </div>
 
+      <!-- Relatório de Fim de Dia -->
       <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col justify-center items-center p-3 sm:p-6 text-center">
         <div class="bg-slate-800 border-2 sm:border-4 border-amber-500 p-3 sm:p-6 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scroll shadow-2xl">
           <h2 class="pixel-font text-yellow-400 text-sm sm:text-lg mb-1 sm:mb-2">RELATÓRIO DO DIA <span id="reportDay">1</span></h2>
@@ -162,7 +165,7 @@
 
     <!-- Dica -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>Avalie a toxicidade e as especificações da embarcação antes de autorizar ou recusar.</span>
+      <span>DICA: Avalie a toxicidade e as especificações da embarcação antes de autorizar ou recusar.</span>
     </div>
 
   </div>
@@ -211,7 +214,7 @@
     const SHIP_TYPES = [
       {
         name: "MV Esperança",
-        route: "Roterdã -> Local",
+        route: "Roterdã ➔ Local",
         cargo: "Insumos Hospitalares",
         toxicityVal: 0,
         toxicityText: "Nulo",
@@ -221,7 +224,7 @@
       },
       {
         name: "Grão de Ouro",
-        route: "Santos -> Local",
+        route: "Santos ➔ Local",
         cargo: "Grãos / Mantimentos",
         toxicityVal: 0,
         toxicityText: "Nulo",
@@ -231,7 +234,7 @@
       },
       {
         name: "Gigante dos Mares",
-        route: "Vitória -> Local",
+        route: "Vitória ➔ Local",
         cargo: "Maquinário Pesado",
         toxicityVal: 1,
         toxicityText: "Baixo",
@@ -241,7 +244,7 @@
       },
       {
         name: "Tritão das Marés",
-        route: "Salvador -> Recife",
+        route: "Salvador ➔ Recife",
         cargo: "Água de Lastro",
         toxicityVal: 3,
         toxicityText: "Médio",
@@ -251,7 +254,7 @@
       },
       {
         name: "Mar Furtivo",
-        route: "Roterdã -> Local",
+        route: "Roterdã ➔ Local",
         cargo: "Pescado Irregular",
         toxicityVal: 2,
         toxicityText: "Baixo",
@@ -261,7 +264,7 @@
       },
       {
         name: "Risco Químico",
-        route: "Internacional -> Local",
+        route: "Internacional ➔ Local",
         cargo: "Resíduos Industriais",
         toxicityVal: 5,
         toxicityText: "Crítico",
@@ -392,7 +395,6 @@
       dayStats.groundedShips++;
       dayStats.total++;
       setTimeout(() => {
-        // Sem emojis na mensagem
         alert(`ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" ENCALHOU no canal devido à maré baixa!`);
         gameState = 'LEAVING_REJECT';
         currentShip.flipped = true;
@@ -476,17 +478,16 @@
       const impactBox = document.getElementById('reportImpact');
       impactBox.innerHTML = "";
 
-      // Dificuldade e feedback ajustados para cobrir o caso de 0 aceitos sem emojis
       if (dayStats.hazardsAccepted > 0) {
-        impactBox.innerHTML += `<p class="text-rose-400 font-bold">ALERTA: ${dayStats.hazardsAccepted} embarcação(ões) de alto risco autorizada(s)!</p>`;
+        impactBox.innerHTML += `<p class="text-rose-400">ALERTA: ${dayStats.hazardsAccepted} embarcação(ões) de alto risco autorizada(s)!</p>`;
       } else if (dayStats.accepted === 0) {
-        impactBox.innerHTML += `<p class="text-amber-400 font-bold">ATENÇÃO: Nenhuma embarcação foi autorizada hoje. O tráfego portuário ficou paralisado.</p>`;
+        impactBox.innerHTML += `<p class="text-amber-400">ATENÇÃO: Nenhum navio foi autorizado a docar hoje.</p>`;
       } else {
-        impactBox.innerHTML += `<p class="text-emerald-400 font-bold">EXCELENTE: O ecossistema marinho permaneceu protegido hoje.</p>`;
+        impactBox.innerHTML += `<p class="text-emerald-400">EXCELENTE: O ecossistema marinho permaneceu protegido hoje.</p>`;
       }
 
       if (dayStats.groundedShips > 0) {
-        impactBox.innerHTML += `<p class="text-amber-400 mt-1">INCIDENTES: ${dayStats.groundedShips} navio(s) encalharam por causa da maré.</p>`;
+        impactBox.innerHTML += `<p class="text-amber-400">INCIDENTES: ${dayStats.groundedShips} navio(s) encalharam por causa da maré.</p>`;
       }
 
       reportModal.classList.remove('hidden');
@@ -500,6 +501,7 @@
       spawnShip();
     });
 
+    // Loop do jogo
     function gameLoop() {
       ctx.clearRect(0, 0, 800, 450);
       drawScenario();
