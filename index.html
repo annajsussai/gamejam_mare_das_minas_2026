@@ -29,6 +29,15 @@
       background: #d97706;
       border-radius: 3px;
     }
+
+    /* Fundo personalizado para o Manifesto de Carga */
+    .doc-bg {
+      background-image: url('assets/fundo_feedback.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      image-rendering: pixelated;
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen min-h-[100dvh] text-white p-1 sm:p-3 overflow-hidden">
@@ -52,42 +61,42 @@
       <!-- Canvas -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel Limpo & Compacto -->
-      <div id="docPanel" class="hidden absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-sm bg-amber-50 border-2 sm:border-4 border-amber-900 text-slate-900 p-3 sm:p-4 rounded-lg shadow-2xl z-20">
-        <div class="border-b-2 border-amber-800/30 pb-2 mb-3 flex justify-between items-center">
-          <h2 class="pixel-font text-[10px] sm:text-xs text-amber-900 uppercase">MANIFESTO DE CARGA</h2>
-          <span class="bg-amber-200 text-amber-900 text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-bold border border-amber-400">OFICIAL</span>
+      <!-- Document Modal / Panel Com Imagem de Fundo -->
+      <div id="docPanel" class="hidden absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-sm doc-bg text-slate-900 p-5 sm:p-6 shadow-2xl z-20">
+        <div class="border-b-2 border-purple-900/30 pb-2 mb-3 flex justify-between items-center">
+          <h2 class="pixel-font text-[10px] sm:text-xs text-purple-950 uppercase">MANIFESTO DE CARGA</h2>
+          <span class="bg-purple-200 text-purple-950 text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-bold border border-purple-400">OFICIAL</span>
         </div>
 
         <div class="space-y-1.5 text-base sm:text-lg font-sans">
-          <div class="flex justify-between border-b border-amber-900/10 pb-1">
-            <span class="text-amber-950 font-semibold">NOME:</span>
+          <div class="flex justify-between border-b border-purple-900/10 pb-1">
+            <span class="text-purple-950 font-semibold">NOME:</span>
             <span id="docName" class="font-bold text-blue-900"></span>
           </div>
-          <div class="flex justify-between border-b border-amber-900/10 pb-1">
-            <span class="text-amber-950 font-semibold">ROTA:</span>
+          <div class="flex justify-between border-b border-purple-900/10 pb-1">
+            <span class="text-purple-950 font-semibold">ROTA:</span>
             <span id="docRoute" class="text-slate-800"></span>
           </div>
-          <div class="flex justify-between border-b border-amber-900/10 pb-1">
-            <span class="text-amber-950 font-semibold">CARGA:</span>
+          <div class="flex justify-between border-b border-purple-900/10 pb-1">
+            <span class="text-purple-950 font-semibold">CARGA:</span>
             <span id="docCargo" class="font-medium text-slate-900"></span>
           </div>
-          <div class="flex justify-between border-b border-amber-900/10 pb-1">
-            <span class="text-amber-950 font-semibold">TOXICIDADE:</span>
+          <div class="flex justify-between border-b border-purple-900/10 pb-1">
+            <span class="text-purple-950 font-semibold">TOXICIDADE:</span>
             <span id="docToxicity" class="font-bold"></span>
           </div>
           <div class="flex justify-between pb-1">
-            <span class="text-amber-950 font-semibold">CALADO:</span>
-            <span id="docSize" class="font-bold text-amber-900"></span>
+            <span class="text-purple-950 font-semibold">CALADO:</span>
+            <span id="docSize" class="font-bold text-purple-900"></span>
           </div>
         </div>
 
         <!-- Botões de Ação -->
-        <div class="mt-4 flex gap-2 font-mono">
-          <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 px-2 rounded border-b-2 border-emerald-800 active:translate-y-0.5 text-xs sm:text-sm transition flex items-center justify-center gap-1">
+        <div class="mt-4 flex gap-2 font-mono pr-6">
+          <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 px-2 rounded border-b-2 border-emerald-800 active:translate-y-0.5 text-xs sm:text-sm transition flex items-center justify-center gap-1 shadow-md">
             ✓ ACEITAR
           </button>
-          <button id="rejectBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-1.5 px-2 rounded border-b-2 border-rose-800 active:translate-y-0.5 text-xs sm:text-sm transition flex items-center justify-center gap-1">
+          <button id="rejectBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-1.5 px-2 rounded border-b-2 border-rose-800 active:translate-y-0.5 text-xs sm:text-sm transition flex items-center justify-center gap-1 shadow-md">
             ✕ RECUSAR
           </button>
         </div>
@@ -147,7 +156,14 @@
     const nextDayBtn = document.getElementById('nextDayBtn');
 
     // Assets
-    const images = { cenario: new Image(), mar: new Image(), marfrente: new Image(), boia: new Image(), personagem: new Image() };
+    const images = { 
+      cenario: new Image(), 
+      mar: new Image(), 
+      marfrente: new Image(), 
+      boia: new Image(), 
+      personagem: new Image(),
+      fundoFeedback: new Image()
+    };
     let assetsLoaded = false;
 
     function loadAssets(callback) {
@@ -156,7 +172,8 @@
         mar: 'assets/mar.png', 
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
-        personagem: 'assets/personagem.png'
+        personagem: 'assets/personagem.png',
+        fundoFeedback: 'assets/fundo_feedback.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
