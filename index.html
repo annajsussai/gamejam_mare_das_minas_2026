@@ -30,9 +30,18 @@
       border-radius: 3px;
     }
 
-    /* Fundo do Manifesto de Carga com bordas internas ajustadas */
+    /* Fundo do Manifesto de Carga */
     .doc-bg {
       background-image: url('assets/manifesto_carga.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      image-rendering: pixelated;
+    }
+
+    /* Fundo do Relatório de Feedback */
+    .report-bg {
+      background-image: url('assets/fundo_feedback.png');
       background-size: 100% 100%;
       background-repeat: no-repeat;
       background-position: center;
@@ -85,13 +94,13 @@
             </div>
           </div>
 
-          <!-- Seção 2: Carga Declarada (Largura Total para não cortar o texto) -->
+          <!-- Seção 2: Carga Declarada -->
           <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col">
             <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Carga Declarada</span>
             <span id="docCargo" class="text-[13px] sm:text-[15px] font-bold text-amber-950 mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
-          <!-- Seção 3: Porte e Nível de Toxicidade lado a lado na linha de baixo -->
+          <!-- Seção 3: Porte e Nível de Toxicidade -->
           <div class="grid grid-cols-2 gap-2">
             <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
               <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Porte</span>
@@ -99,9 +108,9 @@
             </div>
 
             <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
-              <div class="flex justify-between items-center">
+              <div class="flex justify-between items-center gap-1">
                 <span class="text-[10px] sm:text-[11px] font-bold text-amber-900/70 uppercase">Toxicidade</span>
-                <span id="docToxicityText" class="text-[11px] sm:text-[13px] font-bold"></span>
+                <span id="docToxicityText" class="text-[11px] sm:text-[13px] font-bold truncate"></span>
               </div>
               <!-- Barra Visual de Risco -->
               <div class="w-full h-2 bg-amber-950/20 rounded-full overflow-hidden flex p-0.5 border border-amber-950/20 mt-1">
@@ -124,32 +133,39 @@
 
       </div>
 
-      <!-- Relatório de Fim de Dia -->
-      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col justify-center items-center p-3 sm:p-6 text-center">
-        <div class="bg-slate-800 border-2 sm:border-4 border-amber-500 p-3 sm:p-6 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scroll shadow-2xl">
-          <h2 class="pixel-font text-yellow-400 text-sm sm:text-lg mb-1 sm:mb-2">RELATÓRIO DO DIA <span id="reportDay">1</span></h2>
-          <p class="text-slate-300 text-xs sm:text-sm mb-2">Resumo das Decisões do Porto</p>
+      <!-- Relatório de Fim de Dia (Com fundo personalizado 'fundo_feedback.png') -->
+      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-30 flex flex-col justify-center items-center p-3 sm:p-6 text-center">
+        <div class="report-bg p-6 sm:p-10 rounded-lg w-[92%] sm:w-[80%] max-w-lg aspect-[1.8/1] shadow-2xl flex flex-col justify-between text-slate-900">
+          
+          <!-- Cabeçalho do Relatório -->
+          <div class="border-b-2 border-purple-950/20 pb-2">
+            <h2 class="pixel-font text-purple-950 text-xs sm:text-sm tracking-wider uppercase">RELATÓRIO DE INSPEÇÃO</h2>
+            <p class="text-purple-900/80 text-xs sm:text-sm font-bold mt-0.5">RESUMO DO DIA <span id="reportDay">1</span></p>
+          </div>
 
-          <div class="grid grid-cols-3 gap-1.5 sm:gap-2 my-2 sm:my-4 text-center">
-            <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
-              <div class="text-[10px] sm:text-xs text-slate-400">AVALIADOS</div>
-              <div id="repTotal" class="text-lg sm:text-2xl font-bold text-white">0</div>
+          <!-- Métricas dos Avaliados -->
+          <div class="grid grid-cols-3 gap-2 my-2 text-center">
+            <div class="bg-purple-950/5 p-2 rounded border border-purple-950/10">
+              <div class="text-[10px] sm:text-xs font-bold text-slate-600">AVALIADOS</div>
+              <div id="repTotal" class="text-base sm:text-xl font-bold text-slate-900">0</div>
             </div>
-            <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
-              <div class="text-[10px] sm:text-xs text-emerald-400">ACEITOS</div>
-              <div id="repAccepted" class="text-lg sm:text-2xl font-bold text-emerald-400">0</div>
+            <div class="bg-emerald-950/5 p-2 rounded border border-emerald-900/20">
+              <div class="text-[10px] sm:text-xs font-bold text-emerald-800">ACEITOS</div>
+              <div id="repAccepted" class="text-base sm:text-xl font-bold text-emerald-700">0</div>
             </div>
-            <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
-              <div class="text-[10px] sm:text-xs text-rose-400">RECUSADOS</div>
-              <div id="repRejected" class="text-lg sm:text-2xl font-bold text-rose-400">0</div>
+            <div class="bg-rose-950/5 p-2 rounded border border-rose-900/20">
+              <div class="text-[10px] sm:text-xs font-bold text-rose-800">RECUSADOS</div>
+              <div id="repRejected" class="text-base sm:text-xl font-bold text-rose-700">0</div>
             </div>
           </div>
 
-          <div id="reportImpact" class="p-2 sm:p-3 my-2 rounded text-left text-xs sm:text-sm font-sans bg-slate-900 border border-slate-700 space-y-1"></div>
+          <!-- Impactos Ambientais / Ocorrências -->
+          <div id="reportImpact" class="p-2.5 rounded text-left text-xs sm:text-sm font-bold bg-purple-950/5 border border-purple-950/15 space-y-1"></div>
 
-          <div class="mt-3 sm:mt-4">
-            <button id="nextDayBtn" class="pixel-font bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 sm:px-6 py-2 sm:py-3 rounded border-b-2 sm:border-b-4 border-amber-700 text-xs sm:text-sm active:translate-y-1 transition">
-              CONTINUAR
+          <!-- Ação / Botão Próximo Dia -->
+          <div class="pt-1 flex justify-center">
+            <button id="nextDayBtn" class="pixel-font bg-purple-900 hover:bg-purple-800 text-white font-bold px-5 sm:px-8 py-2 rounded-md border-b-4 border-purple-950 active:translate-y-0.5 text-[9px] sm:text-[11px] transition shadow-md">
+              CONTINUAR ➔
             </button>
           </div>
         </div>
@@ -157,7 +173,7 @@
 
     </div>
 
-    <!-- Dica -->
+    <!-- Dica rodapé -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
       <span>💡 Avalie as condições da embarcação e valide as informações antes de autorizar.</span>
     </div>
@@ -185,7 +201,8 @@
       boia: new Image(), 
       personagem: new Image(),
       manifestoCarga: new Image(),
-      navioPadrao: new Image()
+      navioPadrao: new Image(),
+      fundoFeedback: new Image()
     };
     let assetsLoaded = false;
 
@@ -197,7 +214,8 @@
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
         manifestoCarga: 'assets/manifesto_carga.png',
-        navioPadrao: 'assets/navio_padrao.png'
+        navioPadrao: 'assets/navio_padrao.png',
+        fundoFeedback: 'assets/fundo_feedback.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
@@ -207,14 +225,14 @@
       }
     }
 
-    // Configuração dos navios
+    // Configuração dos navios com Risco / Toxicidade simplificados
     const SHIP_TYPES = [
       {
         name: "MV Esperança",
         route: "Roterdã ➔ Local",
         cargo: "Insumos Hospitalares",
         toxicityVal: 0,
-        toxicityText: "0/5 (Nulo)",
+        toxicityLabel: "Nulo",
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false
@@ -224,7 +242,7 @@
         route: "Santos ➔ Local",
         cargo: "Grãos / Mantimentos",
         toxicityVal: 0,
-        toxicityText: "0/5 (Nulo)",
+        toxicityLabel: "Nulo",
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true
@@ -234,7 +252,7 @@
         route: "Vitória ➔ Local",
         cargo: "Maquinário Pesado",
         toxicityVal: 1,
-        toxicityText: "1/5 (Baixo)",
+        toxicityLabel: "Baixo",
         isHazard: false,
         size: "Médio (7m)",
         isLarge: false
@@ -244,7 +262,7 @@
         route: "Salvador ➔ Recife",
         cargo: "Água de Lastro",
         toxicityVal: 3,
-        toxicityText: "3/5 (Bio-Risco)",
+        toxicityLabel: "Médio",
         isHazard: true,
         size: "Médio (6m)",
         isLarge: false
@@ -254,7 +272,7 @@
         route: "Roterdã ➔ Local",
         cargo: "Pescado Irregular",
         toxicityVal: 2,
-        toxicityText: "2/5 (Impacto Fauna)",
+        toxicityLabel: "Baixo",
         isHazard: true,
         size: "Pequeno (4m)",
         isLarge: false
@@ -264,7 +282,7 @@
         route: "Internacional ➔ Local",
         cargo: "Resíduos Industriais",
         toxicityVal: 5,
-        toxicityText: "5/5 (Crítico)",
+        toxicityLabel: "Crítico",
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true
@@ -402,11 +420,11 @@
       document.getElementById('docCargo').innerText = data.cargo;
       document.getElementById('docSize').innerText = data.size;
 
-      // Atualização Dinâmica da Barra de Toxicidade
+      // Exibição simplificada de Toxicidade
       const toxText = document.getElementById('docToxicityText');
       const toxBar = document.getElementById('toxicityBar');
       
-      toxText.innerText = data.toxicityText;
+      toxText.innerText = data.toxicityLabel;
 
       const percentage = Math.max((data.toxicityVal / 5) * 100, 5);
       toxBar.style.width = `${percentage}%`;
@@ -474,13 +492,13 @@
       impactBox.innerHTML = "";
 
       if (dayStats.hazardsAccepted > 0) {
-        impactBox.innerHTML += `<p class="text-rose-400">⚠️ ALERTA AMBIENTAL: ${dayStats.hazardsAccepted} embarcação(ões) nociva(s) foram autorizada(s)!</p>`;
+        impactBox.innerHTML += `<p class="text-rose-800">⚠️ ALERTA: ${dayStats.hazardsAccepted} embarcação(ões) de alto risco autorizada(s)!</p>`;
       } else {
-        impactBox.innerHTML += `<p class="text-emerald-400">🌱 EXCELENTE: O ecossistema marinho permaneceu seguro hoje.</p>`;
+        impactBox.innerHTML += `<p class="text-emerald-800">🌱 EXCELENTE: O ecossistema marinho permaneceu protegido hoje.</p>`;
       }
 
       if (dayStats.groundedShips > 0) {
-        impactBox.innerHTML += `<p class="text-amber-400">⚓ INCIDENTES: ${dayStats.groundedShips} navio(s) encalharam no canal.</p>`;
+        impactBox.innerHTML += `<p class="text-amber-800">⚓ INCIDENTES: ${dayStats.groundedShips} navio(s) encalharam por calado/maré.</p>`;
       }
 
       reportModal.classList.remove('hidden');
