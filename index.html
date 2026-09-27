@@ -30,7 +30,6 @@
       border-radius: 3px;
     }
 
-    /* Fundo do Documento / Manifesto de Carga usando a Imagem 'assets/manifesto_carga.png' */
     .doc-bg {
       background-image: url('assets/manifesto_carga.png');
       background-size: 100% 100%;
@@ -44,7 +43,6 @@
       border: 2px solid rgba(84, 61, 43, 0.25);
     }
 
-    /* Estilo do Relatório Retangular + Fundo Pixel Art */
     .report-bg {
       background-image: url('assets/fundo_feedback.png');
       background-size: 100% 100%;
@@ -53,7 +51,6 @@
       image-rendering: pixelated;
     }
 
-    /* Botão Retrô 2D Pixel Art */
     .pixel-btn-purple {
       background-color: #5c1363;
       color: #ffffff;
@@ -78,7 +75,6 @@
       box-shadow: 0 2px 0 rgba(0,0,0,0.3);
     }
 
-    /* Cards em Estilo Pixel Paper */
     .pixel-card {
       background-color: rgba(255, 255, 255, 0.85);
       border: 2px solid #543d2b;
@@ -106,13 +102,11 @@
       <!-- Document Modal / Panel -->
       <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm shadow-2xl">
         
-        <!-- Cabeçalho Centralizado -->
         <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
           <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
           <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
-        <!-- Corpo do Documento -->
         <div class="my-auto space-y-2.5 font-mono">
           <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
             <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
@@ -148,7 +142,6 @@
           </div>
         </div>
 
-        <!-- Botões de Ação -->
         <div class="flex gap-3 pt-2 border-t-2 border-[#543d2b]/30">
           <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
             AUTORIZAR
@@ -222,7 +215,6 @@
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
 
-    // Mapeamento de imagens
     const images = { 
       cenario: new Image(), 
       mar: new Image(), 
@@ -240,7 +232,7 @@
         mar: 'assets/mar.png', 
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
-        personagem: 'assets/personagem.png',
+        personagem: 'assets/personagem_3.png', // Atualizado para usar o sprite correto
         navioPadrao: 'assets/navio_padrao.png',
         cargueiro: 'assets/cargueiro.png',
         pesqueiroIrregular: 'assets/pesqueiro_irregular.png'
@@ -253,7 +245,6 @@
       }
     }
 
-    // Configuração dos tipos de navio (com imagens grandes e proporcionais)
     const SHIP_TYPES = [
       {
         name: "MV Esperança",
@@ -354,12 +345,9 @@
       x: -300, y: 335, width: 260, height: 140, speed: 2, flipped: false, data: null
     };
 
-    function updateTideDisplay() {
-      // Mantido original
-    }
+    function updateTideDisplay() {}
 
     function generateRandomShip() {
-      // Maré original do primeiro código (315 se alta, 370 se baixa)
       isHighTide = Math.random() < 0.5;
       updateTideDisplay();
 
@@ -378,13 +366,30 @@
         ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
       }
 
-    if (images.personagem.complete && images.personagem.naturalWidth > 0) {
-    ctx.drawImage(images.personagem, 510, 75, 170, 110);
-  }
+      // Desenho do sprite do personagem com animação baseada no JSON
+      if (images.personagem.complete && images.personagem.naturalWidth > 0) {
+        const frameWidth = 120;
+        const frameHeight = 84;
+        const totalFrames = 11; // 11 frames mapeados no seu JSON
+        
+        // Alterna o frame a cada 150 milissegundos
+        const currentFrameIndex = Math.floor(Date.now() / 150) % totalFrames;
+        
+        // Calcula a posição X e Y na folha de sprites com base no tamanho de cada célula
+        const sheetColumns = 3; // 3 colunas na imagem personagem_3.png
+        const sx = (currentFrameIndex % sheetColumns) * frameWidth;
+        const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
+
+        // Desenha o frame atual recortado, centralizado perfeitamente na janela da guarita
+        ctx.drawImage(
+          images.personagem, 
+          sx, sy, frameWidth, frameHeight, 
+          515, 78, 150, 105
+        );
+      }
     }
 
     function drawSeaAndBuoy() {
-      // Altura da maré exatamente como no código original (315 para maré alta, 370 para maré baixa)
       const targetSeaY = isHighTide ? 315 : 370;
       if (!canvas.seaY) canvas.seaY = targetSeaY;
       canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
@@ -426,7 +431,6 @@
       currentShip.width = shipData.width || 260;
       currentShip.height = shipData.height || 140;
       
-      // Posicionamento perfeitamente alinhado com a linha d'água original
       currentShip.y = (canvas.seaY || 370) - 45;
 
       const x = currentShip.x;
