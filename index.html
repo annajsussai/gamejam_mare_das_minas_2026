@@ -30,12 +30,12 @@
       border-radius: 3px;
     }
 
-    /* Estilo Clássico do Manifesto */
     .doc-bg {
-      background-color: #f4e8c1;
-      border: 4px solid #543d2b;
-      box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
-      background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(84, 61, 43, 0.05) 24px, rgba(84, 61, 43, 0.05) 25px);
+      background-image: url('assets/manifesto_carga.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
     }
 
     .pixel-box {
@@ -169,39 +169,39 @@
         <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-6 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider">CONTINUAR INSPEÇÃO</button>
       </div>
 
-      <!-- Manifesto de Carga (Design Clássico Restaurado) -->
-      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded shadow-2xl">
-        <div class="border-b-2 border-[#543d2b] pb-2 text-center">
+      <!-- Manifesto de Carga -->
+      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm shadow-2xl">
+        <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
           <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
           <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
-        <div class="my-auto space-y-3 font-mono py-3">
-          <div class="pixel-box p-2.5 rounded-sm">
-            <div class="flex justify-between items-baseline border-b border-[#543d2b]/20 pb-1 mb-1">
-              <span class="text-[12px] sm:text-[14px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
+        <div class="my-auto space-y-2.5 font-mono">
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
+            <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
               <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-[#2b1b10]"></span>
             </div>
             <div class="flex justify-between items-baseline">
-              <span class="text-[12px] sm:text-[14px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
+              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
               <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
             </div>
           </div>
 
-          <div class="pixel-box p-2.5 rounded-sm flex flex-col">
-            <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
-            <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 leading-tight"></span>
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
+            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
+            <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
-          <div class="grid grid-cols-2 gap-2.5">
-            <div class="pixel-box p-2.5 rounded-sm flex flex-col justify-between">
-              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Porte</span>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
+              <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Porte</span>
               <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-1"></span>
             </div>
 
-            <div class="pixel-box p-2.5 rounded-sm flex flex-col justify-between">
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <div class="flex justify-between items-center gap-1">
-                <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
+                <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
                 <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
               </div>
               <div class="w-full h-2.5 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
@@ -211,11 +211,11 @@
           </div>
         </div>
 
-        <div class="flex gap-3 pt-3 border-t-2 border-[#543d2b]">
-          <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2.5 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
+        <div class="flex gap-3 pt-2 border-t-2 border-[#543d2b]/30">
+          <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
             AUTORIZAR
           </button>
-          <button id="rejectBtn" class="flex-1 bg-rose-900 hover:bg-rose-800 text-white font-bold py-2.5 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
+          <button id="rejectBtn" class="flex-1 bg-rose-900 hover:bg-rose-800 text-white font-bold py-2 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
             RECUSAR
           </button>
         </div>
