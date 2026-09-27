@@ -279,7 +279,7 @@
         ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
       }
 
-      // 2. Personagem alinhado perfeitamente com os botões (mais baixo e mais à esquerda)
+      // 2. Personagem
       if (images.personagem.complete && images.personagem.naturalWidth > 0) {
         ctx.drawImage(images.personagem, 485, 80, 215, 125);
       }
@@ -304,9 +304,26 @@
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
+      // Desenho animado da Bóia
       if (images.boia.complete && images.boia.naturalWidth > 0) {
         const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
-        ctx.drawImage(images.boia, 0, 0, 64, 64, 680, buoyY, 48, 48);
+        
+        let srcX = 0;
+        let srcY = 0;
+
+        // Se for maré baixa (!isHighTide), alterna os frames da luz acesa (linha inferior do sprite)
+        if (!isHighTide) {
+          const frameIndex = Math.floor(Date.now() / 300) % 2; // alterna entre frame 2 e 3 a cada 300ms
+          srcX = frameIndex * 64;
+          srcY = 64; // Linha inferior onde fica a luz acesa
+        } else {
+          // Maré alta: bóia normal/apagada (linha superior do sprite)
+          const frameIndex = Math.floor(Date.now() / 500) % 2;
+          srcX = frameIndex * 64;
+          srcY = 0;
+        }
+
+        ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
       }
     }
 
