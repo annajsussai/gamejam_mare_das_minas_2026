@@ -209,6 +209,19 @@
       border-color: #dc2626;
       color: #fecaca;
     }
+    #lessonCaption, #shipBubble {
+      cursor: pointer;
+    }
+    .captionHint {
+      margin-top: 4px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px, 1.1vw, 9px);
+      opacity: 0.65;
+      letter-spacing: 0.5px;
+    }
+    #lessonCaption .captionHint { color: #facc15; }
+    #lessonCaption.alert .captionHint { color: #fecaca; }
+    #shipBubble .captionHint { color: #7c2d12; }
 
     /* ---------- Realces (spotlights) ---------- */
     .spotlight {
@@ -736,45 +749,78 @@
     }
 
     // --------- Legenda educativa (antes de cada novo tipo de navio) ---------
+    // Duração padrão maior (era 4200ms) para dar mais tempo de leitura;
+    // um toque na legenda sempre permite adiantar, como a seta "→" dos
+    // botões CONTINUAR / INICIAR DIA 2.
     function showLessonCaption(text, duration) {
       lessonCaption.classList.remove('alert');
-      lessonCaption.textContent = text;
+      lessonCaption.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
       lessonCaption.classList.add('visible');
-      setTimeout(() => lessonCaption.classList.remove('visible'), duration || 4200);
+
+      clearTimeout(lessonCaption._hideTimer);
+      lessonCaption.onclick = null;
+
+      const hide = () => {
+        clearTimeout(lessonCaption._hideTimer);
+        lessonCaption.onclick = null;
+        lessonCaption.classList.remove('visible');
+      };
+
+      lessonCaption._hideTimer = setTimeout(hide, duration || 6800);
+      lessonCaption.onclick = hide;
     }
 
     // Variante em tom de alerta, usada para a "Narração" de aviso de
     // navios de pesca irregular / materiais perigosos (fala do gestor,
-    // não do navio).
+    // não do navio). Duração maior (era 3400ms) + toque para adiantar.
     function showAlertCaption(text, onDone) {
       lessonCaption.classList.add('alert');
-      lessonCaption.textContent = text;
+      lessonCaption.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
       lessonCaption.classList.add('visible');
-      setTimeout(() => {
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        lessonCaption.onclick = null;
         lessonCaption.classList.remove('visible');
         setTimeout(() => {
           lessonCaption.classList.remove('alert');
           if (onDone) onDone();
         }, 500);
-      }, 3400);
+      }
+
+      const timer = setTimeout(finish, 5800);
+      lessonCaption.onclick = finish;
     }
 
     // --------- Balão de fala do navio ---------
+    // Duração maior (era 3400ms) + toque no balão para adiantar.
     function showShipBubble(text, onDone) {
-      shipBubble.textContent = text;
+      shipBubble.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
       const bx = Math.min(currentShip.x + currentShip.width * 0.15, 620);
       const by = Math.max(currentShip.y - 70, 20);
       shipBubble.style.left = (bx / 800 * 100) + '%';
       shipBubble.style.top = (by / 450 * 100) + '%';
       shipBubble.style.display = 'block';
       requestAnimationFrame(() => shipBubble.classList.add('visible'));
-      setTimeout(() => {
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        shipBubble.onclick = null;
         shipBubble.classList.remove('visible');
         setTimeout(() => {
           shipBubble.style.display = 'none';
           if (onDone) onDone();
         }, 400);
-      }, 3400);
+      }
+
+      const timer = setTimeout(finish, 5800);
+      shipBubble.onclick = finish;
     }
 
     function showDayStartBanner(text) {
