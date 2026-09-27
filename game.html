@@ -383,8 +383,8 @@ document.querySelectorAll('button').forEach(button => {
         size: "Pequeno (3m)",
         isLarge: false,
         imgKey: "cargueiro",
-        width: 250,
-        height: 135
+        width: 400,
+        height: 216
       },
       {
         name: "Grão de Ouro",
@@ -396,8 +396,8 @@ document.querySelectorAll('button').forEach(button => {
         size: "Grande (12m)",
         isLarge: true,
         imgKey: "navio_grande",
-        width: 280,
-        height: 145
+        width: 450,
+        height: 232
       },
       {
         name: "Gigante dos Mares",
@@ -409,8 +409,8 @@ document.querySelectorAll('button').forEach(button => {
         size: "Médio (7m)",
         isLarge: false,
         imgKey: "cargueiro",
-        width: 270,
-        height: 140
+        width: 430,
+        height: 224
       },
       {
         name: "Tritão das Marés",
@@ -422,8 +422,8 @@ document.querySelectorAll('button').forEach(button => {
         size: "Médio (6m)",
         isLarge: false,
         imgKey: "pesqueiroIrregular",
-        width: 250,
-        height: 135
+        width: 400,
+        height: 216
       },
       {
         name: "Mar Furtivo",
@@ -434,8 +434,8 @@ document.querySelectorAll('button').forEach(button => {
         isHazard: true,
         size: "Pequeno (4m)",
         imgKey: "cargueiro",
-        width: 240,
-        height: 130
+        width: 385,
+        height: 208
       },
       {
         name: "Risco Químico",
@@ -447,8 +447,8 @@ document.querySelectorAll('button').forEach(button => {
         size: "Grande (11m)",
         isLarge: true,
         imgKey: "navio_grande",
-        width: 280,
-        height: 145
+        width: 450,
+        height: 232
       }
     ];
 
@@ -475,7 +475,7 @@ document.querySelectorAll('button').forEach(button => {
     let pendingAlertMessage = "";
 
     let currentShip = {
-      x: -300, y: 335, width: 260, height: 140, speed: 2, flipped: false, data: null
+      x: -450, y: 335, width: 420, height: 220, speed: 2, flipped: false, data: null
     };
 
     function generateRandomShip() {
@@ -571,7 +571,7 @@ document.querySelectorAll('button').forEach(button => {
 
       const specificImg = images[shipData.imgKey];
       if (specificImg && specificImg.complete && specificImg.naturalWidth > 0) {
-        ctx.drawImage(specificImg, x, y - 35, w, h);
+        ctx.drawImage(specificImg, x, y - 55, w, h);
       } else {
         ctx.fillStyle = shipData.isHazard ? "#991b1b" : "#1d4ed8";
         ctx.fillRect(x, y, w, 75);
@@ -586,8 +586,8 @@ document.querySelectorAll('button').forEach(button => {
 
       if (gameState === 'APPROACHING') {
         currentShip.x += currentShip.speed;
-        if (currentShip.x >= 380) {
-          currentShip.x = 380;
+        if (currentShip.x >= 300) {
+          currentShip.x = 300;
       gameState = 'INSPECTING';
           tocarSom(somNavio);
       openInspectionPanel();
@@ -597,7 +597,7 @@ document.querySelectorAll('button').forEach(button => {
         if (currentShip.x > 850) nextShip();
       } else if (gameState === 'LEAVING_REJECT') {
         currentShip.x -= currentShip.speed * 1.5;
-        if (currentShip.x < -320) nextShip();
+        if (currentShip.x < -470) nextShip();
       }
     }
 
@@ -722,7 +722,7 @@ document.querySelectorAll('button').forEach(button => {
 
     function spawnShip() {
       if (shipsEvaluated < maxShipsPerDay) {
-        currentShip.x = -300;
+        currentShip.x = -450;
         currentShip.flipped = false;
         currentShip.data = generateRandomShip();
         gameState = 'APPROACHING';
