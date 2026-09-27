@@ -477,11 +477,11 @@
     startIntroBtn.style.display = 'flex';
   });
 
+  // AQUI FOI ALTERADO PARA REDIRECIONAR PARA O tutorial.html
   startIntroBtn.addEventListener('click', function () {
     introScreen.classList.add('fadeOut');
     setTimeout(function () {
-      introScreen.style.display = 'none';
-      console.log("Jogo iniciado!");
+      window.location.href = 'tutorial.html';
     }, 600);
   });
 
