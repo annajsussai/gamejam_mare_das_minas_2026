@@ -166,7 +166,7 @@
       <div id="alertBox" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md bg-slate-950/95 border-4 border-rose-600 rounded p-4 text-center z-40 shadow-2xl">
         <h3 class="pixel-font text-rose-500 text-xs sm:text-sm mb-2">ALERTA AMBIENTAL</h3>
         <p id="alertMessage" class="font-mono text-sm sm:text-base text-slate-200 mb-4 leading-relaxed"></p>
-        <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-8 py-2.5 text-xs sm:text-sm font-bold uppercase">OK</button>
+        <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-6 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider">CONTINUAR INSPEÇÃO</button>
       </div>
 
       <!-- Manifesto de Carga -->
@@ -325,6 +325,7 @@
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
         cargueiro: 'assets/cargueiro.png',
+        navio_grande: 'assets/navio_grande.png',
         pesqueiroIrregular: 'assets/cargueiro.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
@@ -358,7 +359,7 @@
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true,
-        imgKey: "cargueiro",
+        imgKey: "navio_grande",
         width: 280,
         height: 145
       },
@@ -410,7 +411,7 @@
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true,
-        imgKey: "cargueiro",
+        imgKey: "navio_grande",
         width: 280,
         height: 145
       }
@@ -571,7 +572,7 @@
       dayStats.falseAccepts++;
       dayStats.total++;
 
-      pendingAlertMessage = `ALERTA DE ENCALHE: O navio ${currentShip.data.name} encalhou devido à maré baixa! O casco foi rompido, causando bloqueio no canal e risco severo à fauna bentônica local.`;
+      pendingAlertMessage = `ENCALHE CRÍTICO: O navio ${currentShip.data.name} era grande demais e encalhou devido à maré baixa! O impacto rompeu o casco, bloqueou o canal de acesso e gerou sérios danos ao ecossistema bentônico.`;
 
       setTimeout(() => {
         isShaking = false;
