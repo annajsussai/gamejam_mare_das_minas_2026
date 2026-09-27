@@ -141,17 +141,19 @@
     #gestorBtn {
       font-family: 'Press Start 2P', monospace;
       font-size: clamp(9px, 1.5vw, 12px);
-      background: #d97706;
+      background-image: url('assets/bg_btn.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
       color: #2b1b10;
       border: none;
       padding: 8px 16px;
-      border-bottom: 4px solid #7c2d12;
       border-radius: 3px;
       cursor: pointer;
     }
     #gestorBtn:active {
       transform: translateY(2px);
-      border-bottom: 2px solid #7c2d12;
     }
 
     /* ---------- Balão de fala do navio ---------- */
@@ -1005,16 +1007,6 @@
       }
     }
 
-    function handleGroundedShip() {
-      dayStats.groundedShips++;
-      dayStats.falseAccepts++;
-      dayStats.total++;
-      setTimeout(() => {
-        gameState = 'LEAVING_REJECT';
-        currentShip.flipped = true;
-      }, 300);
-    }
-
     // O primeiro navio do Dia 1 (medicamentos) recebe o tutorial guiado
     // completo, com destaques na régua e no navio antes de abrir a
     // documentação, e uma fala extra do GESTOR dentro do documento.
@@ -1115,20 +1107,21 @@
       if (acceptBtn.disabled) return;
       if (isFirstGuidedShip()) showBannerOnNextShip = true;
       docPanel.classList.add('hidden');
+
+      // A decisão é sempre do jogador: aceitar sempre faz o navio seguir
+      // em frente, mesmo que seja um navio ruim (perigoso ou grande em
+      // maré baixa). Isso só é contabilizado como erro no relatório —
+      // o navio não é forçado a voltar/encalhar sozinho.
       const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
 
-      if (currentShip.data.isLarge && !isHighTide) {
-        gameState = 'GROUNDED';
-        handleGroundedShip();
+      dayStats.total++;
+      if (isBadShip) {
+        dayStats.falseAccepts++;
+        if (currentShip.data.isLarge && !isHighTide) dayStats.groundedShips++;
       } else {
-        dayStats.total++;
-        if (isBadShip) {
-          dayStats.falseAccepts++;
-        } else {
-          dayStats.correctAccepts++;
-        }
-        gameState = 'LEAVING_ACCEPT';
+        dayStats.correctAccepts++;
       }
+      gameState = 'LEAVING_ACCEPT';
     });
 
     rejectBtn.addEventListener('click', () => {
