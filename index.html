@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Prévia — Introdução do Jogo</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
@@ -13,7 +12,7 @@
   html, body {
     margin: 0;
     height: 100%;
-    background: #0d1b2a;
+    background: #02070b;
   }
 
   body {
@@ -24,39 +23,33 @@
     min-height: 100dvh;
     padding: 6px;
     overflow: hidden;
-    font-family: 'VT323', monospace;
-    user-select: none;
-    touch-action: manipulation;
   }
 
-  /* ---------- MOLDURA EXTERNA (mesmo tamanho e estilo idêntico ao gameFrame do tutorial) ---------- */
+  /* ---------- MOLDURA EXTERNA (esticada/proporcional) ---------- */
   #gameFrame {
     width: 100%;
-    max-width: 1024px;
+    height: 100%;
+    max-width: none; /* Removido limite para esticar totalmente se necessário */
     max-height: 100dvh;
     background: #0f172a; /* slate-900 */
     border: 2px solid #d97706; /* amber-600 */
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 6px;
     box-shadow: 0 10px 30px rgba(0,0,0,.6);
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin: auto;
+    align-items: center;
+    justify-content: center;
   }
 
   @media (min-width: 640px) {
-    #gameFrame { 
-      border-width: 4px; 
-      padding: 12px; 
-      gap: 12px;
-    }
+    #gameFrame { border-width: 4px; padding: 12px; }
   }
 
-  /* ---------- TELA (mesma proporção aspect-[16/9] do tutorial) ---------- */
+  /* ---------- TELA (aspect-ratio 16/9 forçada a esticar no container) ---------- */
   #introScreen {
     position: relative;
     width: 100%;
+    height: 100%;
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: 6px;
@@ -67,20 +60,27 @@
     align-items: center;
     justify-content: center;
     box-shadow: inset 0 0 0 1px rgba(0,0,0,.3);
-    background-color: #071118;
   }
 
-  /* ---------- CENÁRIO DE FUNDO (esticado para preencher todo o container) ---------- */
+  /* ---------- CENÁRIO DE FUNDO (ESTICADO) ---------- */
   #introBg {
     position: absolute;
     inset: 0;
     background-image: url('assets/telainicial.png');
-    background-size: 100% 100%; /* força a imagem a esticar por completo no container */
+    background-size: 100% 100%; /* Força a imagem a esticar perfeitamente */
     background-position: center;
-    background-repeat: no-repeat;
     image-rendering: pixelated;
     filter: saturate(0.95) brightness(0.75);
+    transform: scale(1.04);
   }
+
+  /* leve movimento de "respiração" no fundo, tipo maré */
+  @keyframes bgDrift {
+    0%   { transform: scale(1.04) translateY(0px); }
+    50%  { transform: scale(1.06) translateY(-6px); }
+    100% { transform: scale(1.04) translateY(0px); }
+  }
+  #introBg { animation: bgDrift 14s ease-in-out infinite; }
 
   #introVinheta {
     position: absolute;
@@ -489,7 +489,6 @@
     }, 600);
   });
 
-  // ---------- INICIALIZAÇÃO COM DELAY DE 1.5s PARA MOSTRAR SÓ O FUNDO ----------
   setTimeout(function() {
     mostrarTexto(0);
   }, 1500);
