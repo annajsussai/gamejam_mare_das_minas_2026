@@ -64,13 +64,21 @@
           <span class="bg-amber-200 text-amber-900 text-[10px] sm:text-xs px-1.5 py-0.5 rounded font-bold border border-amber-400">OFICIAL</span>
         </div>
 
-        <div class="space-y-1 text-sm sm:text-lg leading-tight">
+        <div class="space-y-2 text-sm sm:text-base leading-snug">
           <p><strong class="text-amber-950">EMBARCAÇÃO:</strong> <span id="docName" class="font-bold text-blue-900"></span></p>
           <p><strong class="text-amber-950">ROTA:</strong> <span id="docRoute"></span></p>
           <p><strong class="text-amber-950">CARGA:</strong> <span id="docCargo" class="font-semibold"></span></p>
           <p><strong class="text-amber-950">PORTE / CALADO:</strong> <span id="docDraft"></span></p>
-          <p><strong class="text-amber-950">TOXICIDADE:</strong> <span id="docTox"></span></p>
-          <p><strong class="text-amber-950">RISCO AMBIENTAL:</strong> <span id="docRisk"></span></p>
+          
+          <!-- Narração do jogo -->
+          <div class="bg-amber-100/80 p-2 rounded border border-amber-300 text-amber-900 italic text-xs sm:text-sm">
+            📢 <strong class="not-italic text-amber-950">Narração:</strong> <span id="docNarrative"></span>
+          </div>
+
+          <!-- Fala / Mensagem do Navio -->
+          <div class="bg-blue-50 p-2 rounded border border-blue-200 text-blue-900 italic text-xs sm:text-sm">
+            💬 <strong class="not-italic text-blue-950">Mensagem da Tripulação:</strong> "<span id="docShipQuote"></span>"
+          </div>
         </div>
 
         <!-- Indicador visual explicativo -->
@@ -205,26 +213,116 @@
 
     const maxShipsPerDay = { 1: 4, 2: 3, 3: 3 };
 
-    // Banco de Dados de Navios
+    // Banco de Dados de Navios (Atualizado com os textos e mensagens da Letícia)
     const shipDatabase = [
       // Dia 1
       [
-        { name: "MV Esperança", route: "Santos -> Paranaguá", cargo: "Medicamentos e Vacinas", tox: "Nula", risk: "Baixo", draft: "Pequeno (3m)", hazard: false, visualCue: null },
-        { name: "Oceano Profundo", route: "Roterdã -> Porto Local", cargo: "Equipamentos Hospitalares", tox: "Nula", risk: "Nenhum", draft: "Grande (10m)", hazard: false, visualCue: null }, // Risco de encalhar na maré baixa!
-        { name: "Estrela do Mar", route: "Vitória -> Porto Local", cargo: "Pescado Fresco", tox: "Baixa", risk: "Médio", draft: "Médio (5m)", hazard: true, visualCue: 'oil' }, // Vazamento de Óleo
-        { name: "Mar Limpo", route: "Salvador -> Recife", cargo: "Grãos e Alimentos", tox: "Nula", risk: "Baixo", draft: "Pequeno (4m)", hazard: false, visualCue: null }
+        {
+          name: "MV Esperança",
+          route: "Santos -> Paranaguá",
+          cargo: "Medicamentos e Vacinas",
+          draft: "Pequeno (3m)",
+          narration: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
+          quote: "Minha carga é preciosa. Cada entrega pode fazer a diferença.",
+          hazard: false,
+          visualCue: null
+        },
+        {
+          name: "Sabor da Terra",
+          route: "Salvador -> Recife",
+          cargo: "Alimentos e Grãos",
+          draft: "Grande (10m)",
+          narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
+          quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?",
+          hazard: false,
+          visualCue: null
+        },
+        {
+          name: "Estrutura Viva",
+          route: "Vitória -> Porto Local",
+          cargo: "Equipamentos de Infraestrutura",
+          draft: "Médio (5m)",
+          narration: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
+          quote: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença.",
+          hazard: false,
+          visualCue: null
+        },
+        {
+          name: "Mar Limpo",
+          route: "Santos -> Porto Local",
+          cargo: "Grãos e Alimentos",
+          draft: "Pequeno (4m)",
+          narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
+          quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?",
+          hazard: false,
+          visualCue: null
+        }
       ],
       // Dia 2
       [
-        { name: "Tritão Sangrento", route: "Internacional -> Indefinido", cargo: "Peixes Exóticos / Irregular", tox: "Alta", risk: "Espécies Invasoras", draft: "Médio (6m)", hazard: true, visualCue: 'nets' },
-        { name: "Carga Azul", route: "Rio Grande -> Porto Local", cargo: "Peças Mecânicas", tox: "Nula", risk: "Nenhum", draft: "Pequeno (4m)", hazard: false, visualCue: null },
-        { name: "Gigante dos Mares", route: "Xangai -> Porto Local", cargo: "Maquinário Pesado", tox: "Baixa", risk: "Baixo", draft: "Grande (12m)", hazard: false, visualCue: null }
+        {
+          name: "Tritão das Marés",
+          route: "Internacional -> Indefinido",
+          cargo: "Espécies Exóticas / Bio-Risco",
+          draft: "Médio (6m)",
+          narration: "São espécies que chegam a um ambiente onde não pertencem, podendo se espalhar e competir com espécies nativas.",
+          quote: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações e, quando encontram um novo ambiente, podem se espalhar e alterar o equilíbrio da vida costeira.",
+          hazard: true,
+          visualCue: 'nets'
+        },
+        {
+          name: "Pesca Certa",
+          route: "Costa Sul -> Porto Local",
+          cargo: "Pescado Irregular",
+          draft: "Pequeno (4m)",
+          narration: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas, reduzir os recursos pesqueiros e causar danos ao ambiente.",
+          quote: "Apenas uma pesca rápida na costa, sem problemas por aqui...",
+          hazard: true,
+          visualCue: 'nets'
+        },
+        {
+          name: "Gigante dos Mares",
+          route: "Xangai -> Porto Local",
+          cargo: "Maquinário Pesado",
+          draft: "Grande (12m)",
+          narration: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
+          quote: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença.",
+          hazard: false,
+          visualCue: null
+        }
       ],
       // Dia 3
       [
-        { name: "Sombra do Vento", route: "Desconhecida", cargo: "Resíduos Químicos Não Declarados", tox: "ALTÍSSIMA", risk: "Risco Ambiental Crítico", draft: "Médio (6m)", hazard: true, visualCue: 'toxic' },
-        { name: "Pesca Certa", route: "Costa Sul -> Porto Local", cargo: "Pescado Legalizado", tox: "Nula", risk: "Nenhum", draft: "Pequeno (3m)", hazard: false, visualCue: null },
-        { name: "Bandeirante", route: "Itajaí -> Porto Local", cargo: "Alimentos Processados", tox: "Nula", risk: "Baixo", draft: "Grande (11m)", hazard: false, visualCue: null }
+        {
+          name: "Sombra do Vento",
+          route: "Desconhecida",
+          cargo: "Resíduos Químicos / Materiais Perigosos",
+          draft: "Médio (6m)",
+          narration: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco.",
+          quote: "Transportamos produtos industriais pesados. Exige cuidado no manuseio.",
+          hazard: true,
+          visualCue: 'toxic'
+        },
+        {
+          name: "Anjo dos Mares",
+          route: "Rio Grande -> Porto Local",
+          cargo: "Medicamentos e Vacinas",
+          draft: "Pequeno (3m)",
+          narration: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
+          quote: "Minha carga é preciosa. Cada entrega pode fazer a diferença.",
+          hazard: false,
+          visualCue: null
+        },
+        {
+          name: "Bandeirante",
+          route: "Itajaí -> Porto Local",
+          cargo: "Alimentos Processados",
+          draft: "Grande (11m)",
+          narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
+          quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?",
+          hazard: false,
+          visualCue: null
+        }
       ]
     ];
 
@@ -254,8 +352,8 @@
 
     // Desenha o Mar e a Bóia
     function drawSeaAndBuoy() {
-      // Maré Alta = Y 315px (antiga maré baixa, a maré mais alta do novo padrão)
-      // Maré Baixa = Y 370px (maré extra baixa)
+      // Maré Alta = Y 315px
+      // Maré Baixa = Y 370px
       const targetSeaY = isHighTide ? 315 : 370;
 
       if (!canvas.seaY) canvas.seaY = targetSeaY;
@@ -409,8 +507,8 @@
       document.getElementById('docRoute').innerText = data.route;
       document.getElementById('docCargo').innerText = data.cargo;
       document.getElementById('docDraft').innerText = data.draft;
-      document.getElementById('docTox').innerText = data.tox;
-      document.getElementById('docRisk').innerText = data.risk;
+      document.getElementById('docNarrative').innerText = data.narration;
+      document.getElementById('docShipQuote').innerText = data.quote;
 
       const cueNotice = document.getElementById('visualCueNotice');
       const cueText = document.getElementById('visualCueText');
@@ -420,7 +518,7 @@
         cueText.innerText = "SINAL VISUAL DETECTADO: Mancha de óleo no casco!";
       } else if (data.visualCue === 'nets') {
         cueNotice.classList.remove('hidden');
-        cueText.innerText = "SINAL VISUAL DETECTADO: Redes clandestinas penduradas!";
+        cueText.innerText = "SINAL VISUAL DETECTADO: Redes ou organismos clandestinos pendurados!";
       } else if (data.visualCue === 'toxic') {
         cueNotice.classList.remove('hidden');
         cueText.innerText = "SINAL VISUAL DETECTADO: Brilho de material perigoso!";
