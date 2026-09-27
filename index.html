@@ -30,7 +30,6 @@
       border-radius: 3px;
     }
 
-    /* Fundo do Documento / Manifesto de Carga usando a Imagem 'assets/manifesto_carga.png' */
     .doc-bg {
       background-image: url('assets/manifesto_carga.png');
       background-size: 100% 100%;
@@ -44,7 +43,6 @@
       border: 2px solid rgba(84, 61, 43, 0.25);
     }
 
-    /* Estilo do Relatório Retangular + Fundo Pixel Art */
     .report-bg {
       background-image: url('assets/fundo_feedback.png');
       background-size: 100% 100%;
@@ -53,7 +51,6 @@
       image-rendering: pixelated;
     }
 
-    /* Botão Retrô 2D Pixel Art */
     .pixel-btn-purple {
       background-color: #5c1363;
       color: #ffffff;
@@ -78,7 +75,6 @@
       box-shadow: 0 2px 0 rgba(0,0,0,0.3);
     }
 
-    /* Cards em Estilo Pixel Paper */
     .pixel-card {
       background-color: rgba(255, 255, 255, 0.85);
       border: 2px solid #543d2b;
@@ -106,13 +102,11 @@
       <!-- Document Modal / Panel -->
       <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm shadow-2xl">
         
-        <!-- Cabeçalho Centralizado -->
         <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
           <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
           <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
-        <!-- Corpo do Documento -->
         <div class="my-auto space-y-2.5 font-mono">
           <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
             <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
@@ -148,7 +142,6 @@
           </div>
         </div>
 
-        <!-- Botões de Ação -->
         <div class="flex gap-3 pt-2 border-t-2 border-[#543d2b]/30">
           <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
             AUTORIZAR
@@ -202,7 +195,7 @@
 
     </div>
 
-    <!-- Dica rodapé + Quantidade de Navios na Direita -->
+    <!-- Dica rodapé + Quantidade de Navios -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
       <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
       <span class="text-xs sm:text-base text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / 4</span>
@@ -216,23 +209,21 @@
 
     ctx.imageSmoothingEnabled = false;
 
-    // Elementos da Interface
     const docPanel = document.getElementById('docPanel');
     const acceptBtn = document.getElementById('acceptBtn');
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
 
-    // Imagens do jogo atualizadas com os assets específicos de embarcações
     const images = { 
       cenario: new Image(), 
       mar: new Image(), 
       marfrente: new Image(), 
       boia: new Image(), 
       personagem: new Image(),
-      navioGrande: new Image(),
-      pesqueiroIrregular: new Image(),
-      cargueiro: new Image()
+      navioPadrao: new Image(),
+      cargueiro: new Image(),
+      pesqueiroIrregular: new Image()
     };
 
     function loadAssets(callback) {
@@ -242,9 +233,9 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        navioGrande: 'assets/navio_grande.png',
-        pesqueiroIrregular: 'assets/pesqueiro_irregular.png',
-        cargueiro: 'assets/cargueiro.png'
+        navioPadrao: 'assets/navio.png',
+        cargueiro: 'assets/cargueiro.png',
+        pesqueiroIrregular: 'assets/pesqueiro_irregular.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
@@ -254,7 +245,6 @@
       }
     }
 
-    // Configuração dos tipos de navio vinculados às suas respectivas chaves de imagem
     const SHIP_TYPES = [
       {
         name: "MV Esperança",
@@ -265,7 +255,9 @@
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false,
-        imageKey: "cargueiro"
+        imgKey: "pesqueiroIrregular",
+        width: 250,
+        height: 135
       },
       {
         name: "Grão de Ouro",
@@ -276,7 +268,9 @@
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true,
-        imageKey: "navioGrande"
+        imgKey: "cargueiro",
+        width: 280,
+        height: 145
       },
       {
         name: "Gigante dos Mares",
@@ -287,7 +281,9 @@
         isHazard: false,
         size: "Médio (7m)",
         isLarge: false,
-        imageKey: "cargueiro"
+        imgKey: "cargueiro",
+        width: 270,
+        height: 140
       },
       {
         name: "Tritão das Marés",
@@ -298,7 +294,9 @@
         isHazard: true,
         size: "Médio (6m)",
         isLarge: false,
-        imageKey: "cargueiro"
+        imgKey: "pesqueiroIrregular",
+        width: 250,
+        height: 135
       },
       {
         name: "Mar Furtivo",
@@ -309,7 +307,9 @@
         isHazard: true,
         size: "Pequeno (4m)",
         isLarge: false,
-        imageKey: "pesqueiroIrregular"
+        imgKey: "pesqueiroIrregular",
+        width: 240,
+        height: 130
       },
       {
         name: "Risco Químico",
@@ -320,18 +320,18 @@
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true,
-        imageKey: "navioGrande"
+        imgKey: "cargueiro",
+        width: 280,
+        height: 145
       }
     ];
 
-    // Variáveis de Estado
     let currentDay = 1;
     let shipsEvaluated = 0;
     const maxShipsPerDay = 4;
     let isHighTide = false;
     let gameState = 'APPROACHING';
 
-    // Estatísticas Detalhadas
     let dayStats = {
       total: 0,
       correctAccepts: 0, 
@@ -342,11 +342,14 @@
     };
 
     let currentShip = {
-      x: -160, y: 335, width: 140, height: 75, speed: 2, flipped: false, data: null
+      x: -300, y: 335, width: 260, height: 140, speed: 2, flipped: false, data: null
     };
+
+    function updateTideDisplay() {}
 
     function generateRandomShip() {
       isHighTide = Math.random() < 0.5;
+      updateTideDisplay();
 
       if (shipsEvaluated === 0 && currentDay === 1) {
         return { ...SHIP_TYPES[0] };
@@ -363,8 +366,23 @@
         ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
       }
 
-      if (images.personagem.complete && images.personagem.naturalWidth > 0) {
-        ctx.drawImage(images.personagem, 485, 80, 215, 125);
+      const pImg = images.personagem;
+      if (pImg && pImg.complete && pImg.naturalWidth > 0) {
+        const frameWidth = 120; 
+        const frameHeight = 84;
+        const totalFrames = 11;
+        
+        const currentFrameIndex = Math.floor(Date.now() / 150) % totalFrames;
+        const sheetColumns = 3; 
+        
+        const sx = (currentFrameIndex % sheetColumns) * frameWidth;
+        const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
+
+        ctx.drawImage(
+          pImg, 
+          sx, sy, frameWidth, frameHeight, 
+          510, 75, 170, 110
+        );
       }
     }
 
@@ -374,6 +392,7 @@
       canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
       const seaY = canvas.seaY;
 
+      // 1. Fundo do mar
       if (images.mar.complete && images.mar.naturalWidth > 0) {
         ctx.drawImage(images.mar, 0, seaY, 800, 450 - seaY);
       } else {
@@ -381,12 +400,15 @@
         ctx.fillRect(0, seaY, 800, 450 - seaY);
       }
 
-      drawShip();
-
+      // 2. Espuma / Frente da água
       if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
+      // 3. Navio desenhado POR CIMA da água e da espuma
+      drawShip();
+
+      // 4. Boia por cima de tudo
       if (images.boia.complete && images.boia.naturalWidth > 0) {
         const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
         let srcX = 0;
@@ -405,6 +427,11 @@
     function drawShip() {
       if (!currentShip.data) return;
       ctx.save();
+      
+      const shipData = currentShip.data;
+      currentShip.width = shipData.width || 260;
+      currentShip.height = shipData.height || 140;
+      
       currentShip.y = (canvas.seaY || 370) - 45;
 
       const x = currentShip.x;
@@ -418,13 +445,14 @@
         ctx.translate(-x, -y);
       }
 
-      // Renderiza a imagem específica correspondente ao navio atual
-      const activeImage = images[currentShip.data.imageKey];
-      if (activeImage && activeImage.complete && activeImage.naturalWidth > 0) {
-        ctx.drawImage(activeImage, x, y, w, h);
+      const specificImg = images[shipData.imgKey];
+      if (specificImg && specificImg.complete && specificImg.naturalWidth > 0) {
+        ctx.drawImage(specificImg, x, y - 35, w, h);
+      } else if (images.navioPadrao.complete && images.navioPadrao.naturalWidth > 0) {
+        ctx.drawImage(images.navioPadrao, x, y - 35, w, h);
       } else {
-        ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
-        ctx.fillRect(x, y + 20, w, 35);
+        ctx.fillStyle = shipData.isHazard ? "#991b1b" : "#1d4ed8";
+        ctx.fillRect(x, y, w, 75);
       }
 
       ctx.restore();
@@ -447,7 +475,7 @@
         if (currentShip.x > 850) nextShip();
       } else if (gameState === 'LEAVING_REJECT') {
         currentShip.x -= currentShip.speed * 1.5;
-        if (currentShip.x < -150) nextShip();
+        if (currentShip.x < -320) nextShip();
       }
     }
 
@@ -526,7 +554,7 @@
 
     function spawnShip() {
       if (shipsEvaluated < maxShipsPerDay) {
-        currentShip.x = -160;
+        currentShip.x = -300;
         currentShip.flipped = false;
         currentShip.data = generateRandomShip();
         gameState = 'APPROACHING';
