@@ -43,7 +43,7 @@
       border: 2px solid rgba(84, 61, 43, 0.25);
     }
 
-    /* Estilo do Relatório Mantendo a Proporção Exata da Arte Retangular */
+    /* Estilo do Relatório Mantendo a Proporção Exata + 10% de tamanho */
     .report-bg {
       background-image: url('assets/fundo_feedback.png');
       background-size: 100% 100%;
@@ -64,7 +64,7 @@
         <span class="text-sm sm:text-xl text-cyan-300">NAVIO: <span id="shipCount">1</span> / 4</span>
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
-        <span class="text-sm sm:text-xl">SISTEMA PORTUÁRIO ATIVO</span>
+        <span id="tideIndicator" class="text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-sky-900 text-sky-200 border border-sky-600">MARÉ: CARREGANDO...</span>
       </div>
     </div>
 
@@ -74,7 +74,7 @@
       <!-- Canvas do Jogo -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel (Estilo Papers, Please / Pixel Art) -->
+      <!-- Document Modal / Panel -->
       <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm">
         
         <!-- Cabeçalho Centralizado -->
@@ -83,10 +83,8 @@
           <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
-        <!-- Corpo do Documento / Ficha Técnica -->
+        <!-- Corpo do Documento -->
         <div class="my-auto space-y-2.5 font-mono">
-          
-          <!-- Seção 1: Embarcação e Rota -->
           <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
             <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
               <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
@@ -98,13 +96,11 @@
             </div>
           </div>
 
-          <!-- Seção 2: Carga Declarada -->
           <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
             <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
             <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
-          <!-- Seção 3: Porte e Toxicidade -->
           <div class="grid grid-cols-2 gap-2">
             <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Porte</span>
@@ -121,7 +117,6 @@
               </div>
             </div>
           </div>
-
         </div>
 
         <!-- Botões de Ação -->
@@ -136,43 +131,50 @@
 
       </div>
 
-      <!-- Relatório de Fim de Dia adaptado à imagem retangular -->
-      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-xs z-30 flex flex-col justify-center items-center p-2 sm:p-4 text-center">
-        <div class="report-bg relative p-4 sm:p-6 pb-6 sm:pb-8 w-[92%] max-w-lg sm:max-w-xl aspect-[2/1] flex flex-col justify-between text-slate-900 shadow-2xl overflow-hidden border-box">
+      <!-- Relatório de Fim de Dia (+10% Maior e Otimizado para Lupa) -->
+      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-xs z-30 flex flex-col justify-center items-center p-2 sm:p-3 text-center">
+        <div class="report-bg relative p-3 sm:p-5 pb-5 sm:pb-7 w-[98%] max-w-2xl aspect-[2.1/1] flex flex-col justify-between text-slate-900 shadow-2xl overflow-hidden">
           
-          <!-- Conteúdo Interno Totalmente Conterizado -->
-          <div class="w-full h-full flex flex-col justify-between pr-10 sm:pr-14">
+          <!-- Container Útil (Margem à direita reservada para a lupa) -->
+          <div class="w-full h-full flex flex-col justify-between pr-14 sm:pr-20">
             
-            <!-- Título e Subtítulo -->
-            <div class="mt-1 text-center">
-              <h2 class="pixel-font text-[#4a154b] text-[10px] sm:text-sm uppercase tracking-wider font-bold">RELATÓRIO DE INSPEÇÃO</h2>
-              <p class="pixel-font text-[#791d84] text-[8px] sm:text-[10px] mt-0.5 uppercase">RESUMO DO DIA <span id="reportDay">1</span></p>
+            <!-- Título + Estrelas -->
+            <div class="mt-0.5 text-center flex flex-col items-center">
+              <h2 class="pixel-font text-[#4a154b] text-[11px] sm:text-base uppercase tracking-wider font-bold">RELATÓRIO DE INSPEÇÃO</h2>
+              <div class="flex items-center justify-center gap-2 mt-0.5">
+                <span class="pixel-font text-[#791d84] text-[8px] sm:text-[11px] uppercase">DIA <span id="reportDay">1</span></span>
+                <span id="starRating" class="text-amber-500 text-xs sm:text-base tracking-widest font-bold">★★★</span>
+              </div>
             </div>
 
-            <!-- Cards de Métricas -->
-            <div class="grid grid-cols-3 gap-1.5 sm:gap-2 my-auto px-1 sm:px-2">
-              <div class="bg-white/90 border border-slate-300 p-1 sm:p-1.5 rounded text-center shadow-xs">
+            <!-- Métricas Principais -->
+            <div class="grid grid-cols-4 gap-1 sm:gap-2 my-auto px-1">
+              <div class="bg-white/95 border border-slate-300 p-1 rounded text-center shadow-xs">
                 <div class="pixel-font text-[6px] sm:text-[8px] text-slate-600 font-bold">AVALIADOS</div>
-                <div id="repTotal" class="pixel-font text-xs sm:text-base font-bold text-slate-800 mt-0.5">0</div>
+                <div id="repTotal" class="pixel-font text-xs sm:text-lg font-bold text-slate-800 mt-0.5">0</div>
               </div>
-              <div class="bg-white/90 border border-emerald-300 p-1 sm:p-1.5 rounded text-center shadow-xs">
-                <div class="pixel-font text-[6px] sm:text-[8px] text-emerald-700 font-bold">ACEITOS</div>
-                <div id="repAccepted" class="pixel-font text-xs sm:text-base font-bold text-emerald-600 mt-0.5">0</div>
+              <div class="bg-white/95 border border-emerald-400 p-1 rounded text-center shadow-xs">
+                <div class="pixel-font text-[6px] sm:text-[8px] text-emerald-700 font-bold">APROV. CERTA</div>
+                <div id="repCorrectAccept" class="pixel-font text-xs sm:text-lg font-bold text-emerald-600 mt-0.5">0</div>
               </div>
-              <div class="bg-white/90 border border-rose-300 p-1 sm:p-1.5 rounded text-center shadow-xs">
-                <div class="pixel-font text-[6px] sm:text-[8px] text-rose-700 font-bold">RECUSADOS</div>
-                <div id="repRejected" class="pixel-font text-xs sm:text-base font-bold text-rose-600 mt-0.5">0</div>
+              <div class="bg-white/95 border border-amber-400 p-1 rounded text-center shadow-xs">
+                <div class="pixel-font text-[6px] sm:text-[8px] text-amber-700 font-bold">RECUSA CERTA</div>
+                <div id="repCorrectReject" class="pixel-font text-xs sm:text-lg font-bold text-amber-600 mt-0.5">0</div>
+              </div>
+              <div class="bg-white/95 border border-rose-400 p-1 rounded text-center shadow-xs">
+                <div class="pixel-font text-[6px] sm:text-[8px] text-rose-700 font-bold">ERROS</div>
+                <div id="repErrors" class="pixel-font text-xs sm:text-lg font-bold text-rose-600 mt-0.5">0</div>
               </div>
             </div>
 
-            <!-- Feedback do Impacto -->
-            <div class="bg-white/90 border border-slate-300 p-1.5 sm:p-2 mx-1 rounded text-left min-h-[38px] flex items-center shadow-xs">
-              <div id="reportImpact" class="pixel-font text-[7px] sm:text-[9px] leading-relaxed w-full"></div>
+            <!-- Parecer da Avaliação do Dia -->
+            <div class="bg-white/95 border border-purple-300 p-1.5 sm:p-2 mx-0.5 rounded text-left min-h-[42px] flex items-center shadow-xs">
+              <div id="reportImpact" class="pixel-font text-[7px] sm:text-[9.5px] leading-relaxed w-full"></div>
             </div>
 
             <!-- Botão Continuar -->
-            <div class="flex justify-center mt-1">
-              <button id="nextDayBtn" class="pixel-font bg-[#5c1363] hover:bg-[#4a154b] text-white font-bold px-4 sm:px-6 py-1.5 rounded border-b-2 border-[#320836] text-[8px] sm:text-[10px] active:translate-y-0.5 transition shadow-md flex items-center gap-1">
+            <div class="flex justify-center mt-0.5">
+              <button id="nextDayBtn" class="pixel-font bg-[#5c1363] hover:bg-[#4a154b] text-white font-bold px-4 sm:px-8 py-1.5 rounded border-b-2 border-[#320836] text-[8px] sm:text-[10px] active:translate-y-0.5 transition shadow-md flex items-center gap-1">
                 CONTINUAR &rarr;
               </button>
             </div>
@@ -186,7 +188,7 @@
 
     <!-- Dica rodapé -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>DICA: Avalie a toxicidade e as especificações da embarcação antes de autorizar ou recusar.</span>
+      <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
     </div>
 
   </div>
@@ -203,6 +205,7 @@
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
+    const tideIndicator = document.getElementById('tideIndicator');
 
     // Imagens do jogo
     const images = { 
@@ -231,7 +234,7 @@
       }
     }
 
-    // Configuração dos navios
+    // Configuração dos tipos de navio
     const SHIP_TYPES = [
       {
         name: "MV Esperança",
@@ -266,7 +269,7 @@
       {
         name: "Tritão das Marés",
         route: "Salvador ➔ Recife",
-        cargo: "Água de Lastro",
+        cargo: "Água de Lastro Contaminada",
         toxicityVal: 3,
         toxicityText: "Médio",
         isHazard: true,
@@ -302,19 +305,38 @@
     let isHighTide = false;
     let gameState = 'APPROACHING';
 
-    let dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
+    // Estatísticas Detalhadas
+    let dayStats = {
+      total: 0,
+      correctAccepts: 0, // Navio bom aceito
+      correctRejects: 0, // Navio ruim (tóxico ou grande em maré baixa) recusado
+      falseRejects: 0,   // Navio bom recusado sem necessidade
+      falseAccepts: 0,   // Navio ruim autorizado erroneamente
+      groundedShips: 0
+    };
 
     let currentShip = {
       x: -160, y: 335, width: 140, height: 75, speed: 2, flipped: false, data: null
     };
 
+    function updateTideDisplay() {
+      if (isHighTide) {
+        tideIndicator.innerText = "MARÉ: ALTA (Segura para Navios Grandes)";
+        tideIndicator.className = "text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-emerald-950 text-emerald-300 border border-emerald-600";
+      } else {
+        tideIndicator.innerText = "MARÉ: BAIXA (Risco de Encalhe para Grandes)";
+        tideIndicator.className = "text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-amber-950 text-amber-300 border border-amber-600";
+      }
+    }
+
     function generateRandomShip() {
+      isHighTide = Math.random() < 0.5;
+      updateTideDisplay();
+
       if (shipsEvaluated === 0 && currentDay === 1) {
         return { ...SHIP_TYPES[0] };
       }
       const template = SHIP_TYPES[Math.floor(Math.random() * SHIP_TYPES.length)];
-      isHighTide = Math.random() < 0.5;
-
       return { ...template };
     }
 
@@ -414,9 +436,9 @@
 
     function handleGroundedShip() {
       dayStats.groundedShips++;
+      dayStats.falseAccepts++;
       dayStats.total++;
       setTimeout(() => {
-        alert(`ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" ENCALHOU no canal devido à maré baixa!`);
         gameState = 'LEAVING_REJECT';
         currentShip.flipped = true;
       }, 300);
@@ -451,24 +473,39 @@
       docPanel.classList.remove('hidden');
     }
 
+    // AÇÃO: AUTORIZAR
     acceptBtn.addEventListener('click', () => {
       docPanel.classList.add('hidden');
+      const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
 
       if (currentShip.data.isLarge && !isHighTide) {
         gameState = 'GROUNDED';
         handleGroundedShip();
       } else {
         dayStats.total++;
-        dayStats.accepted++;
-        if (currentShip.data.isHazard) dayStats.hazardsAccepted++;
+        if (isBadShip) {
+          dayStats.falseAccepts++;
+        } else {
+          dayStats.correctAccepts++;
+        }
         gameState = 'LEAVING_ACCEPT';
       }
     });
 
+    // AÇÃO: RECUSAR
     rejectBtn.addEventListener('click', () => {
       docPanel.classList.add('hidden');
       dayStats.total++;
-      dayStats.rejected++;
+      
+      // Avalia se o navio realmente devia ser recusado
+      const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
+
+      if (isBadShip) {
+        dayStats.correctRejects++; // Acertou ao recusar!
+      } else {
+        dayStats.falseRejects++;   // Errou: recusou um navio seguro!
+      }
+
       currentShip.flipped = true;
       gameState = 'LEAVING_REJECT';
     });
@@ -489,26 +526,34 @@
       spawnShip();
     }
 
+    // AVALIAÇÃO DE DESEMPENHO DO DIA
     function triggerEndOfDay() {
       gameState = 'DAY_END';
       document.getElementById('reportDay').innerText = currentDay;
       document.getElementById('repTotal').innerText = dayStats.total;
-      document.getElementById('repAccepted').innerText = dayStats.accepted;
-      document.getElementById('repRejected').innerText = dayStats.rejected;
+      document.getElementById('repCorrectAccept').innerText = dayStats.correctAccepts;
+      document.getElementById('repCorrectReject').innerText = dayStats.correctRejects;
+      
+      const totalErrors = dayStats.falseAccepts + dayStats.falseRejects;
+      document.getElementById('repErrors').innerText = totalErrors;
 
       const impactBox = document.getElementById('reportImpact');
-      impactBox.innerHTML = "";
+      const starRating = document.getElementById('starRating');
 
-      if (dayStats.hazardsAccepted > 0) {
-        impactBox.innerHTML = `<span class="text-rose-700 font-bold">ALERTA:</span> ${dayStats.hazardsAccepted} embarcação(ões) de alto risco autorizada(s)!`;
-      } else if (dayStats.accepted === 0) {
-        impactBox.innerHTML = `<span class="text-amber-700 font-bold">ATENÇÃO:</span> Nenhum navio foi autorizado a atracar hoje.`;
+      // Sistema de Estrelas e Diagnóstico
+      if (totalErrors === 0) {
+        starRating.innerText = "★★★";
+        impactBox.innerHTML = `<span class="text-emerald-700 font-bold">EXCELENTE:</span> Inspeção perfeita! Autorizou navios seguros e bloqueou todos os riscos sem prejuízos.`;
+      } else if (totalErrors === 1) {
+        starRating.innerText = "★★☆";
+        if (dayStats.falseRejects > 0) {
+          impactBox.innerHTML = `<span class="text-amber-700 font-bold">ATENÇÃO:</span> Bloqueou os perigos, mas recusou <span class="font-bold">${dayStats.falseRejects}</span> navio(s) regular(es) e seguro(s) sem motivo!`;
+        } else {
+          impactBox.innerHTML = `<span class="text-rose-700 font-bold">ALERTA:</span> Deixou passar <span class="font-bold">${dayStats.falseAccepts}</span> embarcação com irregularidades ou risco de encalhe!`;
+        }
       } else {
-        impactBox.innerHTML = `<span class="text-emerald-700 font-bold">EXCELENTE:</span> O ecossistema marinho permaneceu protegido hoje.`;
-      }
-
-      if (dayStats.groundedShips > 0) {
-        impactBox.innerHTML += `<br><span class="text-rose-700 font-bold">INCIDENTES:</span> ${dayStats.groundedShips} navio(s) encalharam por causa da maré.`;
+        starRating.innerText = "★☆☆";
+        impactBox.innerHTML = `<span class="text-rose-800 font-bold">DESEMPENHO CRÍTICO:</span> Vários erros cometidos! (${dayStats.falseRejects} recusas indevidas e ${dayStats.falseAccepts} autorizações perigosas).`;
       }
 
       reportModal.classList.remove('hidden');
@@ -518,11 +563,11 @@
       reportModal.classList.add('hidden');
       currentDay++;
       shipsEvaluated = 0;
-      dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
+      dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
       spawnShip();
     });
 
-    // Loop do jogo
+    // Loop principal
     function gameLoop() {
       ctx.clearRect(0, 0, 800, 450);
       drawScenario();
