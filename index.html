@@ -30,7 +30,7 @@
       border-radius: 3px;
     }
 
-    /* Novo Fundo do Manifesto de Carga com bordas internas ajustadas */
+    /* Fundo do Manifesto de Carga com bordas internas ajustadas */
     .doc-bg {
       background-image: url('assets/manifesto_carga.png');
       background-size: 100% 100%;
@@ -61,20 +61,17 @@
       <!-- Canvas -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel (Estilo Documento / Formolário Oficial) -->
+      <!-- Document Modal / Panel (Estilo Documento / Formulário Oficial) -->
       <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88%] sm:w-[75%] max-w-md aspect-square doc-bg text-amber-950 p-7 sm:p-10 shadow-2xl z-20 flex flex-col justify-between">
         
-        <!-- Cabeçalho Oficial -->
-        <div class="border-b-2 border-amber-950/40 pb-2 mt-1">
-          <div class="flex justify-between items-center">
-            <span class="pixel-font text-[7px] sm:text-[9px] text-amber-900/80 uppercase tracking-widest">AUTORIDADE PORTUÁRIA</span>
-            <span class="pixel-font bg-amber-950 text-amber-100 text-[6px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold">OFICIAL</span>
-          </div>
+        <!-- Cabeçalho Centralizado Sem 'OFICIAL' -->
+        <div class="border-b-2 border-amber-950/40 pb-2 mt-1 text-center">
+          <span class="pixel-font text-[7px] sm:text-[9px] text-amber-900/80 uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
           <h2 class="pixel-font text-[11px] sm:text-[13px] uppercase tracking-tight text-amber-950 mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
         <!-- Corpo do Documento / Ficha Técnica -->
-        <div class="my-auto space-y-2.5 sm:space-y-3 font-mono">
+        <div class="my-auto space-y-2 sm:space-y-2.5 font-mono">
           
           <!-- Seção 1: Embarcação e Rota -->
           <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15">
@@ -88,27 +85,28 @@
             </div>
           </div>
 
-          <!-- Seção 2: Detalhes do Carregamento -->
-          <div class="grid grid-cols-2 gap-2">
-            <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
-              <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Carga Declarada</span>
-              <span id="docCargo" class="text-[13px] sm:text-[15px] font-bold text-amber-950 truncate mt-1"></span>
-            </div>
-            <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
-              <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Calado / Porte</span>
-              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-amber-950 truncate mt-1"></span>
-            </div>
+          <!-- Seção 2: Carga Declarada (Largura Total para não cortar o texto) -->
+          <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col">
+            <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Carga Declarada</span>
+            <span id="docCargo" class="text-[13px] sm:text-[15px] font-bold text-amber-950 mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
-          <!-- Seção 3: Risco / Toxicidade com Indicador Visual -->
-          <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col gap-1">
-            <div class="flex justify-between items-center">
-              <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Nível de Toxicidade</span>
-              <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
+          <!-- Seção 3: Porte e Nível de Toxicidade lado a lado na linha de baixo -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
+              <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Porte</span>
+              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-amber-950 mt-0.5"></span>
             </div>
-            <!-- Barra Visual de Risco -->
-            <div class="w-full h-2 sm:h-2.5 bg-amber-950/20 rounded-full overflow-hidden flex p-0.5 border border-amber-950/20">
-              <div id="toxicityBar" class="h-full rounded-full transition-all duration-300" style="width: 20%;"></div>
+
+            <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] sm:text-[11px] font-bold text-amber-900/70 uppercase">Toxicidade</span>
+                <span id="docToxicityText" class="text-[11px] sm:text-[13px] font-bold"></span>
+              </div>
+              <!-- Barra Visual de Risco -->
+              <div class="w-full h-2 bg-amber-950/20 rounded-full overflow-hidden flex p-0.5 border border-amber-950/20 mt-1">
+                <div id="toxicityBar" class="h-full rounded-full transition-all duration-300" style="width: 20%;"></div>
+              </div>
             </div>
           </div>
 
@@ -414,13 +412,13 @@
       toxBar.style.width = `${percentage}%`;
 
       if (data.toxicityVal === 0) {
-        toxText.className = "text-[12px] sm:text-[14px] font-bold text-emerald-800";
+        toxText.className = "text-[11px] sm:text-[13px] font-bold text-emerald-800";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-emerald-600";
       } else if (data.toxicityVal <= 2) {
-        toxText.className = "text-[12px] sm:text-[14px] font-bold text-amber-800";
+        toxText.className = "text-[11px] sm:text-[13px] font-bold text-amber-800";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-amber-500";
       } else {
-        toxText.className = "text-[12px] sm:text-[14px] font-bold text-rose-900";
+        toxText.className = "text-[11px] sm:text-[13px] font-bold text-rose-900";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-rose-600";
       }
 
