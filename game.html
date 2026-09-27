@@ -464,13 +464,9 @@
       if (pImg && pImg.complete && pImg.naturalWidth > 0) {
         const frameWidth = 120; 
         const frameHeight = 84;
-        const totalFrames = 11;
-        
-        const currentFrameIndex = Math.floor(Date.now() / 150) % totalFrames;
-        const sheetColumns = 3; 
-        
-        const sx = (currentFrameIndex % sheetColumns) * frameWidth;
-        const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
+
+        const sx = 0;
+        const sy = 0;
 
         ctx.drawImage(pImg, sx, sy, frameWidth, frameHeight, 510, 75, 170, 110);
       }
