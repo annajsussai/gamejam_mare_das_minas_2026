@@ -897,7 +897,7 @@
     };
 
     let currentShip = {
-      x: -160, y: 335, width: 140, height: 75, speed: 2, flipped: false, data: null
+      x: -160, y: 335, width: 168, height: 90, speed: 2, flipped: false, data: null
     };
 
     function updateTideDisplay() {
@@ -1002,7 +1002,7 @@
     function drawShip() {
       if (!currentShip.data) return;
       ctx.save();
-      currentShip.y = (canvas.seaY || 370) - 45;
+      currentShip.y = (canvas.seaY || 370) - 54;
 
       const x = currentShip.x;
       const y = currentShip.y;
