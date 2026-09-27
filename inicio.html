@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prévia — Introdução do Jogo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #02070b;
+  }
+
+  #introScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    overflow: hidden;
+    font-family: 'VT323', monospace;
+    color: #f4f1ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---------- CENÁRIO DE FUNDO ---------- */
+  #introBg {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/cenario.png');
+    background-size: cover;
+    background-position: center 60%;
+    image-rendering: pixelated;
+    filter: saturate(0.85) brightness(0.55);
+    transform: scale(1.04);
+  }
+
+  /* leve movimento de "respiração" no fundo, tipo maré */
+  @keyframes bgDrift {
+    0%   { transform: scale(1.04) translateY(0px); }
+    50%  { transform: scale(1.06) translateY(-6px); }
+    100% { transform: scale(1.04) translateY(0px); }
+  }
+  #introBg { animation: bgDrift 14s ease-in-out infinite; }
+
+  #introVinheta {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, rgba(2,7,11,0.25) 0%, rgba(2,7,11,0.82) 78%),
+      linear-gradient(180deg, rgba(2,7,11,0.55) 0%, rgba(2,7,11,0.35) 30%, rgba(2,7,11,0.35) 70%, rgba(2,7,11,0.75) 100%);
+  }
+
+  /* scanlines sutis pra dar clima retrô sem pesar no texto */
+  #introScan {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.14) 0px,
+      rgba(0,0,0,0.14) 1px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0) 3px
+    );
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+
+  /* ---------- CONTEÚDO ---------- */
+  #introContent {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(94vw, 760px);
+    padding: 0 16px;
+  }
+
+  #introNarrationBox {
+    min-height: 150px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 26px;
+    background: rgba(4, 12, 18, 0.55);
+    border: 2px solid rgba(217, 119, 6, 0.55);
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset, 0 8px 24px rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity .7s ease;
+  }
+
+  #introNarrationBox.visible { opacity: 1; }
+
+  #introNarration {
+    font-size: clamp(19px, 3vw, 30px);
+    line-height: 1.35;
+    text-align: center;
+    text-shadow: 2px 2px 0 #000, 0 0 16px rgba(0,0,0,.7);
+    letter-spacing: 0.3px;
+  }
+
+  #introNarration .cursor {
+    display: inline-block;
+    width: 0.5ch;
+    margin-left: 2px;
+    animation: blink 0.9s steps(1) infinite;
+    color: #facc15;
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  #skipHint {
+    margin-top: 10px;
+    font-size: clamp(13px, 1.6vw, 16px);
+    color: rgba(244, 241, 234, 0.55);
+    opacity: 0;
+    transition: opacity .6s ease;
+    height: 1.3em;
+  }
+  #skipHint.visible { opacity: 1; }
+
+  /* ---------- PLACA DE OBJETIVOS (inspirada na placa do cenário) ---------- */
+  #objectiveBox {
+    display: none;
+    width: 100%;
+    background: rgba(5, 15, 24, .82);
+    border: 3px solid #d97706;
+    border-radius: 10px;
+    padding: 22px 24px 26px;
+    box-shadow: 0 0 0 2px #7c2d12 inset, 0 10px 30px rgba(0,0,0,.6);
+    animation: objectiveAppear .6s ease forwards;
+    position: relative;
+  }
+
+  /* "poste" decorativo lembrando os pilares de madeira do cais */
+  #objectiveBox::before,
+  #objectiveBox::after {
+    content: "";
+    position: absolute;
+    top: -14px;
+    width: 14px;
+    height: 22px;
+    background: #7c4a2d;
+    border: 2px solid #4a2c18;
+    border-radius: 2px;
+  }
+  #objectiveBox::before { left: 22px; }
+  #objectiveBox::after  { right: 22px; }
+
+  #objectiveBox h2 {
+    margin: 0 0 18px;
+    color: #facc15;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 2.3vw, 22px);
+    text-align: center;
+    text-shadow: 2px 2px 0 #7c2d12;
+  }
+
+  #objectiveGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+  }
+
+  #objectiveGrid p {
+    margin: 0;
+    padding: 12px 10px;
+    font-size: clamp(17px, 2.3vw, 23px);
+    line-height: 1.2;
+    text-align: center;
+    border: 1px solid rgba(217, 119, 6, .5);
+    border-radius: 5px;
+    background: rgba(2, 7, 11, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #objectiveGrid p::before {
+    content: "▸";
+    color: #facc15;
+  }
+
+  @media (max-width: 560px) {
+    #objectiveGrid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- BOTÕES COM O SPRITE bg_btn.png ---------- */
+  .intro-btn {
+    display: none;
+    margin-top: 26px;
+    min-width: 220px;
+    background: transparent;
+    color: #4a2410;
+    font-family: 'Press Start 2P', monospace;
+    font-weight: bold;
+    border: none;
+    padding: 20px 34px 24px;
+    cursor: pointer;
+    font-size: clamp(11px, 1.9vw, 15px);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.25);
+    background-image: url('assets/bg_btn.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    image-rendering: pixelated;
+    transition: transform .12s ease, filter .12s ease;
+    animation: objectiveAppear .6s ease forwards;
+  }
+
+  .intro-btn:hover {
+    transform: translateY(-2px) scale(1.04);
+    filter: brightness(1.12);
+  }
+
+  .intro-btn:active {
+    transform: translateY(1px) scale(0.98);
+    filter: brightness(0.94);
+  }
+
+  @keyframes objectiveAppear {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  #introScreen.fadeOut {
+    animation: introFadeOut .6s ease forwards;
+  }
+  @keyframes introFadeOut {
+    to { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="introScreen">
+  <div id="introBg"></div>
+  <div id="introVinheta"></div>
+  <div id="introScan"></div>
+
+  <div id="introContent">
+
+    <div id="introNarrationBox">
+      <div id="introNarration"></div>
+    </div>
+    <div id="skipHint">clique para pular</div>
+
+    <button id="showObjectivesBtn" class="intro-btn">VER OBJETIVOS</button>
+
+    <div id="objectiveBox">
+      <h2>SEU OBJETIVO</h2>
+      <div id="objectiveGrid">
+        <p>Avalie as embarcações</p>
+        <p>Analise suas informações</p>
+        <p>Observe a maré</p>
+        <p>Proteja o ecossistema</p>
+      </div>
+    </div>
+
+    <button id="startIntroBtn" class="intro-btn">COMEÇAR</button>
+  </div>
+</div>
+
+<script>
+  // ---------- referências dos elementos ----------
+  var introScreen = document.getElementById('introScreen');
+  var introNarrationBox = document.getElementById('introNarrationBox');
+  var introNarration = document.getElementById('introNarration');
+  var skipHint = document.getElementById('skipHint');
+  var showObjectivesBtn = document.getElementById('showObjectivesBtn');
+  var objectiveBox = document.getElementById('objectiveBox');
+  var startIntroBtn = document.getElementById('startIntroBtn');
+
+  // ---------- textos da narração ----------
+  var introTexts = [
+    "“O porto desperta antes mesmo do sol. Embarcações começam a surgir no horizonte. Algumas trazem alimentos, medicamentos e equipamentos essenciais. Outras podem carregar ameaças para as águas e para a vida costeira.”",
+    "“Mas nem sempre é possível saber o que existe por trás de cada carga. Nos próximos três dias, o porto estará sob sua responsabilidade. Observe. Investigue. Decida.”"
+  ];
+
+  // ---------- variáveis globais de controle da máquina de escrever ----------
+  var indiceTextoAtual = 0;
+  var indiceCaractereAtual = 0;
+  var timeoutDigitacao = null;
+  var digitando = false;
+  var callbackAoTerminarAtual = null; // guarda o "aoTerminar" da digitação em curso
+  var velocidadeDigitacao = 34; // ms por caractere (um pouco mais devagar)
+
+  // digita o texto caractere por caractere dentro do elemento alvo
+  function digitarTexto(texto, aoTerminar) {
+    digitando = true;
+    indiceCaractereAtual = 0;
+    callbackAoTerminarAtual = aoTerminar;
+    introNarration.innerHTML = '<span class="letras"></span><span class="cursor">▌</span>';
+    var spanLetras = introNarration.querySelector('.letras');
+
+    function passo() {
+      if (indiceCaractereAtual < texto.length) {
+        spanLetras.textContent += texto.charAt(indiceCaractereAtual);
+        indiceCaractereAtual++;
+        timeoutDigitacao = setTimeout(passo, velocidadeDigitacao);
+      } else {
+        digitando = false;
+        if (aoTerminar) aoTerminar();
+      }
+    }
+    passo();
+  }
+
+  // completa o texto instantaneamente (sem efeito de máquina de escrever)
+  // e continua o fluxo normal (mesmo callback que rodaria ao terminar de digitar)
+  function completarDigitacaoAgora() {
+    clearTimeout(timeoutDigitacao);
+    var spanLetras = introNarration.querySelector('.letras');
+    if (spanLetras) spanLetras.textContent = introTexts[indiceTextoAtual];
+    digitando = false;
+    if (callbackAoTerminarAtual) {
+      var callback = callbackAoTerminarAtual;
+      callbackAoTerminarAtual = null;
+      callback();
+    }
+  }
+
+  // controla a sequência: mostra caixa -> digita -> espera -> some -> próximo
+  function mostrarTexto(indice) {
+    if (indice >= introTexts.length) {
+      skipHint.classList.remove('visible');
+      introNarrationBox.classList.remove('visible');
+      setTimeout(function () {
+        showObjectivesBtn.style.display = 'block';
+      }, 500);
+      return;
+    }
+
+    indiceTextoAtual = indice;
+    introNarrationBox.classList.add('visible');
+    skipHint.classList.add('visible');
+
+    digitarTexto(introTexts[indice], function () {
+      setTimeout(function () {
+        introNarrationBox.classList.remove('visible');
+        setTimeout(function () {
+          mostrarTexto(indice + 1);
+        }, 600);
+      }, 3700);
+    });
+  }
+
+  // clique no texto enquanto ainda está digitando: completa o texto na hora
+  // (sem esperar a máquina de escrever) e segue o fluxo normal a partir daí
+  introNarrationBox.style.cursor = 'pointer';
+  introNarrationBox.addEventListener('click', function () {
+    if (digitando) {
+      completarDigitacaoAgora();
+    }
+  });
+
+  showObjectivesBtn.addEventListener('click', function () {
+    showObjectivesBtn.style.display = 'none';
+    objectiveBox.style.display = 'block';
+    startIntroBtn.style.display = 'block';
+  });
+
+  startIntroBtn.addEventListener('click', function () {
+    introScreen.classList.add('fadeOut');
+    setTimeout(function () {
+      introScreen.style.display = 'none';
+      console.log("Jogo iniciado!");
+    }, 600);
+  });
+
+  mostrarTexto(0);
+</script>
+</body>
+</html>
