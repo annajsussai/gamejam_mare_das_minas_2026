@@ -65,39 +65,34 @@
       <div id="docPanel" class="hidden absolute top-1.5 sm:top-2 left-1/2 -translate-x-1/2 w-[98%] max-w-4xl doc-bg text-purple-950 pt-5 sm:pt-7 pb-10 sm:pb-14 px-6 sm:px-10 shadow-2xl z-20 pixel-font">
         
         <!-- Cabeçalho do Manifesto -->
-        <div class="border-b-2 border-purple-900/30 pb-2 mb-4 flex justify-between items-center pr-20 sm:pr-24 pl-6 sm:pl-10">
+        <div class="border-b-2 border-purple-900/30 pb-2 mb-4 flex justify-between items-center pr-24 sm:pr-28 pl-4 sm:pl-8">
           <h2 class="text-[11px] sm:text-[14px] uppercase tracking-tight font-bold">MANIFESTO DE CARGA</h2>
           <span class="bg-purple-200/60 text-purple-950 text-[8px] sm:text-[10px] px-2 py-0.5 rounded font-bold border border-purple-400/50">OFICIAL</span>
         </div>
 
-        <!-- Conteúdo centralizado com afastamento para a lupa -->
-        <div class="pr-20 sm:pr-24 pl-12 sm:pl-16">
-          <!-- Dados do Manifesto -->
-          <div class="space-y-2.5 text-[9px] sm:text-[11px] max-w-lg mx-auto">
-            <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-3">
-              <span class="font-bold opacity-80 w-28 text-right shrink-0">NOME:</span>
-              <span id="docName" class="font-bold w-64 text-left truncate"></span>
-            </div>
-            <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-3">
-              <span class="font-bold opacity-80 w-28 text-right shrink-0">ROTA:</span>
-              <span id="docRoute" class="font-bold w-64 text-left truncate"></span>
-            </div>
-            <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-3">
-              <span class="font-bold opacity-80 w-28 text-right shrink-0">CARGA:</span>
-              <span id="docCargo" class="font-bold w-64 text-left truncate"></span>
-            </div>
-            <div class="flex justify-center items-center border-b border-purple-900/10 pb-1.5 gap-3">
-              <span class="font-bold opacity-80 w-28 text-right shrink-0">TOXICIDADE:</span>
-              <span id="docToxicity" class="font-bold w-64 text-left truncate"></span>
-            </div>
-            <div class="flex justify-center items-center pb-1 gap-3">
-              <span class="font-bold opacity-80 w-28 text-right shrink-0">CALADO:</span>
-              <span id="docSize" class="font-bold w-64 text-left truncate"></span>
-            </div>
+        <!-- Conteúdo com Grid alinhado e organizado -->
+        <div class="pr-24 sm:pr-28 pl-6 sm:pl-10">
+          <div class="grid grid-cols-[110px_1fr] sm:grid-cols-[130px_1fr] gap-y-2.5 text-[9px] sm:text-[11px] max-w-md mx-auto items-center">
+            
+            <span class="font-bold opacity-80 text-left border-b border-purple-900/10 pb-1.5">NOME:</span>
+            <span id="docName" class="font-bold text-left truncate border-b border-purple-900/10 pb-1.5"></span>
+
+            <span class="font-bold opacity-80 text-left border-b border-purple-900/10 pb-1.5">ROTA:</span>
+            <span id="docRoute" class="font-bold text-left truncate border-b border-purple-900/10 pb-1.5"></span>
+
+            <span class="font-bold opacity-80 text-left border-b border-purple-900/10 pb-1.5">CARGA:</span>
+            <span id="docCargo" class="font-bold text-left truncate border-b border-purple-900/10 pb-1.5"></span>
+
+            <span class="font-bold opacity-80 text-left border-b border-purple-900/10 pb-1.5">TOXICIDADE:</span>
+            <span id="docToxicity" class="font-bold text-left truncate border-b border-purple-900/10 pb-1.5"></span>
+
+            <span class="font-bold opacity-80 text-left pb-1">CALADO:</span>
+            <span id="docSize" class="font-bold text-left truncate pb-1"></span>
+
           </div>
 
           <!-- Botões Aceitar / Recusar -->
-          <div class="mt-4 sm:mt-6 flex gap-4 max-w-xs mx-auto justify-center">
+          <div class="mt-5 sm:mt-6 flex gap-4 max-w-xs mx-auto justify-center">
             <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded border-b-2 border-emerald-800 active:translate-y-0.5 text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
               ✓ ACEITAR
             </button>
