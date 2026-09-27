@@ -93,10 +93,6 @@
     <div class="flex justify-between items-center bg-slate-800 p-1.5 sm:p-3 rounded border border-slate-700 text-xs sm:text-base">
       <div class="flex items-center gap-2 sm:gap-4">
         <span class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
-        <span class="text-sm sm:text-xl text-cyan-300">NAVIO: <span id="shipCount">1</span> / 4</span>
-      </div>
-      <div class="flex items-center gap-2 sm:gap-3">
-        <span id="tideIndicator" class="text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-sky-900 text-sky-200 border border-sky-600">MARÉ: CARREGANDO...</span>
       </div>
     </div>
 
@@ -209,9 +205,10 @@
 
     </div>
 
-    <!-- Dica rodapé -->
+    <!-- Dica rodapé + Quantidade de Navios na Direita -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
       <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
+      <span class="text-xs sm:text-base text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / 4</span>
     </div>
 
   </div>
@@ -228,7 +225,6 @@
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
-    const tideIndicator = document.getElementById('tideIndicator');
 
     // Imagens do jogo
     const images = { 
@@ -343,13 +339,7 @@
     };
 
     function updateTideDisplay() {
-      if (isHighTide) {
-        tideIndicator.innerText = "MARÉ: ALTA (Segura para Navios Grandes)";
-        tideIndicator.className = "text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-emerald-950 text-emerald-300 border border-emerald-600";
-      } else {
-        tideIndicator.innerText = "MARÉ: BAIXA (Risco de Encalhe para Grandes)";
-        tideIndicator.className = "text-xs sm:text-base px-2 py-0.5 rounded font-bold bg-amber-950 text-amber-300 border border-amber-600";
-      }
+      // Maré alternada internamente sem exibir texto no topo
     }
 
     function generateRandomShip() {
