@@ -292,6 +292,20 @@
       80% { opacity: 1; }
       100% { opacity: 0; }
     }
+
+    /* ---------- Overlay de fade (transição fim do tutorial -> Dia 2) ---------- */
+    #fadeOverlay {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease;
+    }
+    #fadeOverlay.visible {
+      opacity: 1;
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen min-h-[100dvh] text-white p-1 sm:p-3 overflow-hidden">
@@ -436,6 +450,11 @@
             <div id="reportImpact" class="pixel-font text-[8px] sm:text-[11px] leading-relaxed w-full"></div>
           </div>
 
+          <!-- Frase de encorajamento exibida apenas ao concluir o tutorial -->
+          <div id="readyLine" class="hidden pixel-font text-[9px] sm:text-[12px] text-[#4a154b] font-bold tracking-wide mb-1">
+            AGORA VOCÊ ESTÁ PRONTO!
+          </div>
+
           <!-- Botão Estilizado em Pixel Art Retrô 2D -->
           <div class="flex justify-center mb-1">
             <button id="nextDayBtn" class="pixel-font pixel-btn-purple px-6 sm:px-10 py-1.5 text-[9px] sm:text-[11px] font-bold tracking-wide transition-transform flex items-center gap-2">
@@ -445,6 +464,9 @@
 
         </div>
       </div>
+
+      <!-- Overlay de fade (transição suave entre o fim do tutorial e o Dia 2) -->
+      <div id="fadeOverlay"></div>
 
     </div>
 
@@ -1182,6 +1204,7 @@
       nextDayBtn.innerHTML = currentDay === 1
         ? 'INICIAR DIA 2 &rarr;'
         : 'CONTINUAR &rarr;';
+      document.getElementById('readyLine').classList.toggle('hidden', currentDay !== 1);
       document.getElementById('repTotal').innerText = dayStats.total;
       document.getElementById('repCorrectAccept').innerText = dayStats.correctAccepts;
       document.getElementById('repCorrectReject').innerText = dayStats.correctRejects;
@@ -1206,13 +1229,30 @@
       reportModal.classList.remove('hidden');
     }
 
-    nextDayBtn.addEventListener('click', () => {
-      reportModal.classList.add('hidden');
+    const fadeOverlay = document.getElementById('fadeOverlay');
+
+    function goToNextDay() {
       currentDay++;
       shipsEvaluated = 0;
       dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
       updateHeaderForDay();
       spawnShip();
+    }
+
+    nextDayBtn.addEventListener('click', () => {
+      const isEndOfTutorial = currentDay === 1;
+      reportModal.classList.add('hidden');
+
+      if (isEndOfTutorial) {
+        // Fadeout suave levando direto para o jogo (Dia 2)
+        fadeOverlay.classList.add('visible');
+        setTimeout(() => {
+          goToNextDay();
+          setTimeout(() => fadeOverlay.classList.remove('visible'), 60);
+        }, 700);
+      } else {
+        goToNextDay();
+      }
     });
 
     function gameLoop() {
