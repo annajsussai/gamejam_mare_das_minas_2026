@@ -479,6 +479,80 @@
 
     ctx.imageSmoothingEnabled = false;
 
+    // ==================== SONS DO TUTORIAL ====================
+    const somButton = new Audio();
+    somButton.preload = 'auto';
+    somButton.src = 'assets/button_click.mp3';
+    somButton.addEventListener('error', function () {
+      // Se o arquivo enviado estiver em outro formato, tenta os formatos comuns.
+      const atual = somButton.src.toLowerCase();
+      if (atual.endsWith('.mp3')) somButton.src = 'assets/button_click.wav';
+      else if (atual.endsWith('.wav')) somButton.src = 'assets/button_click.ogg';
+    });
+    const somPapel = new Audio('assets/papel_documentacao.mp3');
+    const somTeclado = new Audio('assets/teclado.mp3');
+    const somNavio = new Audio('assets/som_navio.mp3');
+    const somOceano = new Audio('assets/ocean_ambiente.mp3');
+
+    somButton.volume = 0.5;
+    somPapel.volume = 0.55;
+    somTeclado.volume = 0.35;
+    somNavio.volume = 0.6;
+    somOceano.volume = 0.25;
+    somOceano.loop = true;
+
+    function tocarAudio(audio) {
+      audio.currentTime = 0;
+      const promessa = audio.play();
+      if (promessa && promessa.catch) {
+        promessa.catch(function (erro) {
+          console.warn('Não foi possível tocar o áudio:', erro);
+        });
+      }
+    }
+
+    // O ambiente começa na primeira interação do jogador.
+    // Se o navegador bloquear a primeira tentativa, tentamos novamente na próxima interação.
+    function iniciarAmbiente() {
+      if (!somOceano.paused) return;
+
+      const promessa = somOceano.play();
+      if (promessa && promessa.catch) {
+        promessa.catch(function (erro) {
+          console.warn('Não foi possível iniciar o som do oceano:', erro);
+        });
+      }
+    }
+
+    // Qualquer interação do jogador pode liberar o áudio.
+    document.addEventListener('pointerdown', function () {
+      iniciarAmbiente();
+    });
+
+    // Som de clique usando delegação: funciona também para botões
+    // que sejam exibidos/criados depois que o jogo já começou.
+    document.addEventListener('click', function (event) {
+      const button = event.target.closest('button');
+      if (!button) return;
+
+      iniciarAmbiente();
+      tocarAudio(somButton);
+    }, true);
+
+    let ultimoSomTeclado = 0;
+    function pararSomTeclado() {
+      somTeclado.pause();
+      somTeclado.currentTime = 0;
+    }
+
+    function somDeDigitacao() {
+      const agora = Date.now();
+      // Evita que o áudio fique sobreposto a cada caractere.
+      if (agora - ultimoSomTeclado < 65) return;
+      ultimoSomTeclado = agora;
+      tocarAudio(somTeclado);
+    }
+
     // Elementos da Interface
     const docPanel = document.getElementById('docPanel');
     const acceptBtn = document.getElementById('acceptBtn');
@@ -713,6 +787,7 @@
     }
 
     function typeGestorText(text, onDone) {
+      pararSomTeclado();
       isTyping = true;
       gestorTextEl.innerHTML = '<span class="letras"></span><span class="cursor">▌</span>';
       const spanLetras = gestorTextEl.querySelector('.letras');
@@ -720,9 +795,11 @@
       function step() {
         if (i < text.length) {
           spanLetras.textContent += text.charAt(i);
+          somDeDigitacao();
           i++;
           typingTimeout = setTimeout(step, 26);
         } else {
+          pararSomTeclado();
           isTyping = false;
           if (onDone) onDone();
         }
@@ -732,6 +809,7 @@
 
     function completeGestorTyping(text) {
       clearTimeout(typingTimeout);
+      pararSomTeclado();
       const spanLetras = gestorTextEl.querySelector('.letras');
       if (spanLetras) spanLetras.textContent = text;
       isTyping = false;
@@ -1056,6 +1134,7 @@
     }
 
     function handleShipArrival() {
+      tocarAudio(somNavio);
       if (isFirstGuidedShip()) {
         gameState = 'TUTORIAL_INTRO';
         startGuidedTutorial(function () {
@@ -1086,6 +1165,7 @@
     }
 
     function openInspectionPanel() {
+      tocarAudio(somPapel);
       const data = currentShip.data;
       document.getElementById('docName').innerText = data.name;
       document.getElementById('docRoute').innerText = data.route;
