@@ -165,7 +165,7 @@
       <!-- Alerta Ambiental -->
       <div id="alertBox" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md bg-slate-950/95 border-4 border-rose-600 rounded p-4 text-center z-40 shadow-2xl">
         <h3 class="pixel-font text-rose-500 text-xs sm:text-sm mb-2">ALERTA AMBIENTAL</h3>
-        <p id="alertMessage" class="font-mono text-sm sm:text-base text-slate-200 mb-4 leading-relaxed"></p>
+        <p id="alertMessage" class="font-mono text-xs sm:text-sm text-slate-200 mb-4 leading-relaxed break-words whitespace-pre-wrap"></p>
         <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-6 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider">CONTINUAR INSPEÇÃO</button>
       </div>
 
@@ -305,6 +305,42 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
+
+// ==================== SISTEMA DE SONS ====================
+
+const somJogo = new Audio('assets/som_jogo.mp3');
+const somNavio = new Audio('assets/som_navio.mp3');
+const somTeclado = new Audio('assets/teclado.mp3');
+const somPapel = new Audio('assets/papel_documentacao.mp3');
+const somClick = new Audio('assets/button_click.wav');
+const somOceano = new Audio('assets/ocean_ambiente.wav');
+
+// Volume dos sons
+somJogo.volume = 0.6;
+somNavio.volume = 0.15;      // navio bem baixinho
+somTeclado.volume = 0.25;    // teclado discreto
+somPapel.volume = 0.5;
+somClick.volume = 0.5;
+somOceano.volume = 0.12;     // oceano bem leve
+
+// Oceano fica durante o jogo
+somOceano.loop = true;
+document.addEventListener('click', () => {
+  somOceano.play().catch(() => {});
+}, { once: true });
+
+// Função para tocar sons sem acumular várias reproduções
+function tocarSom(som) {
+  som.currentTime = 0;
+  som.play().catch(() => {});
+}
+document.querySelectorAll('button').forEach(button => {
+  button.addEventListener('click', () => {
+    tocarSom(somClick);
+  });
+});
+
+// ==================== FIM DO SISTEMA DE SONS ====================
 
     const docPanel = document.getElementById('docPanel');
     const acceptBtn = document.getElementById('acceptBtn');
@@ -464,9 +500,13 @@
       if (pImg && pImg.complete && pImg.naturalWidth > 0) {
         const frameWidth = 120; 
         const frameHeight = 84;
-
-        const sx = 0;
-        const sy = 0;
+        const totalFrames = 11;
+        
+        const currentFrameIndex = Math.floor(Date.now() / 150) % totalFrames;
+        const sheetColumns = 3; 
+        
+        const sx = (currentFrameIndex % sheetColumns) * frameWidth;
+        const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
 
         ctx.drawImage(pImg, sx, sy, frameWidth, frameHeight, 510, 75, 170, 110);
       }
@@ -549,9 +589,10 @@
         currentShip.x += currentShip.speed;
         if (currentShip.x >= 380) {
           currentShip.x = 380;
-          gameState = 'INSPECTING';
-          openInspectionPanel();
-        }
+      gameState = 'INSPECTING';
+          tocarSom(somNavio);
+      openInspectionPanel();
+}
       } else if (gameState === 'LEAVING_ACCEPT') {
         currentShip.x += currentShip.speed * 1.5;
         if (currentShip.x > 850) nextShip();
@@ -577,17 +618,36 @@
       }, 1500);
     }
 
-    function showAlert(msg) {
-      alertMessage.innerText = msg;
-      alertBox.classList.remove('hidden');
-    }
+   function showAlert(msg) {
+  alertMessage.innerText = '';
+  alertBox.classList.remove('hidden');
 
+  somTeclado.loop = true;
+  somTeclado.currentTime = 0;
+  somTeclado.play().catch(() => {});
+
+  let i = 0;
+
+  const escrever = setInterval(() => {
+    alertMessage.innerText += msg.charAt(i);
+
+    i++;
+
+    if (i >= msg.length) {
+      clearInterval(escrever);
+
+      somTeclado.pause();
+      somTeclado.currentTime = 0;
+    }
+  }, 25);
+}
     closeAlertBtn.addEventListener('click', () => {
       alertBox.classList.add('hidden');
       nextShip();
     });
 
     function openInspectionPanel() {
+       tocarSom(somPapel);
       const data = currentShip.data;
       document.getElementById('docName').innerText = data.name;
       document.getElementById('docRoute').innerText = data.route;
@@ -619,12 +679,12 @@
       docPanel.classList.add('hidden');
       const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
 
-      if (currentShip.data.isHazard) {
-        naviosPerigososQueEntraram++;
-        const impactoAmbiental = currentShip.data.toxicityVal * 5;
-        nivelDoEcossistema -= impactoAmbiental;
-        nivelDoEcossistema = Math.max(0, Math.min(100, nivelDoEcossistema));
-      }
+     if (currentShip.data.isHazard) {
+  naviosPerigososQueEntraram++;
+  const impactoAmbiental = currentShip.data.toxicityVal * 5;
+  nivelDoEcossistema -= impactoAmbiental;
+  nivelDoEcossistema = Math.max(0, Math.min(100, nivelDoEcossistema));
+}
 
       if (currentShip.data.isLarge && !isHighTide) {
         gameState = 'GROUNDED';
