@@ -13,7 +13,7 @@
   html, body {
     margin: 0;
     height: 100%;
-    background: #0d1b2a; /* alterado para combinar com o fundo do tutorial (#0d1b2a) */
+    background: #0d1b2a;
   }
 
   body {
@@ -70,25 +70,17 @@
     background-color: #071118;
   }
 
-  /* ---------- CENÁRIO DE FUNDO ---------- */
+  /* ---------- CENÁRIO DE FUNDO (esticado para preencher todo o container) ---------- */
   #introBg {
     position: absolute;
     inset: 0;
     background-image: url('assets/telainicial.png');
-    background-size: cover;
+    background-size: 100% 100%; /* força a imagem a esticar por completo no container */
     background-position: center;
+    background-repeat: no-repeat;
     image-rendering: pixelated;
     filter: saturate(0.95) brightness(0.75);
-    transform: scale(1.04);
   }
-
-  /* leve movimento de "respiração" no fundo, tipo maré */
-  @keyframes bgDrift {
-    0%   { transform: scale(1.04) translateY(0px); }
-    50%  { transform: scale(1.06) translateY(-6px); }
-    100% { transform: scale(1.04) translateY(0px); }
-  }
-  #introBg { animation: bgDrift 14s ease-in-out infinite; }
 
   #introVinheta {
     position: absolute;
