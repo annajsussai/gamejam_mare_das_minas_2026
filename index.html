@@ -279,12 +279,10 @@
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
-      // Desenhar Bóia Flutuando na Água
-      // Mantida sempre normal sem animação/mudança de luz (usa estaticamente boia0.png do sprite sheet)
+      // Desenhar Bóia Flutuando na Água (Corrigido para 64x64px sem cortar)
       if (images.boia.complete && images.boia.naturalWidth > 0) {
-        const buoyY = seaY - 20 + Math.sin(Date.now() / 400) * 3;
-        // Desenha o frame normal (32x32 superior de boia.png)
-        ctx.drawImage(images.boia, 0, 0, 32, 32, 680, buoyY, 32, 32);
+        const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
+        ctx.drawImage(images.boia, 0, 0, 64, 64, 680, buoyY, 48, 48);
       }
     }
 
