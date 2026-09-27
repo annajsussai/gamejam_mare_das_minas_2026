@@ -30,9 +30,9 @@
       border-radius: 3px;
     }
 
-    /* Fundo personalizado para o Manifesto de Carga */
+    /* Novo Fundo do Manifesto de Carga */
     .doc-bg {
-      background-image: url('assets/fundo_feedback.png');
+      background-image: url('assets/manifesto_carga.png');
       background-size: 100% 100%;
       background-repeat: no-repeat;
       background-position: center;
@@ -62,44 +62,44 @@
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
       <!-- Document Modal / Panel -->
-      <div id="docPanel" class="hidden absolute top-1.5 sm:top-2 left-1/2 -translate-x-1/2 w-[98%] max-w-4xl doc-bg text-purple-950 pt-5 sm:pt-7 pb-10 sm:pb-14 px-6 sm:px-10 shadow-2xl z-20 pixel-font">
+      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md aspect-square doc-bg text-amber-950 p-6 sm:p-8 shadow-2xl z-20 pixel-font flex flex-col justify-between">
         
         <!-- Cabeçalho do Manifesto -->
-        <div class="border-b-2 border-purple-900/30 pb-2 mb-4 flex justify-between items-center pr-24 sm:pr-28 pl-4 sm:pl-8">
-          <h2 class="text-[11px] sm:text-[14px] uppercase tracking-tight font-bold">MANIFESTO DE CARGA</h2>
-          <span class="bg-purple-200/60 text-purple-950 text-[8px] sm:text-[10px] px-2 py-0.5 rounded font-bold border border-purple-400/50">OFICIAL</span>
+        <div class="border-b-2 border-amber-900/30 pb-2 flex justify-between items-center mt-2">
+          <h2 class="text-[10px] sm:text-[12px] uppercase tracking-tight font-bold text-amber-950">MANIFESTO DE CARGA</h2>
+          <span class="bg-amber-900/10 text-amber-950 text-[7px] sm:text-[9px] px-1.5 py-0.5 rounded font-bold border border-amber-900/30">OFICIAL</span>
         </div>
 
-        <!-- Conteúdo com Grid alinhado e organizado -->
-        <div class="pr-24 sm:pr-28 pl-6 sm:pl-10">
-          <div class="grid grid-cols-[110px_1fr] sm:grid-cols-[130px_1fr] gap-y-2.5 text-[9px] sm:text-[11px] max-w-md mx-auto items-center">
+        <!-- Conteúdo com Grid alinhado e cores adequadas ao novo fundo -->
+        <div class="my-auto">
+          <div class="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-y-2 text-[9px] sm:text-[11px] items-center">
             
-            <span class="font-bold opacity-80 text-left border-b border-purple-900/10 pb-1.5">NOME:</span>
-            <span id="docName" class="font-bold text-left truncate border-b border-purple-900/10 pb-1.5"></span>
+            <span class="font-bold text-amber-900 text-left border-b border-amber-900/15 pb-1">NOME:</span>
+            <span id="docName" class="font-bold text-left truncate border-b border-amber-900/15 pb-1 text-amber-950"></span>
 
-            <span class="font-bold opacity-80 text-left border-b border-purple-900/10 pb-1.5">ROTA:</span>
-            <span id="docRoute" class="font-bold text-left truncate border-b border-purple-900/10 pb-1.5"></span>
+            <span class="font-bold text-amber-900 text-left border-b border-amber-900/15 pb-1">ROTA:</span>
+            <span id="docRoute" class="font-bold text-left truncate border-b border-amber-900/15 pb-1 text-amber-950"></span>
 
-            <span class="font-bold opacity-80 text-left border-b border-purple-900/10 pb-1.5">CARGA:</span>
-            <span id="docCargo" class="font-bold text-left truncate border-b border-purple-900/10 pb-1.5"></span>
+            <span class="font-bold text-amber-900 text-left border-b border-amber-900/15 pb-1">CARGA:</span>
+            <span id="docCargo" class="font-bold text-left truncate border-b border-amber-900/15 pb-1 text-amber-950"></span>
 
-            <span class="font-bold opacity-80 text-left border-b border-purple-900/10 pb-1.5">TOXICIDADE:</span>
-            <span id="docToxicity" class="font-bold text-left truncate border-b border-purple-900/10 pb-1.5"></span>
+            <span class="font-bold text-amber-900 text-left border-b border-amber-900/15 pb-1">TOXICIDADE:</span>
+            <span id="docToxicity" class="font-bold text-left truncate border-b border-amber-900/15 pb-1 text-amber-950"></span>
 
-            <span class="font-bold opacity-80 text-left pb-1">CALADO:</span>
-            <span id="docSize" class="font-bold text-left truncate pb-1"></span>
+            <span class="font-bold text-amber-900 text-left pb-1">CALADO:</span>
+            <span id="docSize" class="font-bold text-left truncate pb-1 text-amber-950"></span>
 
           </div>
+        </div>
 
-          <!-- Botões Aceitar / Recusar -->
-          <div class="mt-5 sm:mt-6 flex gap-4 max-w-xs mx-auto justify-center">
-            <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded border-b-2 border-emerald-800 active:translate-y-0.5 text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
-              ✓ ACEITAR
-            </button>
-            <button id="rejectBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 px-3 rounded border-b-2 border-rose-800 active:translate-y-0.5 text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
-              ✕ RECUSAR
-            </button>
-          </div>
+        <!-- Botões Aceitar / Recusar -->
+        <div class="flex gap-3 mb-2 justify-center">
+          <button id="acceptBtn" class="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-2 rounded border-b-2 border-emerald-900 active:translate-y-0.5 text-[8px] sm:text-[10px] transition flex items-center justify-center gap-1 shadow-md">
+            ✓ ACEITAR
+          </button>
+          <button id="rejectBtn" class="flex-1 bg-rose-700 hover:bg-rose-600 text-white font-bold py-2 px-2 rounded border-b-2 border-rose-900 active:translate-y-0.5 text-[8px] sm:text-[10px] transition flex items-center justify-center gap-1 shadow-md">
+            ✕ RECUSAR
+          </button>
         </div>
 
       </div>
@@ -164,7 +164,7 @@
       marfrente: new Image(), 
       boia: new Image(), 
       personagem: new Image(),
-      fundoFeedback: new Image(),
+      manifestoCarga: new Image(),
       navioPadrao: new Image()
     };
     let assetsLoaded = false;
@@ -176,7 +176,7 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        fundoFeedback: 'assets/fundo_feedback.png',
+        manifestoCarga: 'assets/manifesto_carga.png',
         navioPadrao: 'assets/navio_padrao.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
