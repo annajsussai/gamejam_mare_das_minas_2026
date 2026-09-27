@@ -89,6 +89,21 @@
       transform: translateY(2px);
     }
 
+    /* Versão com filtro avermelhado para o alerta de emergência */
+    .bg-btn-custom-red {
+      background-image: url('assets/bg_btn.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+      color: #ffffff;
+      filter: hue-rotate(300deg) saturate(1.8) brightness(0.9);
+      text-shadow: 1px 1px #000;
+    }
+    .bg-btn-custom-red:active {
+      transform: translateY(2px);
+    }
+
     .pixel-card {
       background-color: rgba(255, 255, 255, 0.85);
       border: 2px solid #543d2b;
@@ -156,8 +171,8 @@
       <div id="alertBox" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md bg-slate-950/95 border-4 border-rose-600 rounded p-4 text-center z-40 shadow-2xl">
         <h3 class="pixel-font text-rose-500 text-xs sm:text-sm mb-2">ALERTA AMBIENTAL</h3>
         <p id="alertMessage" class="font-mono text-sm sm:text-base text-slate-200 mb-4 leading-relaxed"></p>
-        <!-- Botão customizado com assets/bg_btn.png -->
-        <button id="closeAlertBtn" class="pixel-font bg-btn-custom px-6 py-2 text-xs sm:text-sm font-bold uppercase">OK</button>
+        <!-- Botão customizado vermelho com assets/bg_btn.png -->
+        <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-8 py-2.5 text-xs sm:text-sm font-bold uppercase">OK</button>
       </div>
 
       <!-- Document Modal / Panel -->
@@ -291,7 +306,8 @@
       <p id="finalMessage" class="font-mono text-xs sm:text-sm text-slate-300 bg-slate-950/60 p-3 rounded border border-slate-800 mb-4 leading-relaxed text-left"></p>
 
       <div class="flex justify-center">
-        <button id="restartBtn" class="pixel-font pixel-btn-purple px-6 py-2 text-xs sm:text-sm font-bold">JOGAR NOVAMENTE</button>
+        <!-- Botão customizado no Relatório Final usando assets/bg_btn.png -->
+        <button id="restartBtn" class="pixel-font bg-btn-custom px-8 py-2.5 text-xs sm:text-sm font-bold uppercase">JOGAR NOVAMENTE</button>
       </div>
     </div>
   </div>
@@ -311,7 +327,6 @@
     const alertMessage = document.getElementById('alertMessage');
     const closeAlertBtn = document.getElementById('closeAlertBtn');
 
-    // Mapeamento atualizado sem o navio.png antigo
     const images = { 
       cenario: new Image(), 
       mar: new Image(), 
