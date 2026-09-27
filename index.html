@@ -44,7 +44,7 @@
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
         <span class="text-sm sm:text-xl hidden xs:inline">MARÉ:</span>
-        <span id="tideStatusBadge" class="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm font-bold rounded pixel-font bg-cyan-500 text-slate-950">ALTA</span>
+        <span id="tideStatusBadge" class="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm font-bold rounded pixel-font bg-blue-600 text-white">BAIXA</span>
         <button id="toggleTideBtn" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-2 sm:px-3 py-1 rounded border border-amber-300 text-[9px] sm:text-xs pixel-font transition active:scale-95">
           ALTERAR MARÉ
         </button>
@@ -191,7 +191,7 @@
     // Game Config & State
     let currentDay = 1;
     let shipIndex = 0;
-    let isHighTide = true; // Alterado para iniciar na Maré Alta
+    let isHighTide = false; // Começa na Maré Baixa
     let gameState = 'APPROACHING'; // APPROACHING, INSPECTING, LEAVING_ACCEPT, LEAVING_REJECT, GROUNDED, DAY_END
 
     // Estatísticas do dia
@@ -231,7 +231,7 @@
     // Objeto do Navio Ativo
     let currentShip = {
       x: -140,
-      y: 280,
+      y: 335,
       width: 120,
       height: 70,
       speed: 2,
@@ -254,9 +254,9 @@
 
     // Desenha o Mar e a Bóia
     function drawSeaAndBuoy() {
-      // Maré Alta = Y 260px (água sobe e cobre parte da régua)
-      // Maré Baixa = Y 315px (água desce e expõe a régua no canto inferior direito do cenário)
-      const targetSeaY = isHighTide ? 260 : 315;
+      // Maré Alta = Y 315px (antiga maré baixa, a maré mais alta do novo padrão)
+      // Maré Baixa = Y 370px (maré extra baixa)
+      const targetSeaY = isHighTide ? 315 : 370;
 
       if (!canvas.seaY) canvas.seaY = targetSeaY;
       canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
@@ -279,7 +279,7 @@
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
-      // Desenhar Bóia Flutuando na Água (Corrigido para 64x64px sem cortar)
+      // Desenhar Bóia Flutuando na Água
       if (images.boia.complete && images.boia.naturalWidth > 0) {
         const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
         ctx.drawImage(images.boia, 0, 0, 64, 64, 680, buoyY, 48, 48);
@@ -291,7 +291,7 @@
 
       ctx.save();
 
-      currentShip.y = (canvas.seaY || 260) - 35;
+      currentShip.y = (canvas.seaY || 370) - 35;
 
       if (currentShip.flipped) {
         ctx.translate(currentShip.x + currentShip.width, currentShip.y);
