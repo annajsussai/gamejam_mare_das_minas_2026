@@ -30,7 +30,7 @@
       border-radius: 3px;
     }
 
-    /* Novo Fundo do Manifesto de Carga */
+    /* Novo Fundo do Manifesto de Carga com bordas internas ajustadas */
     .doc-bg {
       background-image: url('assets/manifesto_carga.png');
       background-size: 100% 100%;
@@ -61,43 +61,65 @@
       <!-- Canvas -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel -->
-      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md aspect-square doc-bg text-amber-950 p-6 sm:p-8 shadow-2xl z-20 pixel-font flex flex-col justify-between">
+      <!-- Document Modal / Panel (Estilo Documento / Formolário Oficial) -->
+      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88%] sm:w-[75%] max-w-md aspect-square doc-bg text-amber-950 p-7 sm:p-10 shadow-2xl z-20 flex flex-col justify-between">
         
-        <!-- Cabeçalho do Manifesto -->
-        <div class="border-b-2 border-amber-900/30 pb-2 flex justify-between items-center mt-2">
-          <h2 class="text-[10px] sm:text-[12px] uppercase tracking-tight font-bold text-amber-950">MANIFESTO DE CARGA</h2>
-          <span class="bg-amber-900/10 text-amber-950 text-[7px] sm:text-[9px] px-1.5 py-0.5 rounded font-bold border border-amber-900/30">OFICIAL</span>
-        </div>
-
-        <!-- Conteúdo com Grid alinhado e cores adequadas ao novo fundo -->
-        <div class="my-auto">
-          <div class="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-y-2 text-[9px] sm:text-[11px] items-center">
-            
-            <span class="font-bold text-amber-900 text-left border-b border-amber-900/15 pb-1">NOME:</span>
-            <span id="docName" class="font-bold text-left truncate border-b border-amber-900/15 pb-1 text-amber-950"></span>
-
-            <span class="font-bold text-amber-900 text-left border-b border-amber-900/15 pb-1">ROTA:</span>
-            <span id="docRoute" class="font-bold text-left truncate border-b border-amber-900/15 pb-1 text-amber-950"></span>
-
-            <span class="font-bold text-amber-900 text-left border-b border-amber-900/15 pb-1">CARGA:</span>
-            <span id="docCargo" class="font-bold text-left truncate border-b border-amber-900/15 pb-1 text-amber-950"></span>
-
-            <span class="font-bold text-amber-900 text-left border-b border-amber-900/15 pb-1">TOXICIDADE:</span>
-            <span id="docToxicity" class="font-bold text-left truncate border-b border-amber-900/15 pb-1 text-amber-950"></span>
-
-            <span class="font-bold text-amber-900 text-left pb-1">CALADO:</span>
-            <span id="docSize" class="font-bold text-left truncate pb-1 text-amber-950"></span>
-
+        <!-- Cabeçalho Oficial -->
+        <div class="border-b-2 border-amber-950/40 pb-2 mt-1">
+          <div class="flex justify-between items-center">
+            <span class="pixel-font text-[7px] sm:text-[9px] text-amber-900/80 uppercase tracking-widest">AUTORIDADE PORTUÁRIA</span>
+            <span class="pixel-font bg-amber-950 text-amber-100 text-[6px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold">OFICIAL</span>
           </div>
+          <h2 class="pixel-font text-[11px] sm:text-[13px] uppercase tracking-tight text-amber-950 mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
-        <!-- Botões Aceitar / Recusar -->
-        <div class="flex gap-3 mb-2 justify-center">
-          <button id="acceptBtn" class="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-2 rounded border-b-2 border-emerald-900 active:translate-y-0.5 text-[8px] sm:text-[10px] transition flex items-center justify-center gap-1 shadow-md">
-            ✓ ACEITAR
+        <!-- Corpo do Documento / Ficha Técnica -->
+        <div class="my-auto space-y-2.5 sm:space-y-3 font-mono">
+          
+          <!-- Seção 1: Embarcação e Rota -->
+          <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15">
+            <div class="flex justify-between items-baseline border-b border-amber-950/10 pb-1 mb-1">
+              <span class="text-[11px] sm:text-[13px] font-bold text-amber-900/70 uppercase">Embarcação:</span>
+              <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-amber-950"></span>
+            </div>
+            <div class="flex justify-between items-baseline">
+              <span class="text-[11px] sm:text-[13px] font-bold text-amber-900/70 uppercase">Rota Registada:</span>
+              <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-amber-950"></span>
+            </div>
+          </div>
+
+          <!-- Seção 2: Detalhes do Carregamento -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
+              <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Carga Declarada</span>
+              <span id="docCargo" class="text-[13px] sm:text-[15px] font-bold text-amber-950 truncate mt-1"></span>
+            </div>
+            <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col justify-between">
+              <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Calado / Porte</span>
+              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-amber-950 truncate mt-1"></span>
+            </div>
+          </div>
+
+          <!-- Seção 3: Risco / Toxicidade com Indicador Visual -->
+          <div class="bg-amber-950/5 p-2 rounded border border-amber-950/15 flex flex-col gap-1">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] sm:text-[12px] font-bold text-amber-900/70 uppercase">Nível de Toxicidade</span>
+              <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
+            </div>
+            <!-- Barra Visual de Risco -->
+            <div class="w-full h-2 sm:h-2.5 bg-amber-950/20 rounded-full overflow-hidden flex p-0.5 border border-amber-950/20">
+              <div id="toxicityBar" class="h-full rounded-full transition-all duration-300" style="width: 20%;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Botões de Ação Decisória -->
+        <div class="flex gap-3 mb-1 pt-2 border-t border-amber-950/20">
+          <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[8px] sm:text-[10px] transition flex items-center justify-center gap-1 shadow-md">
+            ✓ AUTORIZAR
           </button>
-          <button id="rejectBtn" class="flex-1 bg-rose-700 hover:bg-rose-600 text-white font-bold py-2 px-2 rounded border-b-2 border-rose-900 active:translate-y-0.5 text-[8px] sm:text-[10px] transition flex items-center justify-center gap-1 shadow-md">
+          <button id="rejectBtn" class="flex-1 bg-rose-800 hover:bg-rose-700 text-white font-bold py-2 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[8px] sm:text-[10px] transition flex items-center justify-center gap-1 shadow-md">
             ✕ RECUSAR
           </button>
         </div>
@@ -193,7 +215,8 @@
         name: "MV Esperança",
         route: "Roterdã ➔ Local",
         cargo: "Insumos Hospitalares",
-        toxicity: "0/5 (Nulo)",
+        toxicityVal: 0,
+        toxicityText: "0/5 (Nulo)",
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false
@@ -201,8 +224,9 @@
       {
         name: "Grão de Ouro",
         route: "Santos ➔ Local",
-        cargo: "Grãos e Mantimentos",
-        toxicity: "0/5 (Nulo)",
+        cargo: "Grãos / Mantimentos",
+        toxicityVal: 0,
+        toxicityText: "0/5 (Nulo)",
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true
@@ -211,7 +235,8 @@
         name: "Gigante dos Mares",
         route: "Vitória ➔ Local",
         cargo: "Maquinário Pesado",
-        toxicity: "1/5 (Baixo)",
+        toxicityVal: 1,
+        toxicityText: "1/5 (Baixo)",
         isHazard: false,
         size: "Médio (7m)",
         isLarge: false
@@ -219,8 +244,9 @@
       {
         name: "Tritão das Marés",
         route: "Salvador ➔ Recife",
-        cargo: "Água de Lastro / Bio-Risco",
-        toxicity: "3/5 (Bio-Risco)",
+        cargo: "Água de Lastro",
+        toxicityVal: 3,
+        toxicityText: "3/5 (Bio-Risco)",
         isHazard: true,
         size: "Médio (6m)",
         isLarge: false
@@ -229,7 +255,8 @@
         name: "Mar Furtivo",
         route: "Roterdã ➔ Local",
         cargo: "Pescado Irregular",
-        toxicity: "2/5 (Impacto na Fauna)",
+        toxicityVal: 2,
+        toxicityText: "2/5 (Impacto Fauna)",
         isHazard: true,
         size: "Pequeno (4m)",
         isLarge: false
@@ -238,7 +265,8 @@
         name: "Risco Químico",
         route: "Internacional ➔ Local",
         cargo: "Resíduos Industriais",
-        toxicity: "5/5 (Crítico)",
+        toxicityVal: 5,
+        toxicityText: "5/5 (Crítico)",
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true
@@ -374,8 +402,27 @@
       document.getElementById('docName').innerText = data.name;
       document.getElementById('docRoute').innerText = data.route;
       document.getElementById('docCargo').innerText = data.cargo;
-      document.getElementById('docToxicity').innerText = data.toxicity;
       document.getElementById('docSize').innerText = data.size;
+
+      // Atualização Dinâmica da Barra de Toxicidade
+      const toxText = document.getElementById('docToxicityText');
+      const toxBar = document.getElementById('toxicityBar');
+      
+      toxText.innerText = data.toxicityText;
+
+      const percentage = Math.max((data.toxicityVal / 5) * 100, 5);
+      toxBar.style.width = `${percentage}%`;
+
+      if (data.toxicityVal === 0) {
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-emerald-800";
+        toxBar.className = "h-full rounded-full transition-all duration-300 bg-emerald-600";
+      } else if (data.toxicityVal <= 2) {
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-amber-800";
+        toxBar.className = "h-full rounded-full transition-all duration-300 bg-amber-500";
+      } else {
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-rose-900";
+        toxBar.className = "h-full rounded-full transition-all duration-300 bg-rose-600";
+      }
 
       docPanel.classList.remove('hidden');
     }
