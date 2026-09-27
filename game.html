@@ -75,10 +75,74 @@
       box-shadow: 0 2px 0 rgba(0,0,0,0.3);
     }
 
+    .bg-btn-custom {
+      background-image: url('assets/bg_btn.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+      color: #ffffff;
+      text-shadow: 1px 1px #000;
+    }
+    .bg-btn-custom:active {
+      transform: translateY(2px);
+    }
+
+    .bg-btn-custom-red {
+      background-image: url('assets/bg_btn.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+      color: #ffffff;
+      filter: hue-rotate(300deg) saturate(1.8) brightness(0.9);
+      text-shadow: 1px 1px #000;
+    }
+    .bg-btn-custom-red:active {
+      transform: translateY(2px);
+    }
+
     .pixel-card {
       background-color: rgba(255, 255, 255, 0.85);
       border: 2px solid #543d2b;
       box-shadow: 2px 2px 0px rgba(84, 61, 43, 0.2);
+    }
+
+    #finalScreen {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 19, 26, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 15px;
+    }
+
+    #finalScreen.visible {
+      display: flex;
+    }
+
+    #finalContent {
+      width: min(750px, 95vw);
+      text-align: center;
+      background: #0f172a;
+      border: 4px solid #d97706;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-4px, 2px) rotate(-1deg); }
+      40% { transform: translate(4px, -2px) rotate(1deg); }
+      60% { transform: translate(-3px, -1px) rotate(0deg); }
+      80% { transform: translate(3px, 2px) rotate(1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    .shake-animation {
+      animation: shake 0.4s ease-in-out infinite;
     }
   </style>
 </head>
@@ -96,12 +160,17 @@
     <!-- GAME CANVAS CONTAINER -->
     <div class="relative w-full aspect-[16/9] bg-sky-900 rounded overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
       
-      <!-- Canvas do Jogo -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel -->
+      <!-- Alerta Ambiental -->
+      <div id="alertBox" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md bg-slate-950/95 border-4 border-rose-600 rounded p-4 text-center z-40 shadow-2xl">
+        <h3 class="pixel-font text-rose-500 text-xs sm:text-sm mb-2">ALERTA AMBIENTAL</h3>
+        <p id="alertMessage" class="font-mono text-sm sm:text-base text-slate-200 mb-4 leading-relaxed"></p>
+        <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-6 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider">CONTINUAR INSPEÇÃO</button>
+      </div>
+
+      <!-- Manifesto de Carga -->
       <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm shadow-2xl">
-        
         <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
           <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
           <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
@@ -150,13 +219,11 @@
             RECUSAR
           </button>
         </div>
-
       </div>
 
       <!-- Relatório de Fim de Dia -->
       <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-xs z-30 flex flex-col justify-center items-center p-2 sm:p-3 text-center">
         <div class="report-bg relative p-4 sm:p-7 pt-5 sm:pt-8 w-[98%] max-w-2xl aspect-[2.1/1] flex flex-col justify-between text-slate-900 shadow-2xl overflow-hidden">
-          
           <div class="text-center w-full mt-1">
             <h2 class="pixel-font text-[#4a154b] text-[12px] sm:text-lg uppercase tracking-wider font-bold">RELATÓRIO DE INSPEÇÃO</h2>
           </div>
@@ -189,13 +256,12 @@
               CONTINUAR &rarr;
             </button>
           </div>
-
         </div>
       </div>
 
     </div>
 
-    <!-- Dica rodapé + Quantidade de Navios -->
+    <!-- Rodapé -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
       <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
       <span class="text-xs sm:text-base text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / 4</span>
@@ -203,10 +269,41 @@
 
   </div>
 
+  <!-- TELA DE RELATÓRIO FINAL PROPORCIONAL -->
+  <div id="finalScreen">
+    <div id="finalContent">
+      <h1 id="finalTitle" class="pixel-font text-sm sm:text-xl text-amber-400 mb-4">RELATÓRIO FINAL</h1>
+      
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="bg-slate-800/80 border border-slate-700 p-3 rounded">
+          <span class="pixel-font text-[8px] sm:text-[10px] text-slate-400 block mb-1">NAVIOS PERIGOSOS QUE ENTRARAM</span>
+          <span id="naviosEntraram" class="pixel-font text-base sm:text-2xl text-rose-500 font-bold">0</span>
+        </div>
+        <div class="bg-slate-800/80 border border-slate-700 p-3 rounded">
+          <span class="pixel-font text-[8px] sm:text-[10px] text-slate-400 block mb-1">NAVIOS PERIGOSOS IMPEDIDOS</span>
+          <span id="naviosImpedidos" class="pixel-font text-base sm:text-2xl text-emerald-400 font-bold">0</span>
+        </div>
+      </div>
+
+      <div class="mb-3 text-left">
+        <span class="pixel-font text-[9px] sm:text-xs text-slate-300 block mb-1">ESTADO DO ECOSSISTEMA</span>
+        <div class="w-full h-5 bg-slate-950 rounded-full overflow-hidden border border-slate-700 p-0.5">
+          <div id="ecosystemFill" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 100%;"></div>
+        </div>
+        <div id="ecosystemStatus" class="pixel-font text-xs sm:text-sm text-right mt-1 text-emerald-400">100%</div>
+      </div>
+
+      <p id="finalMessage" class="font-mono text-xs sm:text-sm text-slate-300 bg-slate-950/60 p-3 rounded border border-slate-800 mb-4 leading-relaxed text-left"></p>
+
+      <div class="flex justify-center">
+        <button id="restartBtn" class="pixel-font bg-btn-custom px-8 py-2.5 text-xs sm:text-sm font-bold uppercase">JOGAR NOVAMENTE</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-
     ctx.imageSmoothingEnabled = false;
 
     const docPanel = document.getElementById('docPanel');
@@ -214,17 +311,11 @@
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
+    const alertBox = document.getElementById('alertBox');
+    const alertMessage = document.getElementById('alertMessage');
+    const closeAlertBtn = document.getElementById('closeAlertBtn');
 
-    const images = { 
-      cenario: new Image(), 
-      mar: new Image(), 
-      marfrente: new Image(), 
-      boia: new Image(), 
-      personagem: new Image(),
-      navioPadrao: new Image(),
-      cargueiro: new Image(),
-      pesqueiroIrregular: new Image()
-    };
+    const images = {};
 
     function loadAssets(callback) {
       const sources = { 
@@ -233,9 +324,9 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        navioPadrao: 'assets/navio.png',
         cargueiro: 'assets/cargueiro.png',
-        pesqueiroIrregular: 'assets/pesqueiro_irregular.png'
+        navio_grande: 'assets/navio_grande.png',
+        pesqueiroIrregular: 'assets/cargueiro.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
@@ -255,7 +346,7 @@
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false,
-        imgKey: "pesqueiroIrregular",
+        imgKey: "cargueiro",
         width: 250,
         height: 135
       },
@@ -268,7 +359,7 @@
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true,
-        imgKey: "cargueiro",
+        imgKey: "navio_grande",
         width: 280,
         height: 145
       },
@@ -307,7 +398,7 @@
         isHazard: true,
         size: "Pequeno (4m)",
         isLarge: false,
-        imgKey: "pesqueiroIrregular",
+        imgKey: "cargueiro",
         width: 240,
         height: 130
       },
@@ -320,7 +411,7 @@
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true,
-        imgKey: "cargueiro",
+        imgKey: "navio_grande",
         width: 280,
         height: 145
       }
@@ -331,6 +422,8 @@
     const maxShipsPerDay = 4;
     let isHighTide = false;
     let gameState = 'APPROACHING';
+    let isShaking = false;
+    let shakeTimer = 0;
 
     let dayStats = {
       total: 0,
@@ -341,16 +434,17 @@
       groundedShips: 0
     };
 
+    let naviosPerigososQueEntraram = 0;
+    let naviosPerigososImpedidos = 0;
+    let nivelDoEcossistema = 100;
+    let pendingAlertMessage = "";
+
     let currentShip = {
       x: -300, y: 335, width: 260, height: 140, speed: 2, flipped: false, data: null
     };
 
-    function updateTideDisplay() {}
-
     function generateRandomShip() {
       isHighTide = Math.random() < 0.5;
-      updateTideDisplay();
-
       if (shipsEvaluated === 0 && currentDay === 1) {
         return { ...SHIP_TYPES[0] };
       }
@@ -378,11 +472,7 @@
         const sx = (currentFrameIndex % sheetColumns) * frameWidth;
         const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
 
-        ctx.drawImage(
-          pImg, 
-          sx, sy, frameWidth, frameHeight, 
-          510, 75, 170, 110
-        );
+        ctx.drawImage(pImg, sx, sy, frameWidth, frameHeight, 510, 75, 170, 110);
       }
     }
 
@@ -392,7 +482,13 @@
       canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
       const seaY = canvas.seaY;
 
-      // 1. Fundo do mar
+      ctx.save();
+      if (isShaking) {
+        const offsetX = (Math.random() - 0.5) * 6;
+        const offsetY = (Math.random() - 0.5) * 6;
+        ctx.translate(offsetX, offsetY);
+      }
+
       if (images.mar.complete && images.mar.naturalWidth > 0) {
         ctx.drawImage(images.mar, 0, seaY, 800, 450 - seaY);
       } else {
@@ -400,28 +496,22 @@
         ctx.fillRect(0, seaY, 800, 450 - seaY);
       }
 
-      // 2. Espuma / Frente da água
+      if (images.boia.complete && images.boia.naturalWidth > 0) {
+        const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
+        let srcX = 0, srcY = 0;
+        if (!isHighTide) {
+          const isLuzAcesa = (Math.floor(Date.now() / 250) % 2) === 0;
+          srcY = isLuzAcesa ? 64 : 0; 
+        }
+        ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
+      }
+
       if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
-      // 3. Navio desenhado POR CIMA da água e da espuma
       drawShip();
-
-      // 4. Boia por cima de tudo
-      if (images.boia.complete && images.boia.naturalWidth > 0) {
-        const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
-        let srcX = 0;
-        let srcY = 0;
-
-        if (!isHighTide) {
-          const isLuzAcesa = (Math.floor(Date.now() / 250) % 2) === 0;
-          srcX = 0;
-          srcY = isLuzAcesa ? 64 : 0; 
-        }
-
-        ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
-      }
+      ctx.restore();
     }
 
     function drawShip() {
@@ -431,7 +521,6 @@
       const shipData = currentShip.data;
       currentShip.width = shipData.width || 260;
       currentShip.height = shipData.height || 140;
-      
       currentShip.y = (canvas.seaY || 370) - 45;
 
       const x = currentShip.x;
@@ -448,8 +537,6 @@
       const specificImg = images[shipData.imgKey];
       if (specificImg && specificImg.complete && specificImg.naturalWidth > 0) {
         ctx.drawImage(specificImg, x, y - 35, w, h);
-      } else if (images.navioPadrao.complete && images.navioPadrao.naturalWidth > 0) {
-        ctx.drawImage(images.navioPadrao, x, y - 35, w, h);
       } else {
         ctx.fillStyle = shipData.isHazard ? "#991b1b" : "#1d4ed8";
         ctx.fillRect(x, y, w, 75);
@@ -464,7 +551,6 @@
 
       if (gameState === 'APPROACHING') {
         currentShip.x += currentShip.speed;
-
         if (currentShip.x >= 380) {
           currentShip.x = 380;
           gameState = 'INSPECTING';
@@ -480,14 +566,30 @@
     }
 
     function handleGroundedShip() {
+      isShaking = true;
+      shakeTimer = 120;
       dayStats.groundedShips++;
       dayStats.falseAccepts++;
       dayStats.total++;
+
+      pendingAlertMessage = `ENCALHE CRÍTICO: O navio ${currentShip.data.name} era grande demais e encalhou devido à maré baixa! O impacto rompeu o casco, bloqueou o canal de acesso e gerou sérios danos ao ecossistema bentônico.`;
+
       setTimeout(() => {
-        gameState = 'LEAVING_REJECT';
-        currentShip.flipped = true;
-      }, 300);
+        isShaking = false;
+        currentShip.x = -500;
+        showAlert(pendingAlertMessage);
+      }, 1500);
     }
+
+    function showAlert(msg) {
+      alertMessage.innerText = msg;
+      alertBox.classList.remove('hidden');
+    }
+
+    closeAlertBtn.addEventListener('click', () => {
+      alertBox.classList.add('hidden');
+      nextShip();
+    });
 
     function openInspectionPanel() {
       const data = currentShip.data;
@@ -500,7 +602,6 @@
       const toxBar = document.getElementById('toxicityBar');
       
       toxText.innerText = data.toxicityText;
-
       const percentage = Math.max((data.toxicityVal / 5) * 100, 8);
       toxBar.style.width = `${percentage}%`;
 
@@ -522,6 +623,13 @@
       docPanel.classList.add('hidden');
       const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
 
+      if (currentShip.data.isHazard) {
+        naviosPerigososQueEntraram++;
+        const impactoAmbiental = currentShip.data.toxicityVal * 5;
+        nivelDoEcossistema -= impactoAmbiental;
+        nivelDoEcossistema = Math.max(0, Math.min(100, nivelDoEcossistema));
+      }
+
       if (currentShip.data.isLarge && !isHighTide) {
         gameState = 'GROUNDED';
         handleGroundedShip();
@@ -529,10 +637,11 @@
         dayStats.total++;
         if (isBadShip) {
           dayStats.falseAccepts++;
+          showAlert(`CONTAMINAÇÃO: A autorização do navio ${currentShip.data.name} resultou em derramamento de óleo e substâncias tóxicas, afetando gravemente a população de peixes e aves marinhas.`);
         } else {
           dayStats.correctAccepts++;
+          gameState = 'LEAVING_ACCEPT';
         }
-        gameState = 'LEAVING_ACCEPT';
       }
     });
 
@@ -541,6 +650,10 @@
       dayStats.total++;
       
       const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
+
+      if (currentShip.data.isHazard) {
+        naviosPerigososImpedidos++;
+      }
 
       if (isBadShip) {
         dayStats.correctRejects++;
@@ -578,35 +691,63 @@
       document.getElementById('repErrors').innerText = totalErrors;
 
       const impactBox = document.getElementById('reportImpact');
-
       if (totalErrors === 0) {
         impactBox.innerHTML = `<span class="text-emerald-800 font-bold">DESEMPENHO PERFEITO:</span> Todas as decisões foram corretas! O porto funcionou em segurança total.`;
-      } else if (totalErrors === 1) {
-        if (dayStats.falseRejects > 0) {
-          impactBox.innerHTML = `<span class="text-amber-800 font-bold">ATENÇÃO:</span> Bloqueou os perigos, mas recusou <span class="font-bold">${dayStats.falseRejects}</span> navio(s) regular(es) sem motivo!`;
-        } else {
-          impactBox.innerHTML = `<span class="text-rose-800 font-bold">ALERTA:</span> Deixou passar <span class="font-bold">${dayStats.falseAccepts}</span> embarcação com irregularidades ou risco de encalhe!`;
-        }
       } else {
-        impactBox.innerHTML = `<span class="text-rose-900 font-bold">DESEMPENHO CRÍTICO:</span> Vários erros cometidos! (${dayStats.falseRejects} recusas indevidas e ${dayStats.falseAccepts} autorizações perigosas).`;
+        impactBox.innerHTML = `<span class="text-amber-800 font-bold">ATENÇÃO:</span> O dia terminou com ${totalErrors} desvios operacionais registrados.`;
       }
 
       reportModal.classList.remove('hidden');
     }
 
+    function showFinalReport() {
+      nivelDoEcossistema = Math.max(0, Math.min(100, nivelDoEcossistema));
+
+      document.getElementById('naviosEntraram').innerText = naviosPerigososQueEntraram;
+      document.getElementById('naviosImpedidos').innerText = naviosPerigososImpedidos;
+
+      document.getElementById('ecosystemFill').style.width = nivelDoEcossistema + '%';
+      document.getElementById('ecosystemStatus').innerText = Math.round(nivelDoEcossistema) + '%';
+
+      let mensagem = '';
+      if (nivelDoEcossistema < 40) {
+        mensagem = 'O ecossistema local sofreu danos profundos devido às suas decisões. A poluição por químicos e os encalhes repetidos destruíram a biodiversidade e deixaram a região em estado de emergência ecológica.';
+      } else if (nivelDoEcossistema < 70) {
+        mensagem = 'Suas escolhas refletem um equilíbrio moderado, mas houve desgaste ambiental considerável. Há margem para melhoria na preservação das águas do porto.';
+      } else {
+        mensagem = 'Parabéns! Suas decisões demonstraram profundo respeito ao meio ambiente. A fauna e a flora locais continuam a prosperar em equilíbrio perfeito.';
+      }
+
+      document.getElementById('finalMessage').innerText = mensagem;
+      reportModal.classList.add('hidden');
+      document.getElementById('finalScreen').classList.add('visible');
+      gameState = 'FINAL';
+    }
+
     nextDayBtn.addEventListener('click', () => {
       reportModal.classList.add('hidden');
-      currentDay++;
-      shipsEvaluated = 0;
-      dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
-      spawnShip();
+
+      if (currentDay < 3) {
+        currentDay++;
+        shipsEvaluated = 0;
+        dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
+        spawnShip();
+      } else {
+        showFinalReport();
+      }
+    });
+
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      window.location.reload();
     });
 
     function gameLoop() {
-      ctx.clearRect(0, 0, 800, 450);
-      drawScenario();
-      drawSeaAndBuoy();
-      updateGame();
+      if (gameState !== 'FINAL') {
+        ctx.clearRect(0, 0, 800, 450);
+        drawScenario();
+        drawSeaAndBuoy();
+        updateGame();
+      }
       requestAnimationFrame(gameLoop);
     }
 
