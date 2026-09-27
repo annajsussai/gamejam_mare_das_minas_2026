@@ -61,11 +61,11 @@
   #introBg {
     position: absolute;
     inset: 0;
-    background-image: url('assets/cenario.png');
+    background-image: url('assets/telainicial.png');
     background-size: cover;
-    background-position: center 60%;
+    background-position: center;
     image-rendering: pixelated;
-    filter: saturate(0.85) brightness(0.55);
+    filter: saturate(0.95) brightness(0.75);
     transform: scale(1.04);
   }
 
@@ -81,8 +81,8 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at center, rgba(2,7,11,0.25) 0%, rgba(2,7,11,0.82) 78%),
-      linear-gradient(180deg, rgba(2,7,11,0.55) 0%, rgba(2,7,11,0.35) 30%, rgba(2,7,11,0.35) 70%, rgba(2,7,11,0.75) 100%);
+      radial-gradient(ellipse at center, rgba(2,7,11,0.2) 0%, rgba(2,7,11,0.75) 78%),
+      linear-gradient(180deg, rgba(2,7,11,0.4) 0%, rgba(2,7,11,0.2) 30%, rgba(2,7,11,0.2) 70%, rgba(2,7,11,0.6) 100%);
   }
 
   /* scanlines sutis pra dar clima retrô sem pesar no texto */
@@ -120,8 +120,8 @@
     align-items: center;
     justify-content: center;
     padding: 14px 46px 14px 20px;
-    background: rgba(4, 12, 18, 0.55);
-    border: 2px solid rgba(217, 119, 6, 0.55);
+    background: rgba(4, 12, 18, 0.75);
+    border: 2px solid rgba(217, 119, 6, 0.75);
     border-radius: 6px;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset, 0 8px 24px rgba(0,0,0,0.5);
     opacity: 0;
@@ -200,19 +200,20 @@
   #skipHint {
     margin-top: 8px;
     font-size: clamp(11px, 1.4vw, 14px);
-    color: rgba(244, 241, 234, 0.55);
+    color: rgba(244, 241, 234, 0.75);
     opacity: 0;
     transition: opacity .6s ease;
     height: 1.3em;
+    text-shadow: 1px 1px 0 #000;
   }
   #skipHint.visible { opacity: 1; }
 
-  /* ---------- PLACA DE OBJETIVOS (inspirada na placa do cenário) ---------- */
+  /* ---------- PLACA DE OBJETIVOS ---------- */
   #objectiveBox {
     display: none;
     width: 100%;
     margin: 0 auto;
-    background: rgba(5, 15, 24, .82);
+    background: rgba(5, 15, 24, .9);
     border: 3px solid #d97706;
     border-radius: 10px;
     padding: 16px 18px 20px;
@@ -222,7 +223,6 @@
     text-align: center;
   }
 
-  /* "poste" decorativo lembrando os pilares de madeira do cais */
   #objectiveBox::before,
   #objectiveBox::after {
     content: "";
@@ -260,7 +260,7 @@
     text-align: center;
     border: 1px solid rgba(217, 119, 6, .5);
     border-radius: 5px;
-    background: rgba(2, 7, 11, .5);
+    background: rgba(2, 7, 11, .7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -378,11 +378,11 @@
   // ---------- variáveis globais de controle da máquina de escrever ----------
   var indiceTextoAtual = 0;
   var indiceCaractereAtual = 0;
-  var timeoutDigitacao = null; // agenda cada caractere sendo digitado
-  var timeoutEspera = null;    // espera antes de esconder a caixa e ir pro próximo texto
-  var timeoutTransicao = null; // pequena pausa entre esconder e mostrar o próximo
+  var timeoutDigitacao = null;
+  var timeoutEspera = null;
+  var timeoutTransicao = null;
   var digitando = false;
-  var velocidadeDigitacao = 34; // ms por caractere
+  var velocidadeDigitacao = 34;
 
   function limparTimersPendentes() {
     clearTimeout(timeoutDigitacao);
@@ -390,7 +390,6 @@
     clearTimeout(timeoutTransicao);
   }
 
-  // digita o texto caractere por caractere dentro do elemento alvo
   function digitarTexto(texto) {
     digitando = true;
     indiceCaractereAtual = 0;
@@ -410,7 +409,6 @@
     passo();
   }
 
-  // completa o texto instantaneamente na tela (sem terminar a sequência ainda)
   function completarDigitacaoAgora() {
     clearTimeout(timeoutDigitacao);
     var spanLetras = introNarration.querySelector('.letras');
@@ -418,7 +416,6 @@
     digitando = false;
   }
 
-  // depois que o texto termina de digitar, espera um tempo e passa pro próximo
   function agendarProximoTexto() {
     timeoutEspera = setTimeout(function () {
       esconderEIrParaProximo();
@@ -432,11 +429,8 @@
     }, 600);
   }
 
-  // função única de avanço: usada tanto pelo clique na caixa quanto pela setinha
-  // - se ainda está digitando: completa o texto na hora
-  // - se o texto já está completo (ou acabou de ser completado): pula direto pro próximo, sem esperar
   function avancar() {
-    if (indiceTextoAtual >= introTexts.length) return; // nada a avançar
+    if (indiceTextoAtual >= introTexts.length) return;
     if (digitando) {
       completarDigitacaoAgora();
     } else {
@@ -445,7 +439,6 @@
     }
   }
 
-  // controla a sequência: mostra caixa -> digita -> espera -> some -> próximo
   function mostrarTexto(indice) {
     limparTimersPendentes();
 
@@ -454,8 +447,6 @@
       skipHint.classList.remove('visible');
       introNarrationBox.classList.remove('visible');
       setTimeout(function () {
-        // tira os dois do fluxo do layout (não só invisíveis, mas sem ocupar espaço)
-        // assim o bloco de objetivos fica realmente centralizado na tela
         introNarrationBox.style.display = 'none';
         skipHint.style.display = 'none';
         showObjectivesBtn.style.display = 'flex';
@@ -469,15 +460,12 @@
     digitarTexto(introTexts[indice]);
   }
 
-  // clique em qualquer lugar da caixa também avança
   introNarrationBox.style.cursor = 'pointer';
   introNarrationBox.addEventListener('click', function (e) {
-    // evita disparar duas vezes quando o clique é no próprio botão de seta
     if (e.target === advanceBtn || advanceBtn.contains(e.target)) return;
     avancar();
   });
 
-  // botão de setinha: avança o texto (funciona clicando quantas vezes precisar)
   advanceBtn.addEventListener('click', function (e) {
     e.stopPropagation();
     avancar();
@@ -497,7 +485,10 @@
     }, 600);
   });
 
-  mostrarTexto(0);
+  // ---------- INICIALIZAÇÃO COM DELAY DE 1.5s PARA MOSTRAR SÓ O FUNDO ----------
+  setTimeout(function() {
+    mostrarTexto(0);
+  }, 1500);
 </script>
 </body>
 </html>
