@@ -73,7 +73,7 @@
       <!-- Document Modal / Panel (Estilo Documento / Formulário Oficial) -->
       <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88%] sm:w-[75%] max-w-md aspect-square doc-bg text-amber-950 p-7 sm:p-10 shadow-2xl z-20 flex flex-col justify-between">
         
-        <!-- Cabeçalho Centralizado Sem 'OFICIAL' -->
+        <!-- Cabeçalho Centralizado -->
         <div class="border-b-2 border-amber-950/40 pb-2 mt-1 text-center">
           <span class="pixel-font text-[7px] sm:text-[9px] text-amber-900/80 uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
           <h2 class="pixel-font text-[11px] sm:text-[13px] uppercase tracking-tight text-amber-950 mt-1">MANIFESTO DE CARGA</h2>
@@ -133,38 +133,38 @@
 
       </div>
 
-      <!-- Relatório de Fim de Dia (Com fundo personalizado 'fundo_feedback.png') -->
-      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-30 flex flex-col justify-center items-center p-3 sm:p-6 text-center">
-        <div class="report-bg p-6 sm:p-10 rounded-lg w-[92%] sm:w-[80%] max-w-lg aspect-[1.8/1] shadow-2xl flex flex-col justify-between text-slate-900">
+      <!-- Relatório de Fim de Dia (Aumentado em ~50% com mais espaçamento) -->
+      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-30 flex flex-col justify-center items-center p-2 sm:p-4 text-center">
+        <div class="report-bg p-8 sm:p-12 rounded-lg w-[96%] sm:w-[88%] max-w-2xl aspect-[1.75/1] shadow-2xl flex flex-col justify-between text-slate-900">
           
           <!-- Cabeçalho do Relatório -->
-          <div class="border-b-2 border-purple-950/20 pb-2">
-            <h2 class="pixel-font text-purple-950 text-xs sm:text-sm tracking-wider uppercase">RELATÓRIO DE INSPEÇÃO</h2>
-            <p class="text-purple-900/80 text-xs sm:text-sm font-bold mt-0.5">RESUMO DO DIA <span id="reportDay">1</span></p>
+          <div class="border-b-2 border-purple-950/20 pb-2 sm:pb-3">
+            <h2 class="pixel-font text-purple-950 text-sm sm:text-base tracking-wider uppercase">RELATÓRIO DE INSPEÇÃO</h2>
+            <p class="text-purple-900/80 text-xs sm:text-sm font-bold mt-1">RESUMO DO DIA <span id="reportDay">1</span></p>
           </div>
 
           <!-- Métricas dos Avaliados -->
-          <div class="grid grid-cols-3 gap-2 my-2 text-center">
-            <div class="bg-purple-950/5 p-2 rounded border border-purple-950/10">
-              <div class="text-[10px] sm:text-xs font-bold text-slate-600">AVALIADOS</div>
-              <div id="repTotal" class="text-base sm:text-xl font-bold text-slate-900">0</div>
+          <div class="grid grid-cols-3 gap-3 my-2 sm:my-3 text-center">
+            <div class="bg-purple-950/5 p-2.5 sm:p-3.5 rounded border border-purple-950/10">
+              <div class="text-[11px] sm:text-xs font-bold text-slate-600">AVALIADOS</div>
+              <div id="repTotal" class="text-lg sm:text-2xl font-bold text-slate-900 mt-1">0</div>
             </div>
-            <div class="bg-emerald-950/5 p-2 rounded border border-emerald-900/20">
-              <div class="text-[10px] sm:text-xs font-bold text-emerald-800">ACEITOS</div>
-              <div id="repAccepted" class="text-base sm:text-xl font-bold text-emerald-700">0</div>
+            <div class="bg-emerald-950/5 p-2.5 sm:p-3.5 rounded border border-emerald-900/20">
+              <div class="text-[11px] sm:text-xs font-bold text-emerald-800">ACEITOS</div>
+              <div id="repAccepted" class="text-lg sm:text-2xl font-bold text-emerald-700 mt-1">0</div>
             </div>
-            <div class="bg-rose-950/5 p-2 rounded border border-rose-900/20">
-              <div class="text-[10px] sm:text-xs font-bold text-rose-800">RECUSADOS</div>
-              <div id="repRejected" class="text-base sm:text-xl font-bold text-rose-700">0</div>
+            <div class="bg-rose-950/5 p-2.5 sm:p-3.5 rounded border border-rose-900/20">
+              <div class="text-[11px] sm:text-xs font-bold text-rose-800">RECUSADOS</div>
+              <div id="repRejected" class="text-lg sm:text-2xl font-bold text-rose-700 mt-1">0</div>
             </div>
           </div>
 
           <!-- Impactos Ambientais / Ocorrências -->
-          <div id="reportImpact" class="p-2.5 rounded text-left text-xs sm:text-sm font-bold bg-purple-950/5 border border-purple-950/15 space-y-1"></div>
+          <div id="reportImpact" class="p-3 sm:p-4 rounded text-left text-xs sm:text-sm font-bold bg-purple-950/5 border border-purple-950/15 space-y-1"></div>
 
-          <!-- Ação / Botão Próximo Dia -->
-          <div class="pt-1 flex justify-center">
-            <button id="nextDayBtn" class="pixel-font bg-purple-900 hover:bg-purple-800 text-white font-bold px-5 sm:px-8 py-2 rounded-md border-b-4 border-purple-950 active:translate-y-0.5 text-[9px] sm:text-[11px] transition shadow-md">
+          <!-- Ação / Botão Próximo Dia com espaçamento adequado -->
+          <div class="pt-2 sm:pt-4 mb-2 flex justify-center">
+            <button id="nextDayBtn" class="pixel-font bg-purple-900 hover:bg-purple-800 text-white font-bold px-6 sm:px-10 py-2.5 sm:py-3.5 rounded-md border-b-4 border-purple-950 active:translate-y-0.5 text-[10px] sm:text-[12px] transition shadow-md">
               CONTINUAR ➔
             </button>
           </div>
@@ -225,7 +225,7 @@
       }
     }
 
-    // Configuração dos navios com Risco / Toxicidade simplificados
+    // Configuração dos navios
     const SHIP_TYPES = [
       {
         name: "MV Esperança",
@@ -420,7 +420,7 @@
       document.getElementById('docCargo').innerText = data.cargo;
       document.getElementById('docSize').innerText = data.size;
 
-      // Exibição simplificada de Toxicidade
+      // Exibição de Toxicidade
       const toxText = document.getElementById('docToxicityText');
       const toxBar = document.getElementById('toxicityBar');
       
