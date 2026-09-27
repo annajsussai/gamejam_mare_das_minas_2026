@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Gerenciador do Porto - Inspeção Dinâmica</title>
+  <title>Gerenciador do Porto - Tutorial</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
@@ -30,7 +30,7 @@
       border-radius: 3px;
     }
 
-    /* Manifesto com a proporção correta baseada no asset original */
+    /* Fundo do Documento / Manifesto de Carga usando a Imagem 'assets/manifesto_carga.png' */
     .doc-bg {
       background-image: url('assets/manifesto_carga.png');
       background-size: 100% 100%;
@@ -40,10 +40,11 @@
     }
 
     .pixel-box {
-      background-color: rgba(84, 61, 43, 0.12);
-      border: 2px solid rgba(84, 61, 43, 0.35);
+      background-color: rgba(84, 61, 43, 0.08);
+      border: 2px solid rgba(84, 61, 43, 0.25);
     }
 
+    /* Estilo do Relatório Retangular + Fundo Pixel Art */
     .report-bg {
       background-image: url('assets/fundo_feedback.png');
       background-size: 100% 100%;
@@ -52,6 +53,7 @@
       image-rendering: pixelated;
     }
 
+    /* Botão Retrô 2D Pixel Art */
     .pixel-btn-purple {
       background-color: #5c1363;
       color: #ffffff;
@@ -76,74 +78,233 @@
       box-shadow: 0 2px 0 rgba(0,0,0,0.3);
     }
 
-    .bg-btn-custom {
-      background-image: url('assets/bg_btn.png');
-      background-size: 100% 100%;
-      background-position: center;
-      background-repeat: no-repeat;
-      image-rendering: pixelated;
-      color: #ffffff;
-      text-shadow: 1px 1px #000;
-    }
-    .bg-btn-custom:active {
-      transform: translateY(2px);
-    }
-
-    .bg-btn-custom-red {
-      background-image: url('assets/bg_btn.png');
-      background-size: 100% 100%;
-      background-position: center;
-      background-repeat: no-repeat;
-      image-rendering: pixelated;
-      color: #ffffff;
-      filter: hue-rotate(300deg) saturate(1.8) brightness(0.9);
-      text-shadow: 1px 1px #000;
-    }
-    .bg-btn-custom-red:active {
-      transform: translateY(2px);
-    }
-
+    /* Cards em Estilo Pixel Paper */
     .pixel-card {
       background-color: rgba(255, 255, 255, 0.85);
       border: 2px solid #543d2b;
       box-shadow: 2px 2px 0px rgba(84, 61, 43, 0.2);
     }
 
-    #finalScreen {
-      position: fixed;
+    /* ---------- GESTOR (caixa de diálogo do narrador do tutorial) ---------- */
+    #gestorBox {
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 40;
+      display: none;
+      background: rgba(4, 12, 18, 0.88);
+      border: 2px solid #d97706;
+      border-radius: 6px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset, 0 8px 20px rgba(0,0,0,0.55);
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+    #gestorBox .gestorTag {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(8px, 1.4vw, 11px);
+      color: #facc15;
+      text-shadow: 1px 1px 0 #000;
+      display: block;
+      margin-bottom: 4px;
+    }
+    #gestorText {
+      font-family: 'VT323', monospace;
+      font-size: clamp(14px, 2.4vw, 20px);
+      line-height: 1.25;
+      color: #f4f1ea;
+      text-shadow: 1px 1px 0 #000;
+    }
+    #gestorText .cursor {
+      display: inline-block;
+      width: 0.5ch;
+      margin-left: 2px;
+      animation: gestorBlink 0.9s steps(1) infinite;
+      color: #facc15;
+    }
+    @keyframes gestorBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    #gestorHint {
+      margin-top: 4px;
+      font-size: clamp(9px, 1.4vw, 12px);
+      color: rgba(244, 241, 234, 0.55);
+      font-family: 'VT323', monospace;
+    }
+    #gestorBtnWrap {
+      display: none;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+    #gestorBtn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.5vw, 12px);
+      background-image: url('assets/bg_btn.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+      color: #2b1b10;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    #gestorBtn:active {
+      transform: translateY(2px);
+    }
+
+    /* ---------- Balão de fala do navio ---------- */
+    #shipBubble {
+      position: absolute;
+      z-index: 25;
+      max-width: 46%;
+      display: none;
+      background: rgba(255,255,255,0.94);
+      color: #2b1b10;
+      border: 2px solid #543d2b;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: 'VT323', monospace;
+      font-size: clamp(15px, 2.6vw, 20px);
+      line-height: 1.2;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.25);
+      opacity: 0;
+      transition: opacity .4s ease;
+    }
+    #shipBubble.visible { opacity: 1; }
+    #shipBubble::after {
+      content: "";
+      position: absolute;
+      bottom: -9px;
+      left: 24px;
+      border-width: 9px 8px 0 8px;
+      border-style: solid;
+      border-color: #543d2b transparent transparent transparent;
+    }
+
+    /* ---------- Legenda educativa (topo da tela) ---------- */
+    #lessonCaption {
+      position: absolute;
+      top: 4%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      z-index: 25;
+      width: 92%;
+      max-width: 520px;
+      text-align: center;
+      background: rgba(4, 12, 18, 0.85);
+      border: 2px solid #0e7490;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-family: 'VT323', monospace;
+      font-size: clamp(16px, 2.8vw, 22px);
+      color: #a5f3fc;
+      line-height: 1.25;
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
+    #lessonCaption.visible { opacity: 1; }
+    #lessonCaption.alert {
+      border-color: #dc2626;
+      color: #fecaca;
+    }
+    #lessonCaption, #shipBubble {
+      cursor: pointer;
+    }
+    .captionHint {
+      margin-top: 4px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.4vw, 11px);
+      opacity: 0.65;
+      letter-spacing: 0.5px;
+    }
+    #lessonCaption .captionHint { color: #facc15; }
+    #lessonCaption.alert .captionHint { color: #fecaca; }
+    #shipBubble .captionHint { color: #7c2d12; }
+
+    /* ---------- Realces (spotlights) ---------- */
+    .spotlight {
+      position: absolute;
+      z-index: 22;
+      display: none;
+      border: 3px solid #facc15;
+      border-radius: 6px;
+      box-shadow: 0 0 0 2000px rgba(2,7,11,0.55), 0 0 14px 3px rgba(250,204,21,0.7);
+      pointer-events: none;
+      animation: spotlightPulse 1.1s ease-in-out infinite;
+    }
+    @keyframes spotlightPulse {
+      0%, 100% { box-shadow: 0 0 0 2000px rgba(2,7,11,0.55), 0 0 10px 2px rgba(250,204,21,0.55); }
+      50% { box-shadow: 0 0 0 2000px rgba(2,7,11,0.55), 0 0 22px 6px rgba(250,204,21,0.95); }
+    }
+
+    /* ---------- Botão ENTENDI reaproveitado nos docs (linha do gestor dentro do documento) ---------- */
+    .doc-gestor-line {
+      background: rgba(217, 119, 6, 0.12);
+      border: 1px dashed rgba(217, 119, 6, 0.6);
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-size: 13px;
+      color: #7c2d12;
+      font-style: italic;
+      line-height: 1.25;
+    }
+
+    #actionHint {
+      text-align: center;
+      font-size: 10px;
+      color: #7c2d12;
+      opacity: 0.8;
+      margin-top: -2px;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: grayscale(0.4);
+    }
+
+    /* ---------- Banner "DIA 1 COMEÇOU" ---------- */
+    #dayStartBanner {
+      position: absolute;
       inset: 0;
-      background: rgba(7, 19, 26, 0.95);
+      z-index: 50;
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
-      padding: 15px;
+      background: rgba(2,7,11,0.55);
+      pointer-events: none;
+    }
+    #dayStartBanner span {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(16px, 3.4vw, 30px);
+      color: #facc15;
+      text-shadow: 3px 3px 0 #000;
+      animation: bannerPop 1.8s ease forwards;
+    }
+    @keyframes bannerPop {
+      0% { opacity: 0; transform: scale(0.7); }
+      15% { opacity: 1; transform: scale(1.05); }
+      25% { transform: scale(1); }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
-    #finalScreen.visible {
-      display: flex;
+    /* ---------- Overlay de fade (transição fim do tutorial -> Dia 2) ---------- */
+    #fadeOverlay {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease;
     }
-
-    #finalContent {
-      width: min(750px, 95vw);
-      text-align: center;
-      background: #0f172a;
-      border: 4px solid #d97706;
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    @keyframes shake {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      20% { transform: translate(-4px, 2px) rotate(-1deg); }
-      40% { transform: translate(4px, -2px) rotate(1deg); }
-      60% { transform: translate(-3px, -1px) rotate(0deg); }
-      80% { transform: translate(3px, 2px) rotate(1deg); }
-      100% { transform: translate(0, 0) rotate(0deg); }
-    }
-
-    .shake-animation {
-      animation: shake 0.4s ease-in-out infinite;
+    #fadeOverlay.visible {
+      opacity: 1;
     }
   </style>
 </head>
@@ -154,81 +315,117 @@
     <!-- Top Bar Status -->
     <div class="flex justify-between items-center bg-slate-800 p-1.5 sm:p-3 rounded border border-slate-700 text-xs sm:text-base">
       <div class="flex items-center gap-2 sm:gap-4">
-        <span class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
+        <span id="dayLabel" class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
+        <span id="tutorialLabel" class="pixel-font text-cyan-300 text-[9px] sm:text-sm hidden">TUTORIAL</span>
       </div>
     </div>
 
     <!-- GAME CANVAS CONTAINER -->
     <div class="relative w-full aspect-[16/9] bg-sky-900 rounded overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
       
+      <!-- Canvas do Jogo -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Alerta Ambiental -->
-      <div id="alertBox" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md bg-slate-950/95 border-4 border-rose-600 rounded p-4 text-center z-40 shadow-2xl">
-        <h3 class="pixel-font text-rose-500 text-xs sm:text-sm mb-2">ALERTA AMBIENTAL</h3>
-        <p id="alertMessage" class="font-mono text-sm sm:text-base text-slate-200 mb-4 leading-relaxed"></p>
-        <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-6 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider">CONTINUAR INSPEÇÃO</button>
+      <!-- Legenda educativa (aparece antes de cada tipo novo de navio) -->
+      <div id="lessonCaption"></div>
+
+      <!-- Realces (spotlights) do tutorial -->
+      <div id="spotRegua" class="spotlight"></div>
+      <div id="spotNavio" class="spotlight"></div>
+
+      <!-- Balão de fala do navio -->
+      <div id="shipBubble"></div>
+
+      <!-- Banner de início de dia -->
+      <div id="dayStartBanner"><span id="dayStartBannerText">DIA 1 COMEÇOU</span></div>
+
+      <!-- Caixa de diálogo do GESTOR (tutorial guiado) -->
+      <div id="gestorBox">
+        <span class="gestorTag">GESTOR</span>
+        <div id="gestorText"></div>
+        <div id="gestorHint">clique para continuar</div>
+        <div id="gestorBtnWrap"><button id="gestorBtn">ENTENDI</button></div>
       </div>
 
-      <!-- Manifesto de Carga com Proporção e Cores Originais -->
-      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[620px] aspect-[1.3/1] doc-bg text-[#3b281a] p-6 sm:p-10 z-20 flex flex-col justify-between shadow-2xl">
-        <div class="text-center pt-2">
-          <span class="pixel-font text-[7px] sm:text-[9px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
-          <h2 class="pixel-font text-[11px] sm:text-[14px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
+      <!-- Document Modal / Panel (Usando a imagem assets/manifesto_carga.png como fundo) -->
+      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md max-h-[94%] doc-bg text-[#3b281a] p-4 sm:p-6 z-20 flex flex-col justify-between rounded-sm shadow-2xl overflow-hidden">
+        
+        <!-- Cabeçalho Centralizado -->
+        <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
+          <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
+          <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
         </div>
 
-        <div class="my-auto space-y-2 font-mono px-2 sm:px-6">
-          <div class="pixel-box p-2 rounded-sm">
-            <div class="flex justify-between items-baseline border-b border-[#543d2b]/20 pb-1 mb-1">
+        <!-- Corpo do Documento -->
+        <div class="my-auto space-y-2 sm:space-y-2.5 font-mono overflow-y-auto custom-scroll pr-1" style="max-height: 62vh;">
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
+            <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
               <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
-              <span id="docName" class="text-[14px] sm:text-[17px] font-bold text-[#2b1b10]"></span>
+              <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-[#2b1b10]"></span>
             </div>
             <div class="flex justify-between items-baseline">
               <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
-              <span id="docRoute" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10]"></span>
+              <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
             </div>
           </div>
 
-          <div class="pixel-box p-2 rounded-sm flex flex-col">
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
             <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
-            <span id="docCargo" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-0.5 leading-tight"></span>
+            <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
-            <div class="pixel-box p-2 rounded-sm flex flex-col justify-between">
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Porte</span>
-              <span id="docSize" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10] mt-0.5"></span>
+              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-1"></span>
             </div>
 
-            <div class="pixel-box p-2 rounded-sm flex flex-col justify-between">
+            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
               <div class="flex justify-between items-center gap-1">
                 <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
-                <span id="docToxicityText" class="text-[11px] sm:text-[13px] font-bold"></span>
+                <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
               </div>
-              <div class="w-full h-2 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
+              <div class="w-full h-2.5 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
                 <div id="toxicityBar" class="h-full rounded-xs transition-all duration-300" style="width: 20%;"></div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="flex gap-4 pb-2 px-2 sm:px-6">
-          <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
-            AUTORIZAR
-          </button>
-          <button id="rejectBtn" class="flex-1 bg-rose-900 hover:bg-rose-800 text-white font-bold py-2 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
-            RECUSAR
-          </button>
-        </div>
-      </div>
-
-      <!-- Relatório de Fim de Dia -->
-      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-xs z-30 flex flex-col justify-center items-center p-2 sm:p-3 text-center">
-        <div class="report-bg relative p-4 sm:p-7 pt-5 sm:pt-8 w-[98%] max-w-2xl aspect-[2.1/1] flex flex-col justify-between text-slate-900 shadow-2xl overflow-hidden">
-          <div class="text-center w-full mt-1">
-            <h2 class="pixel-font text-[#4a154b] text-[12px] sm:text-lg uppercase tracking-wider font-bold">RELATÓRIO DE INSPEÇÃO</h2>
+          <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
+            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Risco Ambiental</span>
+            <span id="docRisco" class="text-[12px] sm:text-[14px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
           </div>
 
+          <div id="docGestorLine" class="doc-gestor-line hidden">
+            <span class="pixel-font text-[8px] text-[#7c2d12]">GESTOR:</span> <span id="docGestorLineText"></span>
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex flex-col gap-1 pt-2 border-t-2 border-[#543d2b]/30">
+          <div class="flex gap-3">
+            <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
+              AUTORIZAR
+            </button>
+            <button id="rejectBtn" class="flex-1 bg-rose-900 hover:bg-rose-800 text-white font-bold py-2 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
+              RECUSAR
+            </button>
+          </div>
+          <div id="actionHint" class="hidden">leia a observação do gestor para liberar a decisão</div>
+        </div>
+
+      </div>
+
+      <!-- Relatório de Fim de Dia Redesenhado com Design Retro 2D e UI/UX Otimizada -->
+      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-xs z-30 flex flex-col justify-center items-center p-2 sm:p-3 text-center">
+        <div class="report-bg relative p-4 sm:p-7 pt-5 sm:pt-8 w-[98%] max-w-2xl aspect-[2.1/1] flex flex-col justify-between text-slate-900 shadow-2xl overflow-hidden">
+          
+          <!-- Título Centralizado em Pixel Art Sem Estrelas nem Dia -->
+          <div class="text-center w-full mt-1">
+            <h2 id="reportTitle" class="pixel-font text-[#4a154b] text-[12px] sm:text-lg uppercase tracking-wider font-bold">RELATÓRIO DE INSPEÇÃO</h2>
+          </div>
+
+          <!-- Cards de Métricas Estilizados (Estilo Pixel Card) -->
           <div class="grid grid-cols-4 gap-1.5 sm:gap-2.5 my-auto px-1 sm:px-3">
             <div class="pixel-card p-1 sm:p-2 text-center">
               <div class="pixel-font text-[6px] sm:text-[8px] text-[#543d2b] font-bold">AVALIADOS</div>
@@ -248,75 +445,61 @@
             </div>
           </div>
 
+          <!-- Texto do Desempenho sem Fundo / Transparente + Espaçamento seguro na direita para a lupa -->
           <div class="pl-2 sm:pl-4 pr-16 sm:pr-24 py-1 text-left min-h-[40px] sm:min-h-[48px] flex items-center">
             <div id="reportImpact" class="pixel-font text-[8px] sm:text-[11px] leading-relaxed w-full"></div>
           </div>
 
+          <!-- Frase de encorajamento exibida apenas ao concluir o tutorial -->
+          <div id="readyLine" class="hidden pixel-font text-[9px] sm:text-[12px] text-[#4a154b] font-bold tracking-wide mb-1">
+            AGORA VOCÊ ESTÁ PRONTO!
+          </div>
+
+          <!-- Botão Estilizado em Pixel Art Retrô 2D -->
           <div class="flex justify-center mb-1">
             <button id="nextDayBtn" class="pixel-font pixel-btn-purple px-6 sm:px-10 py-1.5 text-[9px] sm:text-[11px] font-bold tracking-wide transition-transform flex items-center gap-2">
               CONTINUAR &rarr;
             </button>
           </div>
+
         </div>
       </div>
 
+      <!-- Overlay de fade (transição suave entre o fim do tutorial e o Dia 2) -->
+      <div id="fadeOverlay"></div>
+
     </div>
 
-    <!-- Rodapé -->
+    <!-- Dica rodapé + Quantidade de Navios na Direita -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
-      <span class="text-xs sm:text-base text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / 4</span>
+      <span id="footerHint">DICA: observe a maré e leia a documentação antes de decidir.</span>
+      <span class="text-xs sm:text-base text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / <span id="shipTotal">6</span></span>
     </div>
 
-  </div>
-
-  <!-- TELA DE RELATÓRIO FINAL PROPORCIONAL -->
-  <div id="finalScreen">
-    <div id="finalContent">
-      <h1 id="finalTitle" class="pixel-font text-sm sm:text-xl text-amber-400 mb-4">RELATÓRIO FINAL</h1>
-      
-      <div class="grid grid-cols-2 gap-3 mb-4">
-        <div class="bg-slate-800/80 border border-slate-700 p-3 rounded">
-          <span class="pixel-font text-[8px] sm:text-[10px] text-slate-400 block mb-1">NAVIOS PERIGOSOS QUE ENTRARAM</span>
-          <span id="naviosEntraram" class="pixel-font text-base sm:text-2xl text-rose-500 font-bold">0</span>
-        </div>
-        <div class="bg-slate-800/80 border border-slate-700 p-3 rounded">
-          <span class="pixel-font text-[8px] sm:text-[10px] text-slate-400 block mb-1">NAVIOS PERIGOSOS IMPEDIDOS</span>
-          <span id="naviosImpedidos" class="pixel-font text-base sm:text-2xl text-emerald-400 font-bold">0</span>
-        </div>
-      </div>
-
-      <div class="mb-3 text-left">
-        <span class="pixel-font text-[9px] sm:text-xs text-slate-300 block mb-1">ESTADO DO ECOSSISTEMA</span>
-        <div class="w-full h-5 bg-slate-950 rounded-full overflow-hidden border border-slate-700 p-0.5">
-          <div id="ecosystemFill" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 100%;"></div>
-        </div>
-        <div id="ecosystemStatus" class="pixel-font text-xs sm:text-sm text-right mt-1 text-emerald-400">100%</div>
-      </div>
-
-      <p id="finalMessage" class="font-mono text-xs sm:text-sm text-slate-300 bg-slate-950/60 p-3 rounded border border-slate-800 mb-4 leading-relaxed text-left"></p>
-
-      <div class="flex justify-center">
-        <button id="restartBtn" class="pixel-font bg-btn-custom px-8 py-2.5 text-xs sm:text-sm font-bold uppercase">JOGAR NOVAMENTE</button>
-      </div>
-    </div>
   </div>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+
     ctx.imageSmoothingEnabled = false;
 
+    // Elementos da Interface
     const docPanel = document.getElementById('docPanel');
     const acceptBtn = document.getElementById('acceptBtn');
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
-    const alertBox = document.getElementById('alertBox');
-    const alertMessage = document.getElementById('alertMessage');
-    const closeAlertBtn = document.getElementById('closeAlertBtn');
 
-    const images = {};
+    // Imagens do jogo
+    const images = { 
+      cenario: new Image(), 
+      mar: new Image(), 
+      marfrente: new Image(), 
+      boia: new Image(), 
+      personagem: new Image(),
+      navioPadrao: new Image()
+    };
 
     function loadAssets(callback) {
       const sources = { 
@@ -325,9 +508,7 @@
         marfrente: 'assets/marfrente.png', 
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
-        cargueiro: 'assets/cargueiro.png',
-        navio_grande: 'assets/navio_grande.png',
-        pesqueiroIrregular: 'assets/pesqueiro_irregular.png'
+        navioPadrao: 'assets/navio_padrao.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
       for (let k in sources) {
@@ -337,95 +518,359 @@
       }
     }
 
+    // ---------------------------------------------------------------
+    // A régua de maré já faz parte da arte de fundo (assets/cenario.png),
+    // no canto inferior direito. Estas coordenadas mapeiam essa régua
+    // dentro do espaço de 800x450 do canvas, para desenharmos por cima
+    // dela o nível de água atual e para posicionar o realce do tutorial.
+    // ---------------------------------------------------------------
+    const REGUA_RECT = { x: 730, y: 338, w: 44, h: 112 };
+
+    // Configuração dos tipos de navio
+    // (a ordem abaixo é a ordem fixa usada no Dia 1 / tutorial:
+    //  medicamentos -> alimentos -> equipamentos -> espécie invasora ->
+    //  pesca irregular -> materiais perigosos)
     const SHIP_TYPES = [
       {
+        id: "medicamentos",
         name: "MV Esperança",
+        origem: "Roterdã",
+        destino: "Porto Local",
         route: "Roterdã ➔ Local",
         cargo: "Insumos Hospitalares",
         toxicityVal: 0,
         toxicityText: "Nulo",
+        riscoAmbiental: "Nenhum reportado",
         isHazard: false,
         size: "Pequeno (3m)",
         isLarge: false,
-        imgKey: "cargueiro",
-        width: 250,
-        height: 135
+        lesson: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
+        shipLine: "Minha carga é preciosa. Cada entrega pode fazer a diferença."
       },
       {
+        id: "alimentos",
         name: "Grão de Ouro",
+        origem: "Santos",
+        destino: "Porto Local",
         route: "Santos ➔ Local",
         cargo: "Grãos / Mantimentos",
         toxicityVal: 0,
         toxicityText: "Nulo",
+        riscoAmbiental: "Nenhum reportado",
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true,
-        imgKey: "navio_grande",
-        width: 280,
-        height: 145
+        lesson: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
+        shipLine: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?"
       },
       {
+        id: "equipamentos",
         name: "Gigante dos Mares",
+        origem: "Vitória",
+        destino: "Porto Local",
         route: "Vitória ➔ Local",
         cargo: "Maquinário Pesado",
         toxicityVal: 1,
         toxicityText: "Baixo",
+        riscoAmbiental: "Baixo — uso padrão de maquinário",
         isHazard: false,
         size: "Médio (7m)",
         isLarge: false,
-        imgKey: "cargueiro",
-        width: 270,
-        height: 140
+        lesson: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
+        shipLine: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença."
       },
       {
+        id: "invasora",
         name: "Tritão das Marés",
+        origem: "Salvador",
+        destino: "Recife",
         route: "Salvador ➔ Recife",
         cargo: "Água de Lastro Contaminada",
         toxicityVal: 3,
         toxicityText: "Médio",
+        riscoAmbiental: "Não avaliado — lastro não inspecionado",
         isHazard: true,
         size: "Médio (6m)",
         isLarge: false,
-        imgKey: "cargueiro",
-        width: 250,
-        height: 135
+        lesson: "São espécies que chegam a um ambiente onde não pertencem, podendo se espalhar e competir com espécies nativas.",
+        shipLine: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações e, quando encontram um novo ambiente, podem se espalhar e alterar o equilíbrio da vida costeira."
       },
       {
+        id: "pesca_irregular",
         name: "Mar Furtivo",
+        origem: "Roterdã",
+        destino: "Porto Local",
         route: "Roterdã ➔ Local",
         cargo: "Pescado Irregular",
         toxicityVal: 2,
         toxicityText: "Baixo",
+        riscoAmbiental: "Não avaliado — atividade pesqueira",
         isHazard: true,
         size: "Pequeno (4m)",
         isLarge: false,
-        imgKey: "pesqueiroIrregular",
-        width: 240,
-        height: 130
+        lesson: "São embarcações envolvidas em atividades de pesca que não seguem as regras estabelecidas, podendo atuar em áreas protegidas ou utilizar práticas que prejudicam os recursos e o ambiente marinho.",
+        voice: "narrator",
+        shipLine: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas, reduzir os recursos pesqueiros e causar danos ao ambiente."
       },
       {
+        id: "material_perigoso",
         name: "Risco Químico",
+        origem: "Internacional",
+        destino: "Porto Local",
         route: "Internacional ➔ Local",
         cargo: "Resíduos Industriais",
         toxicityVal: 5,
         toxicityText: "Crítico",
+        riscoAmbiental: "Não avaliado — carga industrial",
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true,
-        imgKey: "navio_grande",
-        width: 280,
-        height: 145
+        lesson: "São embarcações que transportam cargas potencialmente perigosas, como substâncias químicas, resíduos industriais ou materiais tóxicos. Um vazamento ou manejo inadequado pode causar impactos ao ambiente costeiro.",
+        voice: "narrator",
+        shipLine: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco."
       }
     ];
 
+    // Variáveis de Estado
     let currentDay = 1;
     let shipsEvaluated = 0;
-    const maxShipsPerDay = 4;
     let isHighTide = false;
     let gameState = 'APPROACHING';
-    let isShaking = false;
-    let shakeTimer = 0;
 
+    // O Dia 1 é o dia-tutorial: todos os 6 tipos de navio aparecem, em
+    // ordem fixa, cada um com uma lição. A partir do Dia 2 o jogo volta
+    // ao funcionamento normal (4 navios aleatórios por dia).
+    function shipsPerDay(day) {
+      return day === 1 ? SHIP_TYPES.length : 4;
+    }
+
+    // --------- Controle do tutorial guiado (apenas no 1º navio) ---------
+    const gestorBox = document.getElementById('gestorBox');
+    const gestorTextEl = document.getElementById('gestorText');
+    const gestorHint = document.getElementById('gestorHint');
+    const gestorBtnWrap = document.getElementById('gestorBtnWrap');
+    const gestorBtn = document.getElementById('gestorBtn');
+    const spotRegua = document.getElementById('spotRegua');
+    const spotNavio = document.getElementById('spotNavio');
+    const shipBubble = document.getElementById('shipBubble');
+    const lessonCaption = document.getElementById('lessonCaption');
+    const dayStartBanner = document.getElementById('dayStartBanner');
+    const dayStartBannerText = document.getElementById('dayStartBannerText');
+    const docGestorLine = document.getElementById('docGestorLine');
+    const docGestorLineText = document.getElementById('docGestorLineText');
+    const actionHint = document.getElementById('actionHint');
+    const tutorialLabel = document.getElementById('tutorialLabel');
+    const dayLabel = document.getElementById('dayLabel');
+
+    // Passos do diálogo guiado exibido apenas no primeiro navio (medicamentos)
+    const GUIDED_STEPS = [
+      { text: "Antes de decidir, observe o mar." },
+      { text: "A maré muda as condições do porto. Navios maiores precisam de mais profundidade para entrar com segurança.", highlight: 'regua' },
+      { text: "Mas não olhe apenas para o tamanho.", highlight: 'navio' },
+      { text: "Toda embarcação traz informações importantes. Abra a documentação para investigar.", highlight: 'navio', button: true }
+    ];
+    const DOC_INTRO_LINE = "Nem toda ameaça será evidente. Cruze as informações antes de tomar sua decisão.";
+
+    let guidedIndex = 0;
+    let typingTimeout = null;
+    let isTyping = false;
+    let onGuidedFinished = null;
+
+    function positionSpotlight(el, canvasRect) {
+      el.style.left = (canvasRect.x / 800 * 100) + '%';
+      el.style.top = (canvasRect.y / 450 * 100) + '%';
+      el.style.width = (canvasRect.w / 800 * 100) + '%';
+      el.style.height = (canvasRect.h / 450 * 100) + '%';
+    }
+
+    function hideAllSpotlights() {
+      spotRegua.style.display = 'none';
+      spotNavio.style.display = 'none';
+    }
+
+    function showSpotlight(which) {
+      hideAllSpotlights();
+      if (which === 'regua') {
+        positionSpotlight(spotRegua, { x: REGUA_RECT.x - 6, y: REGUA_RECT.y - 20, w: REGUA_RECT.w + 12, h: REGUA_RECT.h + 20 });
+        spotRegua.style.display = 'block';
+      } else if (which === 'navio') {
+        const sx = Math.max(currentShip.x - 10, 0);
+        const sy = currentShip.y - 15;
+        positionSpotlight(spotNavio, { x: sx, y: sy, w: currentShip.width + 20, h: currentShip.height + 30 });
+        spotNavio.style.display = 'block';
+      }
+    }
+
+    function typeGestorText(text, onDone) {
+      isTyping = true;
+      gestorTextEl.innerHTML = '<span class="letras"></span><span class="cursor">▌</span>';
+      const spanLetras = gestorTextEl.querySelector('.letras');
+      let i = 0;
+      function step() {
+        if (i < text.length) {
+          spanLetras.textContent += text.charAt(i);
+          i++;
+          typingTimeout = setTimeout(step, 26);
+        } else {
+          isTyping = false;
+          if (onDone) onDone();
+        }
+      }
+      step();
+    }
+
+    function completeGestorTyping(text) {
+      clearTimeout(typingTimeout);
+      const spanLetras = gestorTextEl.querySelector('.letras');
+      if (spanLetras) spanLetras.textContent = text;
+      isTyping = false;
+    }
+
+    function runGuidedStep(index) {
+      if (index >= GUIDED_STEPS.length) {
+        gestorBox.style.display = 'none';
+        hideAllSpotlights();
+        if (onGuidedFinished) onGuidedFinished();
+        return;
+      }
+      guidedIndex = index;
+      const step = GUIDED_STEPS[index];
+      gestorBox.style.display = 'block';
+      gestorHint.style.display = step.button ? 'none' : 'block';
+      gestorBtnWrap.style.display = 'none';
+
+      if (step.highlight) showSpotlight(step.highlight);
+      else hideAllSpotlights();
+
+      typeGestorText(step.text, function () {
+        if (step.button) {
+          gestorBtnWrap.style.display = 'flex';
+        }
+      });
+    }
+
+    gestorBox.addEventListener('click', function (e) {
+      // Clicar avança o texto (ou completa a digitação em curso)
+      if (e.target === gestorBtn) return;
+      const step = GUIDED_STEPS[guidedIndex];
+      if (isTyping) {
+        completeGestorTyping(step.text);
+        if (step.button) gestorBtnWrap.style.display = 'flex';
+        return;
+      }
+      if (step.button) return; // espera clique no botão ENTENDI
+      runGuidedStep(guidedIndex + 1);
+    });
+
+    gestorBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      runGuidedStep(guidedIndex + 1);
+    });
+
+    function startGuidedTutorial(onFinished) {
+      onGuidedFinished = onFinished;
+      runGuidedStep(0);
+    }
+
+    // --------- Legenda educativa (antes de cada novo tipo de navio) ---------
+    // Duração padrão maior (era 4200ms) para dar mais tempo de leitura;
+    // um toque na legenda sempre permite adiantar, como a seta "→" dos
+    // botões CONTINUAR / INICIAR DIA 2.
+    function showLessonCaption(text, duration) {
+      lessonCaption.classList.remove('alert');
+      lessonCaption.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
+      lessonCaption.classList.add('visible');
+
+      clearTimeout(lessonCaption._hideTimer);
+      lessonCaption.onclick = null;
+
+      const hide = () => {
+        clearTimeout(lessonCaption._hideTimer);
+        lessonCaption.onclick = null;
+        lessonCaption.classList.remove('visible');
+      };
+
+      lessonCaption._hideTimer = setTimeout(hide, duration || 6800);
+      lessonCaption.onclick = hide;
+    }
+
+    // Variante em tom de alerta, usada para a "Narração" de aviso de
+    // navios de pesca irregular / materiais perigosos (fala do gestor,
+    // não do navio). Duração maior (era 3400ms) + toque para adiantar.
+    function showAlertCaption(text, onDone) {
+      lessonCaption.classList.add('alert');
+      lessonCaption.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
+      lessonCaption.classList.add('visible');
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        lessonCaption.onclick = null;
+        lessonCaption.classList.remove('visible');
+        setTimeout(() => {
+          lessonCaption.classList.remove('alert');
+          if (onDone) onDone();
+        }, 500);
+      }
+
+      const timer = setTimeout(finish, 5800);
+      lessonCaption.onclick = finish;
+    }
+
+    // --------- Balão de fala do navio ---------
+    // Duração maior (era 3400ms) + toque no balão para adiantar.
+    function showShipBubble(text, onDone) {
+      shipBubble.innerHTML = `<div>${text}</div><div class="captionHint">toque para avançar &rarr;</div>`;
+      const bx = Math.min(currentShip.x + currentShip.width * 0.15, 620);
+      const by = Math.max(currentShip.y - 70, 20);
+      shipBubble.style.left = (bx / 800 * 100) + '%';
+      shipBubble.style.top = (by / 450 * 100) + '%';
+      shipBubble.style.display = 'block';
+      requestAnimationFrame(() => shipBubble.classList.add('visible'));
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        shipBubble.onclick = null;
+        shipBubble.classList.remove('visible');
+        setTimeout(() => {
+          shipBubble.style.display = 'none';
+          if (onDone) onDone();
+        }, 400);
+      }
+
+      const timer = setTimeout(finish, 5800);
+      shipBubble.onclick = finish;
+    }
+
+    function showDayStartBanner(text) {
+      dayStartBannerText.textContent = text;
+      dayStartBanner.style.display = 'flex';
+      dayStartBannerText.style.animation = 'none';
+      void dayStartBannerText.offsetWidth;
+      dayStartBannerText.style.animation = '';
+      setTimeout(() => { dayStartBanner.style.display = 'none'; }, 1800);
+    }
+
+    function updateHeaderForDay() {
+      if (currentDay === 1) {
+        tutorialLabel.classList.remove('hidden');
+        dayLabel.classList.add('hidden');
+      } else {
+        tutorialLabel.classList.add('hidden');
+        dayLabel.classList.remove('hidden');
+      }
+      document.getElementById('shipTotal').innerText = shipsPerDay(currentDay);
+      document.getElementById('footerHint').innerText = currentDay === 1
+        ? 'DICA: observe a maré e leia a documentação antes de decidir.'
+        : 'DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!';
+    }
+
+    // Estatísticas Detalhadas
     let dayStats = {
       total: 0,
       correctAccepts: 0, 
@@ -435,19 +880,27 @@
       groundedShips: 0
     };
 
-    let naviosPerigososQueEntraram = 0;
-    let naviosPerigososImpedidos = 0;
-    let nivelDoEcossistema = 100;
-    let pendingAlertMessage = "";
-
     let currentShip = {
-      x: -300, y: 335, width: 260, height: 140, speed: 2, flipped: false, data: null
+      x: -160, y: 335, width: 140, height: 75, speed: 2, flipped: false, data: null
     };
 
+    function updateTideDisplay() {
+      // Controle interno de maré
+    }
+
     function generateRandomShip() {
-      isHighTide = Math.random() < 0.5;
-      if (shipsEvaluated === 0 && currentDay === 1) {
-        return { ...SHIP_TYPES[0] };
+      if (currentDay === 1 && shipsEvaluated === 0) {
+        // O tutorial sempre começa com maré baixa, para a régua aparecer
+        // bem destacada logo no primeiro navio (etapa guiada).
+        isHighTide = false;
+      } else {
+        isHighTide = Math.random() < 0.5;
+      }
+      updateTideDisplay();
+
+      if (currentDay === 1) {
+        // Dia-tutorial: ordem fixa, um de cada tipo, para ensinar todas as categorias.
+        return { ...SHIP_TYPES[shipsEvaluated % SHIP_TYPES.length] };
       }
       const template = SHIP_TYPES[Math.floor(Math.random() * SHIP_TYPES.length)];
       return { ...template };
@@ -461,19 +914,8 @@
         ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
       }
 
-      const pImg = images.personagem;
-      if (pImg && pImg.complete && pImg.naturalWidth > 0) {
-        const frameWidth = 120; 
-        const frameHeight = 84;
-        const totalFrames = 11;
-        
-        const currentFrameIndex = Math.floor(Date.now() / 150) % totalFrames;
-        const sheetColumns = 3; 
-        
-        const sx = (currentFrameIndex % sheetColumns) * frameWidth;
-        const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
-
-        ctx.drawImage(pImg, sx, sy, frameWidth, frameHeight, 510, 75, 170, 110);
+      if (images.personagem.complete && images.personagem.naturalWidth > 0) {
+        ctx.drawImage(images.personagem, 485, 80, 215, 125);
       }
     }
 
@@ -483,13 +925,6 @@
       canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
       const seaY = canvas.seaY;
 
-      ctx.save();
-      if (isShaking) {
-        const offsetX = (Math.random() - 0.5) * 6;
-        const offsetY = (Math.random() - 0.5) * 6;
-        ctx.translate(offsetX, offsetY);
-      }
-
       if (images.mar.complete && images.mar.naturalWidth > 0) {
         ctx.drawImage(images.mar, 0, seaY, 800, 450 - seaY);
       } else {
@@ -497,31 +932,60 @@
         ctx.fillRect(0, seaY, 800, 450 - seaY);
       }
 
-      if (images.boia.complete && images.boia.naturalWidth > 0) {
-        const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
-        let srcX = 0, srcY = 0;
-        if (!isHighTide) {
-          const isLuzAcesa = (Math.floor(Date.now() / 250) % 2) === 0;
-          srcY = isLuzAcesa ? 64 : 0; 
-        }
-        ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
-      }
+      drawShip();
 
       if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
-      drawShip();
+      if (images.boia.complete && images.boia.naturalWidth > 0) {
+        const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
+        let srcX = 0;
+        let srcY = 0;
+
+        if (!isHighTide) {
+          const isLuzAcesa = (Math.floor(Date.now() / 250) % 2) === 0;
+          srcX = 0;
+          srcY = isLuzAcesa ? 64 : 0; 
+        }
+
+        ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
+      }
+
+      drawRegua();
+    }
+
+    // Desenha, por cima da régua já pintada no cenário de fundo, uma
+    // marca de nível de água que sobe e desce junto com a maré, além do
+    // rótulo de texto (MARÉ ALTA / MARÉ BAIXA).
+    function drawRegua() {
+      const r = REGUA_RECT;
+      const fill = isHighTide ? 0.30 : 0.72; // fração da régua "submersa"
+      const waterY = r.y + r.h * (1 - fill);
+
+      ctx.save();
+      ctx.fillStyle = isHighTide ? "rgba(56, 189, 248, 0.55)" : "rgba(8, 47, 73, 0.55)";
+      ctx.fillRect(r.x, waterY, r.w, r.y + r.h - waterY);
+
+      ctx.strokeStyle = "rgba(255,255,255,0.85)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(r.x - 3, waterY);
+      ctx.lineTo(r.x + r.w + 3, waterY);
+      ctx.stroke();
+
+      ctx.font = "bold 12px 'VT323', monospace";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#02070b";
+      ctx.fillText(isHighTide ? "MARÉ ALTA" : "MARÉ BAIXA", r.x + r.w / 2 + 1, r.y - 7);
+      ctx.fillStyle = isHighTide ? "#facc15" : "#fca5a5";
+      ctx.fillText(isHighTide ? "MARÉ ALTA" : "MARÉ BAIXA", r.x + r.w / 2, r.y - 8);
       ctx.restore();
     }
 
     function drawShip() {
       if (!currentShip.data) return;
       ctx.save();
-      
-      const shipData = currentShip.data;
-      currentShip.width = shipData.width || 260;
-      currentShip.height = shipData.height || 140;
       currentShip.y = (canvas.seaY || 370) - 45;
 
       const x = currentShip.x;
@@ -535,12 +999,11 @@
         ctx.translate(-x, -y);
       }
 
-      const specificImg = images[shipData.imgKey];
-      if (specificImg && specificImg.complete && specificImg.naturalWidth > 0) {
-        ctx.drawImage(specificImg, x, y - 35, w, h);
+      if (images.navioPadrao.complete && images.navioPadrao.naturalWidth > 0) {
+        ctx.drawImage(images.navioPadrao, x, y, w, h);
       } else {
-        ctx.fillStyle = shipData.isHazard ? "#991b1b" : "#1d4ed8";
-        ctx.fillRect(x, y, w, 75);
+        ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
+        ctx.fillRect(x, y + 20, w, 35);
       }
 
       ctx.restore();
@@ -548,49 +1011,66 @@
 
     function updateGame() {
       document.getElementById('currentDay').innerText = currentDay;
-      document.getElementById('shipCount').innerText = Math.min(shipsEvaluated + 1, maxShipsPerDay);
+      document.getElementById('shipCount').innerText = Math.min(shipsEvaluated + 1, shipsPerDay(currentDay));
+
+      // Enquanto o realce está sobre o navio (tutorial guiado), acompanha a posição dele
+      if (spotNavio.style.display === 'block') {
+        showSpotlight('navio');
+      }
 
       if (gameState === 'APPROACHING') {
         currentShip.x += currentShip.speed;
+
         if (currentShip.x >= 380) {
           currentShip.x = 380;
-          gameState = 'INSPECTING';
-          openInspectionPanel();
+          gameState = 'ARRIVED';
+          handleShipArrival();
         }
       } else if (gameState === 'LEAVING_ACCEPT') {
         currentShip.x += currentShip.speed * 1.5;
         if (currentShip.x > 850) nextShip();
       } else if (gameState === 'LEAVING_REJECT') {
         currentShip.x -= currentShip.speed * 1.5;
-        if (currentShip.x < -320) nextShip();
+        if (currentShip.x < -150) nextShip();
       }
     }
 
-    function handleGroundedShip() {
-      isShaking = true;
-      shakeTimer = 120;
-      dayStats.groundedShips++;
-      dayStats.falseAccepts++;
-      dayStats.total++;
-
-      pendingAlertMessage = `ENCALHE CRÍTICO: O navio ${currentShip.data.name} era grande demais e encalhou devido à maré baixa! O impacto rompeu o casco, bloqueou o canal de acesso e gerou sérios danos ao ecossistema bentônico.`;
-
-      setTimeout(() => {
-        isShaking = false;
-        currentShip.x = -500;
-        showAlert(pendingAlertMessage);
-      }, 1500);
+    // O primeiro navio do Dia 1 (medicamentos) recebe o tutorial guiado
+    // completo, com destaques na régua e no navio antes de abrir a
+    // documentação, e uma fala extra do GESTOR dentro do documento.
+    function isFirstGuidedShip() {
+      return currentDay === 1 && shipsEvaluated === 0;
     }
 
-    function showAlert(msg) {
-      alertMessage.innerText = msg;
-      alertBox.classList.remove('hidden');
+    function handleShipArrival() {
+      if (isFirstGuidedShip()) {
+        gameState = 'TUTORIAL_INTRO';
+        startGuidedTutorial(function () {
+          gameState = 'INSPECTING';
+          openInspectionPanel();
+        });
+      } else if (currentDay === 1) {
+        // Demais navios do dia-tutorial: uma fala aparece antes de o
+        // jogador abrir a documentação sozinho — vinda do navio (1ª
+        // pessoa) ou do gestor, como um alerta (para pesca irregular e
+        // materiais perigosos, que trazem uma "Narração" de aviso).
+        gameState = 'SHIP_TALK';
+        if (currentShip.data.voice === 'narrator') {
+          showAlertCaption(currentShip.data.shipLine, function () {
+            gameState = 'INSPECTING';
+            openInspectionPanel();
+          });
+        } else {
+          showShipBubble(currentShip.data.shipLine, function () {
+            gameState = 'INSPECTING';
+            openInspectionPanel();
+          });
+        }
+      } else {
+        gameState = 'INSPECTING';
+        openInspectionPanel();
+      }
     }
-
-    closeAlertBtn.addEventListener('click', () => {
-      alertBox.classList.add('hidden');
-      nextShip();
-    });
 
     function openInspectionPanel() {
       const data = currentShip.data;
@@ -598,62 +1078,87 @@
       document.getElementById('docRoute').innerText = data.route;
       document.getElementById('docCargo').innerText = data.cargo;
       document.getElementById('docSize').innerText = data.size;
+      document.getElementById('docRisco').innerText = data.riscoAmbiental;
 
       const toxText = document.getElementById('docToxicityText');
       const toxBar = document.getElementById('toxicityBar');
       
       toxText.innerText = data.toxicityText;
+
       const percentage = Math.max((data.toxicityVal / 5) * 100, 8);
       toxBar.style.width = `${percentage}%`;
 
       if (data.toxicityVal === 0) {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-emerald-800";
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-emerald-800";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-emerald-600";
       } else if (data.toxicityVal <= 2) {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-amber-800";
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-amber-800";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-amber-500";
       } else {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-rose-900";
+        toxText.className = "text-[12px] sm:text-[14px] font-bold text-rose-900";
         toxBar.className = "h-full rounded-full transition-all duration-300 bg-rose-600";
       }
 
       docPanel.classList.remove('hidden');
+
+      if (isFirstGuidedShip()) {
+        // Mostra a fala extra do gestor e bloqueia a decisão até ela terminar.
+        docGestorLine.classList.remove('hidden');
+        docGestorLineText.textContent = '';
+        acceptBtn.disabled = true;
+        rejectBtn.disabled = true;
+        actionHint.classList.remove('hidden');
+        let i = 0;
+        const full = DOC_INTRO_LINE;
+        (function typeDoc() {
+          if (i < full.length) {
+            docGestorLineText.textContent += full.charAt(i);
+            i++;
+            setTimeout(typeDoc, 26);
+          } else {
+            acceptBtn.disabled = false;
+            rejectBtn.disabled = false;
+            actionHint.classList.add('hidden');
+          }
+        })();
+      } else {
+        docGestorLine.classList.add('hidden');
+        acceptBtn.disabled = false;
+        rejectBtn.disabled = false;
+        actionHint.classList.add('hidden');
+      }
     }
 
+    let showBannerOnNextShip = false;
+
     acceptBtn.addEventListener('click', () => {
+      if (acceptBtn.disabled) return;
+      if (isFirstGuidedShip()) showBannerOnNextShip = true;
       docPanel.classList.add('hidden');
+
+      // A decisão é sempre do jogador: aceitar sempre faz o navio seguir
+      // em frente, mesmo que seja um navio ruim (perigoso ou grande em
+      // maré baixa). Isso só é contabilizado como erro no relatório —
+      // o navio não é forçado a voltar/encalhar sozinho.
       const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
 
-      if (currentShip.data.isHazard) {
-        naviosPerigososQueEntraram++;
-        nivelDoEcossistema -= (100 / 3);
-        nivelDoEcossistema = Math.max(0, Math.min(100, nivelDoEcossistema));
-      }
-
-      if (currentShip.data.isLarge && !isHighTide) {
-        gameState = 'GROUNDED';
-        handleGroundedShip();
+      dayStats.total++;
+      if (isBadShip) {
+        dayStats.falseAccepts++;
+        if (currentShip.data.isLarge && !isHighTide) dayStats.groundedShips++;
       } else {
-        dayStats.total++;
-        if (isBadShip) {
-          dayStats.falseAccepts++;
-          showAlert(`CONTAMINAÇÃO: A autorização do navio ${currentShip.data.name} resultou em derramamento de óleo e substâncias tóxicas, afetando gravemente a população de peixes e aves marinhas.`);
-        } else {
-          dayStats.correctAccepts++;
-          gameState = 'LEAVING_ACCEPT';
-        }
+        dayStats.correctAccepts++;
       }
+      gameState = 'LEAVING_ACCEPT';
     });
 
     rejectBtn.addEventListener('click', () => {
+      if (rejectBtn.disabled) return;
+      if (isFirstGuidedShip()) showBannerOnNextShip = true;
       docPanel.classList.add('hidden');
       dayStats.total++;
       
       const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
-
-      if (currentShip.data.isHazard) {
-        naviosPerigososImpedidos++;
-      }
 
       if (isBadShip) {
         dayStats.correctRejects++;
@@ -666,11 +1171,17 @@
     });
 
     function spawnShip() {
-      if (shipsEvaluated < maxShipsPerDay) {
-        currentShip.x = -300;
+      if (shipsEvaluated < shipsPerDay(currentDay)) {
+        currentShip.x = -160;
         currentShip.flipped = false;
         currentShip.data = generateRandomShip();
         gameState = 'APPROACHING';
+
+        // Do 2º ao 6º navio do dia-tutorial: uma legenda educativa
+        // aparece enquanto a embarcação se aproxima.
+        if (currentDay === 1 && shipsEvaluated > 0) {
+          showLessonCaption(currentShip.data.lesson);
+        }
       } else {
         triggerEndOfDay();
       }
@@ -678,11 +1189,22 @@
 
     function nextShip() {
       shipsEvaluated++;
+      if (showBannerOnNextShip) {
+        showBannerOnNextShip = false;
+        showDayStartBanner('DIA 1 COMEÇOU');
+      }
       spawnShip();
     }
 
     function triggerEndOfDay() {
       gameState = 'DAY_END';
+      document.getElementById('reportTitle').innerText = currentDay === 1
+        ? 'TUTORIAL CONCLUÍDO'
+        : 'RELATÓRIO DE INSPEÇÃO';
+      nextDayBtn.innerHTML = currentDay === 1
+        ? 'INICIAR DIA 2 &rarr;'
+        : 'CONTINUAR &rarr;';
+      document.getElementById('readyLine').classList.toggle('hidden', currentDay !== 1);
       document.getElementById('repTotal').innerText = dayStats.total;
       document.getElementById('repCorrectAccept').innerText = dayStats.correctAccepts;
       document.getElementById('repCorrectReject').innerText = dayStats.correctRejects;
@@ -691,67 +1213,57 @@
       document.getElementById('repErrors').innerText = totalErrors;
 
       const impactBox = document.getElementById('reportImpact');
+
       if (totalErrors === 0) {
         impactBox.innerHTML = `<span class="text-emerald-800 font-bold">DESEMPENHO PERFEITO:</span> Todas as decisões foram corretas! O porto funcionou em segurança total.`;
+      } else if (totalErrors === 1) {
+        if (dayStats.falseRejects > 0) {
+          impactBox.innerHTML = `<span class="text-amber-800 font-bold">ATENÇÃO:</span> Bloqueou os perigos, mas recusou <span class="font-bold">${dayStats.falseRejects}</span> navio(s) regular(es) sem motivo!`;
+        } else {
+          impactBox.innerHTML = `<span class="text-rose-800 font-bold">ALERTA:</span> Deixou passar <span class="font-bold">${dayStats.falseAccepts}</span> embarcação com irregularidades ou risco de encalhe!`;
+        }
       } else {
-        impactBox.innerHTML = `<span class="text-amber-800 font-bold">ATENÇÃO:</span> O dia terminou com ${totalErrors} desvios operacionais registrados.`;
+        impactBox.innerHTML = `<span class="text-rose-900 font-bold">DESEMPENHO CRÍTICO:</span> Vários erros cometidos! (${dayStats.falseRejects} recusas indevidas e ${dayStats.falseAccepts} autorizações perigosas).`;
       }
 
       reportModal.classList.remove('hidden');
     }
 
-    function showFinalReport() {
-      nivelDoEcossistema = Math.max(0, Math.min(100, nivelDoEcossistema));
+    const fadeOverlay = document.getElementById('fadeOverlay');
 
-      document.getElementById('naviosEntraram').innerText = naviosPerigososQueEntraram;
-      document.getElementById('naviosImpedidos').innerText = naviosPerigososImpedidos;
-
-      document.getElementById('ecosystemFill').style.width = nivelDoEcossistema + '%';
-      document.getElementById('ecosystemStatus').innerText = Math.round(nivelDoEcossistema) + '%';
-
-      let mensagem = '';
-      if (nivelDoEcossistema < 40) {
-        mensagem = 'O ecossistema local sofreu danos profundos devido às suas decisões. A poluição por químicos e os encalhes repetidos destruíram a biodiversidade e deixaram a região em estado de emergência ecológica.';
-      } else if (nivelDoEcossistema < 70) {
-        mensagem = 'Suas escolhas refletem um equilíbrio moderado, mas houve desgaste ambiental considerável. Há margem para melhoria na preservação das águas do porto.';
-      } else {
-        mensagem = 'Parabéns! Suas decisões demonstraram profundo respeito ao meio ambiente. A fauna e a flora locais continuam a prosperar em equilíbrio perfeito.';
-      }
-
-      document.getElementById('finalMessage').innerText = mensagem;
-      reportModal.classList.add('hidden');
-      document.getElementById('finalScreen').classList.add('visible');
-      gameState = 'FINAL';
+    function goToNextDay() {
+      currentDay++;
+      shipsEvaluated = 0;
+      dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
+      updateHeaderForDay();
+      spawnShip();
     }
 
     nextDayBtn.addEventListener('click', () => {
+      const isEndOfTutorial = currentDay === 1;
       reportModal.classList.add('hidden');
 
-      if (currentDay < 3) {
-        currentDay++;
-        shipsEvaluated = 0;
-        dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
-        spawnShip();
+      if (isEndOfTutorial) {
+        // Fadeout suave e, ao final, redireciona para o jogo completo
+        fadeOverlay.classList.add('visible');
+        setTimeout(() => {
+          window.location.href = 'game.html';
+        }, 700);
       } else {
-        showFinalReport();
+        goToNextDay();
       }
-    });
-
-    document.getElementById('restartBtn').addEventListener('click', () => {
-      window.location.reload();
     });
 
     function gameLoop() {
-      if (gameState !== 'FINAL') {
-        ctx.clearRect(0, 0, 800, 450);
-        drawScenario();
-        drawSeaAndBuoy();
-        updateGame();
-      }
+      ctx.clearRect(0, 0, 800, 450);
+      drawScenario();
+      drawSeaAndBuoy();
+      updateGame();
       requestAnimationFrame(gameLoop);
     }
 
     loadAssets(() => {
+      updateHeaderForDay();
       spawnShip();
       gameLoop();
     });
