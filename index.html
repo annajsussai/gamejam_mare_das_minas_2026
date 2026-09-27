@@ -359,7 +359,6 @@
     }
 
     function drawScenario() {
-      // 1. Desenha o fundo do cenário
       if (images.cenario.complete && images.cenario.naturalWidth > 0) {
         ctx.drawImage(images.cenario, 0, 0, 800, 450);
       } else {
@@ -367,7 +366,6 @@
         ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
       }
 
-      // 2. Desenha e anima o personagem dentro da janela da guarita
       const pImg = images.personagem;
       if (pImg && pImg.complete && pImg.naturalWidth > 0) {
         const frameWidth = 120; 
@@ -394,6 +392,7 @@
       canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
       const seaY = canvas.seaY;
 
+      // 1. Fundo do mar
       if (images.mar.complete && images.mar.naturalWidth > 0) {
         ctx.drawImage(images.mar, 0, seaY, 800, 450 - seaY);
       } else {
@@ -401,12 +400,15 @@
         ctx.fillRect(0, seaY, 800, 450 - seaY);
       }
 
-      drawShip();
-
+      // 2. Espuma / Frente da água
       if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
+      // 3. Navio desenhado POR CIMA da água e da espuma
+      drawShip();
+
+      // 4. Boia por cima de tudo
       if (images.boia.complete && images.boia.naturalWidth > 0) {
         const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
         let srcX = 0;
