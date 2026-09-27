@@ -10,50 +10,23 @@
 
   * { box-sizing: border-box; }
 
-  body {
-      background-color: #0d1b2a;
-      font-family: 'VT323', monospace;
-      user-select: none;
-      touch-action: manipulation;
-    }
-
-    .pixel-font {
-      font-family: 'Press Start 2P', monospace;
-    }
-
-    .custom-scroll::-webkit-scrollbar {
-      width: 6px;
-    }
-    .custom-scroll::-webkit-scrollbar-track {
-      background: #78350f;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: #d97706;
-      border-radius: 3px;
-    }
-
-  /* ---------- MOLDURA EXTERNA (mesmo tamanho e estilo idêntico ao gameFrame do tutorial) ---------- */
-  #gameFrame {
-    width: 100%;
-    max-width: 1024px;
-    max-height: 100dvh;
-    background: #0f172a; /* slate-900 */
-    border: 2px solid #d97706; /* amber-600 */
-    border-radius: 8px;
-    padding: 6px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.6);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin: auto;
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0d1b2a;
   }
 
-  @media (min-width: 640px) {
-    #gameFrame { 
-      border-width: 4px; 
-      padding: 12px; 
-      gap: 12px;
-    }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 6px;
+    overflow: hidden;
+    font-family: 'VT323', monospace;
+    user-select: none;
+    touch-action: manipulation;
   }
 
   /* ---------- TELA (mesma proporção aspect-[16/9] do tutorial) ---------- */
@@ -343,7 +316,7 @@
 </head>
 <body>
 
-<div id="gameFrame">
+<div class="w-full max-w-5xl max-h-[100dvh] bg-slate-900 border-2 sm:border-4 border-amber-600 rounded-lg p-1.5 sm:p-3 shadow-2xl flex flex-col gap-1.5 sm:gap-3 my-auto">
   <div id="introScreen">
     <div id="introBg"></div>
     <div id="introVinheta"></div>
