@@ -1,588 +1,503 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Gerenciador do Porto - Inspeção Dinâmica</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Prévia — Introdução do Jogo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
-    body {
-      background-color: #0d1b2a;
-      font-family: 'VT323', monospace;
-      user-select: none;
-      touch-action: manipulation;
-    }
+  * { box-sizing: border-box; }
 
-    .pixel-font {
-      font-family: 'Press Start 2P', monospace;
-    }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #02070b;
+  }
 
-    .custom-scroll::-webkit-scrollbar {
-      width: 6px;
-    }
-    .custom-scroll::-webkit-scrollbar-track {
-      background: #78350f;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: #d97706;
-      border-radius: 3px;
-    }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 6px;
+    overflow: hidden;
+  }
 
-    /* Fundo do Documento / Manifesto de Carga usando a Imagem 'assets/manifesto_carga.png' */
-    .doc-bg {
-      background-image: url('assets/manifesto_carga.png');
-      background-size: 100% 100%;
-      background-position: center;
-      background-repeat: no-repeat;
-      image-rendering: pixelated;
-    }
+  /* ---------- MOLDURA EXTERNA (mesma proporção/estilo do index) ---------- */
+  #gameFrame {
+    width: 100%;
+    max-width: 1024px; /* equivalente ao max-w-5xl do index */
+    max-height: 100dvh;
+    background: #0f172a; /* slate-900 */
+    border: 2px solid #d97706; /* amber-600 */
+    border-radius: 10px;
+    padding: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.6);
+  }
 
-    .pixel-box {
-      background-color: rgba(84, 61, 43, 0.08);
-      border: 2px solid rgba(84, 61, 43, 0.25);
-    }
+  @media (min-width: 640px) {
+    #gameFrame { border-width: 4px; padding: 12px; }
+  }
 
-    /* Estilo do Relatório Retangular + Fundo Pixel Art */
-    .report-bg {
-      background-image: url('assets/fundo_feedback.png');
-      background-size: 100% 100%;
-      background-position: center;
-      background-repeat: no-repeat;
-      image-rendering: pixelated;
-    }
+  /* ---------- TELA (mesma proporção aspect-[16/9] do canvas do index) ---------- */
+  #introScreen {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 6px;
+    border: 1px solid #334155; /* slate-700 */
+    font-family: 'VT323', monospace;
+    color: #f4f1ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.3);
+  }
 
-    /* Botão Retrô 2D Pixel Art */
-    .pixel-btn-purple {
-      background-color: #5c1363;
-      color: #ffffff;
-      border-top: 2px solid #8e2396;
-      border-left: 2px solid #8e2396;
-      border-right: 3px solid #230426;
-      border-bottom: 4px solid #230426;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.3);
-      image-rendering: pixelated;
-    }
+  /* ---------- CENÁRIO DE FUNDO ---------- */
+  #introBg {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/cenario.png');
+    background-size: cover;
+    background-position: center 60%;
+    image-rendering: pixelated;
+    filter: saturate(0.85) brightness(0.55);
+    transform: scale(1.04);
+  }
 
-    .pixel-btn-purple:hover {
-      background-color: #72197a;
-    }
+  /* leve movimento de "respiração" no fundo, tipo maré */
+  @keyframes bgDrift {
+    0%   { transform: scale(1.04) translateY(0px); }
+    50%  { transform: scale(1.06) translateY(-6px); }
+    100% { transform: scale(1.04) translateY(0px); }
+  }
+  #introBg { animation: bgDrift 14s ease-in-out infinite; }
 
-    .pixel-btn-purple:active {
-      border-top: 3px solid #230426;
-      border-left: 3px solid #230426;
-      border-right: 2px solid #8e2396;
-      border-bottom: 2px solid #8e2396;
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 rgba(0,0,0,0.3);
-    }
+  #introVinheta {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, rgba(2,7,11,0.25) 0%, rgba(2,7,11,0.82) 78%),
+      linear-gradient(180deg, rgba(2,7,11,0.55) 0%, rgba(2,7,11,0.35) 30%, rgba(2,7,11,0.35) 70%, rgba(2,7,11,0.75) 100%);
+  }
 
-    /* Cards em Estilo Pixel Paper */
-    .pixel-card {
-      background-color: rgba(255, 255, 255, 0.85);
-      border: 2px solid #543d2b;
-      box-shadow: 2px 2px 0px rgba(84, 61, 43, 0.2);
-    }
-  </style>
+  /* scanlines sutis pra dar clima retrô sem pesar no texto */
+  #introScan {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.14) 0px,
+      rgba(0,0,0,0.14) 1px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0) 3px
+    );
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+
+  /* ---------- CONTEÚDO ---------- */
+  #introContent {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(92%, 640px);
+    padding: 0 10px;
+  }
+
+  #introNarrationBox {
+    position: relative;
+    min-height: 110px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 46px 14px 20px;
+    background: rgba(4, 12, 18, 0.55);
+    border: 2px solid rgba(217, 119, 6, 0.55);
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset, 0 8px 24px rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity .7s ease;
+  }
+
+  #introNarrationBox.visible { opacity: 1; }
+
+  #introNarration {
+    font-size: clamp(14px, 2.1vw, 22px);
+    line-height: 1.3;
+    text-align: center;
+    text-shadow: 2px 2px 0 #000, 0 0 16px rgba(0,0,0,.7);
+    letter-spacing: 0.3px;
+  }
+
+  #introNarration .cursor {
+    display: inline-block;
+    width: 0.5ch;
+    margin-left: 2px;
+    animation: blink 0.9s steps(1) infinite;
+    color: #facc15;
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* ---------- BOTÃO DE AVANÇAR (setinha no canto inferior direito) ---------- */
+  #advanceBtn {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #d97706;
+    background: rgba(2, 7, 11, 0.75);
+    color: #facc15;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease, transform .12s ease, background .12s ease;
+  }
+
+  #introNarrationBox.visible #advanceBtn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #advanceBtn:hover {
+    background: rgba(217, 119, 6, 0.25);
+    transform: scale(1.08);
+  }
+
+  #advanceBtn:active {
+    transform: scale(0.92);
+  }
+
+  @keyframes arrowPulse {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(2px); }
+  }
+  #advanceBtn span {
+    display: inline-block;
+    animation: arrowPulse 1s ease-in-out infinite;
+  }
+
+  #skipHint {
+    margin-top: 8px;
+    font-size: clamp(11px, 1.4vw, 14px);
+    color: rgba(244, 241, 234, 0.55);
+    opacity: 0;
+    transition: opacity .6s ease;
+    height: 1.3em;
+  }
+  #skipHint.visible { opacity: 1; }
+
+  /* ---------- PLACA DE OBJETIVOS (inspirada na placa do cenário) ---------- */
+  #objectiveBox {
+    display: none;
+    width: 100%;
+    margin: 0 auto;
+    background: rgba(5, 15, 24, .82);
+    border: 3px solid #d97706;
+    border-radius: 10px;
+    padding: 16px 18px 20px;
+    box-shadow: 0 0 0 2px #7c2d12 inset, 0 10px 30px rgba(0,0,0,.6);
+    animation: objectiveAppear .6s ease forwards;
+    position: relative;
+    text-align: center;
+  }
+
+  /* "poste" decorativo lembrando os pilares de madeira do cais */
+  #objectiveBox::before,
+  #objectiveBox::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    width: 12px;
+    height: 18px;
+    background: #7c4a2d;
+    border: 2px solid #4a2c18;
+    border-radius: 2px;
+  }
+  #objectiveBox::before { left: 18px; }
+  #objectiveBox::after  { right: 18px; }
+
+  #objectiveBox h2 {
+    margin: 0 0 12px;
+    color: #facc15;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(11px, 1.8vw, 18px);
+    text-align: center;
+    text-shadow: 2px 2px 0 #7c2d12;
+  }
+
+  #objectiveGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+  }
+
+  #objectiveGrid p {
+    margin: 0;
+    padding: 8px 8px;
+    font-size: clamp(12px, 1.8vw, 17px);
+    line-height: 1.2;
+    text-align: center;
+    border: 1px solid rgba(217, 119, 6, .5);
+    border-radius: 5px;
+    background: rgba(2, 7, 11, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #objectiveGrid p::before {
+    content: "▸";
+    color: #facc15;
+  }
+
+  @media (max-width: 560px) {
+    #objectiveGrid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- BOTÕES COM O SPRITE bg_btn.png ---------- */
+  .intro-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 16px auto 0;
+    min-width: 170px;
+    background: transparent;
+    color: #4a2410;
+    font-family: 'Press Start 2P', monospace;
+    font-weight: bold;
+    border: none;
+    padding: 14px 24px 18px;
+    cursor: pointer;
+    font-size: clamp(9px, 1.5vw, 13px);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.25);
+    background-image: url('assets/bg_btn.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    image-rendering: pixelated;
+    transition: transform .12s ease, filter .12s ease;
+    animation: objectiveAppear .6s ease forwards;
+  }
+
+  .intro-btn:hover {
+    transform: translateY(-2px) scale(1.04);
+    filter: brightness(1.12);
+  }
+
+  .intro-btn:active {
+    transform: translateY(1px) scale(0.98);
+    filter: brightness(0.94);
+  }
+
+  @keyframes objectiveAppear {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  #introScreen.fadeOut {
+    animation: introFadeOut .6s ease forwards;
+  }
+  @keyframes introFadeOut {
+    to { opacity: 0; }
+  }
+</style>
 </head>
-<body class="flex items-center justify-center min-h-screen min-h-[100dvh] text-white p-1 sm:p-3 overflow-hidden">
+<body>
 
-  <div class="w-full max-w-5xl max-h-[100dvh] bg-slate-900 border-2 sm:border-4 border-amber-600 rounded-lg p-1.5 sm:p-3 shadow-2xl flex flex-col gap-1.5 sm:gap-3 my-auto">
-    
-    <!-- Top Bar Status -->
-    <div class="flex justify-between items-center bg-slate-800 p-1.5 sm:p-3 rounded border border-slate-700 text-xs sm:text-base">
-      <div class="flex items-center gap-2 sm:gap-4">
-        <span class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
+<div id="gameFrame">
+  <div id="introScreen">
+    <div id="introBg"></div>
+    <div id="introVinheta"></div>
+    <div id="introScan"></div>
+
+    <div id="introContent">
+
+      <div id="introNarrationBox">
+        <div id="introNarration"></div>
+        <button id="advanceBtn" type="button" aria-label="Avançar texto"><span>&raquo;</span></button>
       </div>
-    </div>
+      <div id="skipHint">clique ou toque na seta para avançar</div>
 
-    <!-- GAME CANVAS CONTAINER -->
-    <div class="relative w-full aspect-[16/9] bg-sky-900 rounded overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
-      
-      <!-- Canvas do Jogo -->
-      <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
+      <button id="showObjectivesBtn" class="intro-btn">VER OBJETIVOS</button>
 
-      <!-- Document Modal / Panel (Usando a imagem assets/manifesto_carga.png como fundo) -->
-      <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm shadow-2xl">
-        
-        <!-- Cabeçalho Centralizado -->
-        <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
-          <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
-          <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
-        </div>
-
-        <!-- Corpo do Documento -->
-        <div class="my-auto space-y-2.5 font-mono">
-          <div class="pixel-box p-2 sm:p-2.5 rounded-sm">
-            <div class="flex justify-between items-baseline border-b border-[#543d2b]/15 pb-1 mb-1">
-              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Embarcação:</span>
-              <span id="docName" class="text-[15px] sm:text-[18px] font-bold text-[#2b1b10]"></span>
-            </div>
-            <div class="flex justify-between items-baseline">
-              <span class="text-[11px] sm:text-[13px] font-bold text-[#543d2b] uppercase">Rota Registada:</span>
-              <span id="docRoute" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10]"></span>
-            </div>
-          </div>
-
-          <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col">
-            <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Carga Declarada</span>
-            <span id="docCargo" class="text-[14px] sm:text-[16px] font-bold text-[#2b1b10] mt-0.5 whitespace-normal leading-tight"></span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
-              <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Porte</span>
-              <span id="docSize" class="text-[13px] sm:text-[15px] font-bold text-[#2b1b10] mt-1"></span>
-            </div>
-
-            <div class="pixel-box p-2 sm:p-2.5 rounded-sm flex flex-col justify-between">
-              <div class="flex justify-between items-center gap-1">
-                <span class="text-[10px] sm:text-[12px] font-bold text-[#543d2b] uppercase">Toxicidade</span>
-                <span id="docToxicityText" class="text-[12px] sm:text-[14px] font-bold"></span>
-              </div>
-              <div class="w-full h-2.5 bg-[#543d2b]/20 rounded-sm overflow-hidden flex p-0.5 border border-[#543d2b]/30 mt-1">
-                <div id="toxicityBar" class="h-full rounded-xs transition-all duration-300" style="width: 20%;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Botões de Ação -->
-        <div class="flex gap-3 pt-2 border-t-2 border-[#543d2b]/30">
-          <button id="acceptBtn" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded border-b-4 border-emerald-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
-            AUTORIZAR
-          </button>
-          <button id="rejectBtn" class="flex-1 bg-rose-900 hover:bg-rose-800 text-white font-bold py-2 px-2 rounded border-b-4 border-rose-950 active:translate-y-0.5 pixel-font text-[9px] sm:text-[11px] transition flex items-center justify-center gap-1 shadow-md">
-            RECUSAR
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Relatório de Fim de Dia Redesenhado com Design Retro 2D e UI/UX Otimizada -->
-      <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-xs z-30 flex flex-col justify-center items-center p-2 sm:p-3 text-center">
-        <div class="report-bg relative p-4 sm:p-7 pt-5 sm:pt-8 w-[98%] max-w-2xl aspect-[2.1/1] flex flex-col justify-between text-slate-900 shadow-2xl overflow-hidden">
-          
-          <!-- Título Centralizado em Pixel Art Sem Estrelas nem Dia -->
-          <div class="text-center w-full mt-1">
-            <h2 class="pixel-font text-[#4a154b] text-[12px] sm:text-lg uppercase tracking-wider font-bold">RELATÓRIO DE INSPEÇÃO</h2>
-          </div>
-
-          <!-- Cards de Métricas Estilizados (Estilo Pixel Card) -->
-          <div class="grid grid-cols-4 gap-1.5 sm:gap-2.5 my-auto px-1 sm:px-3">
-            <div class="pixel-card p-1 sm:p-2 text-center">
-              <div class="pixel-font text-[6px] sm:text-[8px] text-[#543d2b] font-bold">AVALIADOS</div>
-              <div id="repTotal" class="pixel-font text-xs sm:text-xl font-bold text-slate-900 mt-1">0</div>
-            </div>
-            <div class="pixel-card p-1 sm:p-2 text-center border-emerald-700">
-              <div class="pixel-font text-[6px] sm:text-[8px] text-emerald-800 font-bold">APROV. CERTA</div>
-              <div id="repCorrectAccept" class="pixel-font text-xs sm:text-xl font-bold text-emerald-700 mt-1">0</div>
-            </div>
-            <div class="pixel-card p-1 sm:p-2 text-center border-amber-700">
-              <div class="pixel-font text-[6px] sm:text-[8px] text-amber-900 font-bold">RECUSA CERTA</div>
-              <div id="repCorrectReject" class="pixel-font text-xs sm:text-xl font-bold text-amber-800 mt-1">0</div>
-            </div>
-            <div class="pixel-card p-1 sm:p-2 text-center border-rose-700">
-              <div class="pixel-font text-[6px] sm:text-[8px] text-rose-900 font-bold">ERROS</div>
-              <div id="repErrors" class="pixel-font text-xs sm:text-xl font-bold text-rose-700 mt-1">0</div>
-            </div>
-          </div>
-
-          <!-- Texto do Desempenho sem Fundo / Transparente + Espaçamento seguro na direita para a lupa -->
-          <div class="pl-2 sm:pl-4 pr-16 sm:pr-24 py-1 text-left min-h-[40px] sm:min-h-[48px] flex items-center">
-            <div id="reportImpact" class="pixel-font text-[8px] sm:text-[11px] leading-relaxed w-full"></div>
-          </div>
-
-          <!-- Botão Estilizado em Pixel Art Retrô 2D -->
-          <div class="flex justify-center mb-1">
-            <button id="nextDayBtn" class="pixel-font pixel-btn-purple px-6 sm:px-10 py-1.5 text-[9px] sm:text-[11px] font-bold tracking-wide transition-transform flex items-center gap-2">
-              CONTINUAR &rarr;
-            </button>
-          </div>
-
+      <div id="objectiveBox">
+        <h2>SEU OBJETIVO</h2>
+        <div id="objectiveGrid">
+          <p>Avalie as embarcações</p>
+          <p>Analise suas informações</p>
+          <p>Observe a maré</p>
+          <p>Proteja o ecossistema</p>
         </div>
       </div>
 
+      <button id="startIntroBtn" class="intro-btn">COMEÇAR</button>
     </div>
-
-    <!-- Dica rodapé + Quantidade de Navios na Direita -->
-    <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
-      <span class="text-xs sm:text-base text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / 4</span>
-    </div>
-
   </div>
+</div>
 
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+<script>
+  // ---------- referências dos elementos ----------
+  var introScreen = document.getElementById('introScreen');
+  var introNarrationBox = document.getElementById('introNarrationBox');
+  var introNarration = document.getElementById('introNarration');
+  var advanceBtn = document.getElementById('advanceBtn');
+  var skipHint = document.getElementById('skipHint');
+  var showObjectivesBtn = document.getElementById('showObjectivesBtn');
+  var objectiveBox = document.getElementById('objectiveBox');
+  var startIntroBtn = document.getElementById('startIntroBtn');
 
-    ctx.imageSmoothingEnabled = false;
+  // ---------- textos da narração ----------
+  var introTexts = [
+    "“O porto desperta antes mesmo do sol. Embarcações começam a surgir no horizonte. Algumas trazem alimentos, medicamentos e equipamentos essenciais. Outras podem carregar ameaças para as águas e para a vida costeira.”",
+    "“Mas nem sempre é possível saber o que existe por trás de cada carga. Nos próximos três dias, o porto estará sob sua responsabilidade. Observe. Investigue. Decida.”"
+  ];
 
-    // Elementos da Interface
-    const docPanel = document.getElementById('docPanel');
-    const acceptBtn = document.getElementById('acceptBtn');
-    const rejectBtn = document.getElementById('rejectBtn');
-    const reportModal = document.getElementById('reportModal');
-    const nextDayBtn = document.getElementById('nextDayBtn');
+  // ---------- variáveis globais de controle da máquina de escrever ----------
+  var indiceTextoAtual = 0;
+  var indiceCaractereAtual = 0;
+  var timeoutDigitacao = null; // agenda cada caractere sendo digitado
+  var timeoutEspera = null;    // espera antes de esconder a caixa e ir pro próximo texto
+  var timeoutTransicao = null; // pequena pausa entre esconder e mostrar o próximo
+  var digitando = false;
+  var velocidadeDigitacao = 34; // ms por caractere
 
-    // Imagens do jogo
-    const images = { 
-      cenario: new Image(), 
-      mar: new Image(), 
-      marfrente: new Image(), 
-      boia: new Image(), 
-      personagem: new Image(),
-      navioPadrao: new Image()
-    };
+  function limparTimersPendentes() {
+    clearTimeout(timeoutDigitacao);
+    clearTimeout(timeoutEspera);
+    clearTimeout(timeoutTransicao);
+  }
 
-    function loadAssets(callback) {
-      const sources = { 
-        cenario: 'assets/cenario.png', 
-        mar: 'assets/mar.png', 
-        marfrente: 'assets/marfrente.png', 
-        boia: 'assets/boia.png',
-        personagem: 'assets/personagem.png',
-        navioPadrao: 'assets/navio_padrao.png'
-      };
-      let loaded = 0, total = Object.keys(sources).length;
-      for (let k in sources) {
-        images[k] = new Image();
-        images[k].src = sources[k];
-        images[k].onload = images[k].onerror = () => { if (++loaded === total) callback(); };
-      }
-    }
+  // digita o texto caractere por caractere dentro do elemento alvo
+  function digitarTexto(texto) {
+    digitando = true;
+    indiceCaractereAtual = 0;
+    introNarration.innerHTML = '<span class="letras"></span><span class="cursor">▌</span>';
+    var spanLetras = introNarration.querySelector('.letras');
 
-    // Configuração dos tipos de navio
-    const SHIP_TYPES = [
-      {
-        name: "MV Esperança",
-        route: "Roterdã ➔ Local",
-        cargo: "Insumos Hospitalares",
-        toxicityVal: 0,
-        toxicityText: "Nulo",
-        isHazard: false,
-        size: "Pequeno (3m)",
-        isLarge: false
-      },
-      {
-        name: "Grão de Ouro",
-        route: "Santos ➔ Local",
-        cargo: "Grãos / Mantimentos",
-        toxicityVal: 0,
-        toxicityText: "Nulo",
-        isHazard: false,
-        size: "Grande (12m)",
-        isLarge: true
-      },
-      {
-        name: "Gigante dos Mares",
-        route: "Vitória ➔ Local",
-        cargo: "Maquinário Pesado",
-        toxicityVal: 1,
-        toxicityText: "Baixo",
-        isHazard: false,
-        size: "Médio (7m)",
-        isLarge: false
-      },
-      {
-        name: "Tritão das Marés",
-        route: "Salvador ➔ Recife",
-        cargo: "Água de Lastro Contaminada",
-        toxicityVal: 3,
-        toxicityText: "Médio",
-        isHazard: true,
-        size: "Médio (6m)",
-        isLarge: false
-      },
-      {
-        name: "Mar Furtivo",
-        route: "Roterdã ➔ Local",
-        cargo: "Pescado Irregular",
-        toxicityVal: 2,
-        toxicityText: "Baixo",
-        isHazard: true,
-        size: "Pequeno (4m)",
-        isLarge: false
-      },
-      {
-        name: "Risco Químico",
-        route: "Internacional ➔ Local",
-        cargo: "Resíduos Industriais",
-        toxicityVal: 5,
-        toxicityText: "Crítico",
-        isHazard: true,
-        size: "Grande (11m)",
-        isLarge: true
-      }
-    ];
-
-    // Variáveis de Estado
-    let currentDay = 1;
-    let shipsEvaluated = 0;
-    const maxShipsPerDay = 4;
-    let isHighTide = false;
-    let gameState = 'APPROACHING';
-
-    // Estatísticas Detalhadas
-    let dayStats = {
-      total: 0,
-      correctAccepts: 0, 
-      correctRejects: 0, 
-      falseRejects: 0,   
-      falseAccepts: 0,   
-      groundedShips: 0
-    };
-
-    let currentShip = {
-      x: -160, y: 335, width: 140, height: 75, speed: 2, flipped: false, data: null
-    };
-
-    function updateTideDisplay() {
-      // Controle interno de maré
-    }
-
-    function generateRandomShip() {
-      isHighTide = Math.random() < 0.5;
-      updateTideDisplay();
-
-      if (shipsEvaluated === 0 && currentDay === 1) {
-        return { ...SHIP_TYPES[0] };
-      }
-      const template = SHIP_TYPES[Math.floor(Math.random() * SHIP_TYPES.length)];
-      return { ...template };
-    }
-
-    function drawScenario() {
-      if (images.cenario.complete && images.cenario.naturalWidth > 0) {
-        ctx.drawImage(images.cenario, 0, 0, 800, 450);
+    function passo() {
+      if (indiceCaractereAtual < texto.length) {
+        spanLetras.textContent += texto.charAt(indiceCaractereAtual);
+        indiceCaractereAtual++;
+        timeoutDigitacao = setTimeout(passo, velocidadeDigitacao);
       } else {
-        ctx.fillStyle = "#1e3a8a"; ctx.fillRect(0, 0, 800, 250);
-        ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
-      }
-
-      if (images.personagem.complete && images.personagem.naturalWidth > 0) {
-        ctx.drawImage(images.personagem, 485, 80, 215, 125);
+        digitando = false;
+        agendarProximoTexto();
       }
     }
+    passo();
+  }
 
-    function drawSeaAndBuoy() {
-      const targetSeaY = isHighTide ? 315 : 370;
-      if (!canvas.seaY) canvas.seaY = targetSeaY;
-      canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
-      const seaY = canvas.seaY;
+  // completa o texto instantaneamente na tela (sem terminar a sequência ainda)
+  function completarDigitacaoAgora() {
+    clearTimeout(timeoutDigitacao);
+    var spanLetras = introNarration.querySelector('.letras');
+    if (spanLetras) spanLetras.textContent = introTexts[indiceTextoAtual];
+    digitando = false;
+  }
 
-      if (images.mar.complete && images.mar.naturalWidth > 0) {
-        ctx.drawImage(images.mar, 0, seaY, 800, 450 - seaY);
-      } else {
-        ctx.fillStyle = "rgba(14, 116, 144, 0.75)";
-        ctx.fillRect(0, seaY, 800, 450 - seaY);
-      }
+  // depois que o texto termina de digitar, espera um tempo e passa pro próximo
+  function agendarProximoTexto() {
+    timeoutEspera = setTimeout(function () {
+      esconderEIrParaProximo();
+    }, 3700);
+  }
 
-      drawShip();
+  function esconderEIrParaProximo() {
+    introNarrationBox.classList.remove('visible');
+    timeoutTransicao = setTimeout(function () {
+      mostrarTexto(indiceTextoAtual + 1);
+    }, 600);
+  }
 
-      if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
-        ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
-      }
+  // função única de avanço: usada tanto pelo clique na caixa quanto pela setinha
+  // - se ainda está digitando: completa o texto na hora
+  // - se o texto já está completo (ou acabou de ser completado): pula direto pro próximo, sem esperar
+  function avancar() {
+    if (indiceTextoAtual >= introTexts.length) return; // nada a avançar
+    if (digitando) {
+      completarDigitacaoAgora();
+    } else {
+      clearTimeout(timeoutEspera);
+      esconderEIrParaProximo();
+    }
+  }
 
-      if (images.boia.complete && images.boia.naturalWidth > 0) {
-        const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
-        let srcX = 0;
-        let srcY = 0;
+  // controla a sequência: mostra caixa -> digita -> espera -> some -> próximo
+  function mostrarTexto(indice) {
+    limparTimersPendentes();
 
-        if (!isHighTide) {
-          const isLuzAcesa = (Math.floor(Date.now() / 250) % 2) === 0;
-          srcX = 0;
-          srcY = isLuzAcesa ? 64 : 0; 
-        }
-
-        ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
-      }
+    if (indice >= introTexts.length) {
+      indiceTextoAtual = indice;
+      skipHint.classList.remove('visible');
+      introNarrationBox.classList.remove('visible');
+      setTimeout(function () {
+        // tira os dois do fluxo do layout (não só invisíveis, mas sem ocupar espaço)
+        // assim o bloco de objetivos fica realmente centralizado na tela
+        introNarrationBox.style.display = 'none';
+        skipHint.style.display = 'none';
+        showObjectivesBtn.style.display = 'flex';
+      }, 500);
+      return;
     }
 
-    function drawShip() {
-      if (!currentShip.data) return;
-      ctx.save();
-      currentShip.y = (canvas.seaY || 370) - 45;
+    indiceTextoAtual = indice;
+    introNarrationBox.classList.add('visible');
+    skipHint.classList.add('visible');
+    digitarTexto(introTexts[indice]);
+  }
 
-      const x = currentShip.x;
-      const y = currentShip.y;
-      const w = currentShip.width;
-      const h = currentShip.height;
+  // clique em qualquer lugar da caixa também avança
+  introNarrationBox.style.cursor = 'pointer';
+  introNarrationBox.addEventListener('click', function (e) {
+    // evita disparar duas vezes quando o clique é no próprio botão de seta
+    if (e.target === advanceBtn || advanceBtn.contains(e.target)) return;
+    avancar();
+  });
 
-      if (currentShip.flipped) {
-        ctx.translate(x + w, y);
-        ctx.scale(-1, 1);
-        ctx.translate(-x, -y);
-      }
+  // botão de setinha: avança o texto (funciona clicando quantas vezes precisar)
+  advanceBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    avancar();
+  });
 
-      if (images.navioPadrao.complete && images.navioPadrao.naturalWidth > 0) {
-        ctx.drawImage(images.navioPadrao, x, y, w, h);
-      } else {
-        ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
-        ctx.fillRect(x, y + 20, w, 35);
-      }
+  showObjectivesBtn.addEventListener('click', function () {
+    showObjectivesBtn.style.display = 'none';
+    objectiveBox.style.display = 'block';
+    startIntroBtn.style.display = 'flex';
+  });
 
-      ctx.restore();
-    }
+  startIntroBtn.addEventListener('click', function () {
+    introScreen.classList.add('fadeOut');
+    setTimeout(function () {
+      introScreen.style.display = 'none';
+      console.log("Jogo iniciado!");
+    }, 600);
+  });
 
-    function updateGame() {
-      document.getElementById('currentDay').innerText = currentDay;
-      document.getElementById('shipCount').innerText = Math.min(shipsEvaluated + 1, maxShipsPerDay);
-
-      if (gameState === 'APPROACHING') {
-        currentShip.x += currentShip.speed;
-
-        if (currentShip.x >= 380) {
-          currentShip.x = 380;
-          gameState = 'INSPECTING';
-          openInspectionPanel();
-        }
-      } else if (gameState === 'LEAVING_ACCEPT') {
-        currentShip.x += currentShip.speed * 1.5;
-        if (currentShip.x > 850) nextShip();
-      } else if (gameState === 'LEAVING_REJECT') {
-        currentShip.x -= currentShip.speed * 1.5;
-        if (currentShip.x < -150) nextShip();
-      }
-    }
-
-    function handleGroundedShip() {
-      dayStats.groundedShips++;
-      dayStats.falseAccepts++;
-      dayStats.total++;
-      setTimeout(() => {
-        gameState = 'LEAVING_REJECT';
-        currentShip.flipped = true;
-      }, 300);
-    }
-
-    function openInspectionPanel() {
-      const data = currentShip.data;
-      document.getElementById('docName').innerText = data.name;
-      document.getElementById('docRoute').innerText = data.route;
-      document.getElementById('docCargo').innerText = data.cargo;
-      document.getElementById('docSize').innerText = data.size;
-
-      const toxText = document.getElementById('docToxicityText');
-      const toxBar = document.getElementById('toxicityBar');
-      
-      toxText.innerText = data.toxicityText;
-
-      const percentage = Math.max((data.toxicityVal / 5) * 100, 8);
-      toxBar.style.width = `${percentage}%`;
-
-      if (data.toxicityVal === 0) {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-emerald-800";
-        toxBar.className = "h-full rounded-full transition-all duration-300 bg-emerald-600";
-      } else if (data.toxicityVal <= 2) {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-amber-800";
-        toxBar.className = "h-full rounded-full transition-all duration-300 bg-amber-500";
-      } else {
-        toxText.className = "text-[11px] sm:text-[13px] font-bold text-rose-900";
-        toxBar.className = "h-full rounded-full transition-all duration-300 bg-rose-600";
-      }
-
-      docPanel.classList.remove('hidden');
-    }
-
-    acceptBtn.addEventListener('click', () => {
-      docPanel.classList.add('hidden');
-      const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
-
-      if (currentShip.data.isLarge && !isHighTide) {
-        gameState = 'GROUNDED';
-        handleGroundedShip();
-      } else {
-        dayStats.total++;
-        if (isBadShip) {
-          dayStats.falseAccepts++;
-        } else {
-          dayStats.correctAccepts++;
-        }
-        gameState = 'LEAVING_ACCEPT';
-      }
-    });
-
-    rejectBtn.addEventListener('click', () => {
-      docPanel.classList.add('hidden');
-      dayStats.total++;
-      
-      const isBadShip = currentShip.data.isHazard || (currentShip.data.isLarge && !isHighTide);
-
-      if (isBadShip) {
-        dayStats.correctRejects++;
-      } else {
-        dayStats.falseRejects++;
-      }
-
-      currentShip.flipped = true;
-      gameState = 'LEAVING_REJECT';
-    });
-
-    function spawnShip() {
-      if (shipsEvaluated < maxShipsPerDay) {
-        currentShip.x = -160;
-        currentShip.flipped = false;
-        currentShip.data = generateRandomShip();
-        gameState = 'APPROACHING';
-      } else {
-        triggerEndOfDay();
-      }
-    }
-
-    function nextShip() {
-      shipsEvaluated++;
-      spawnShip();
-    }
-
-    function triggerEndOfDay() {
-      gameState = 'DAY_END';
-      document.getElementById('repTotal').innerText = dayStats.total;
-      document.getElementById('repCorrectAccept').innerText = dayStats.correctAccepts;
-      document.getElementById('repCorrectReject').innerText = dayStats.correctRejects;
-      
-      const totalErrors = dayStats.falseAccepts + dayStats.falseRejects;
-      document.getElementById('repErrors').innerText = totalErrors;
-
-      const impactBox = document.getElementById('reportImpact');
-
-      if (totalErrors === 0) {
-        impactBox.innerHTML = `<span class="text-emerald-800 font-bold">DESEMPENHO PERFEITO:</span> Todas as decisões foram corretas! O porto funcionou em segurança total.`;
-      } else if (totalErrors === 1) {
-        if (dayStats.falseRejects > 0) {
-          impactBox.innerHTML = `<span class="text-amber-800 font-bold">ATENÇÃO:</span> Bloqueou os perigos, mas recusou <span class="font-bold">${dayStats.falseRejects}</span> navio(s) regular(es) sem motivo!`;
-        } else {
-          impactBox.innerHTML = `<span class="text-rose-800 font-bold">ALERTA:</span> Deixou passar <span class="font-bold">${dayStats.falseAccepts}</span> embarcação com irregularidades ou risco de encalhe!`;
-        }
-      } else {
-        impactBox.innerHTML = `<span class="text-rose-900 font-bold">DESEMPENHO CRÍTICO:</span> Vários erros cometidos! (${dayStats.falseRejects} recusas indevidas e ${dayStats.falseAccepts} autorizações perigosas).`;
-      }
-
-      reportModal.classList.remove('hidden');
-    }
-
-    nextDayBtn.addEventListener('click', () => {
-      reportModal.classList.add('hidden');
-      currentDay++;
-      shipsEvaluated = 0;
-      dayStats = { total: 0, correctAccepts: 0, correctRejects: 0, falseRejects: 0, falseAccepts: 0, groundedShips: 0 };
-      spawnShip();
-    });
-
-    function gameLoop() {
-      ctx.clearRect(0, 0, 800, 450);
-      drawScenario();
-      drawSeaAndBuoy();
-      updateGame();
-      requestAnimationFrame(gameLoop);
-    }
-
-    loadAssets(() => {
-      spawnShip();
-      gameLoop();
-    });
-  </script>
+  mostrarTexto(0);
+</script>
 </body>
 </html>
