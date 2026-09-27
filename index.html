@@ -166,7 +166,7 @@
       }
     }
 
-    // Configuração resumida dos navios
+    // Configuração dos navios
     const SHIP_TYPES = [
       {
         name: "MV Esperança",
@@ -331,14 +331,8 @@
 
         if (currentShip.x >= 380) {
           currentShip.x = 380;
-
-          if (currentShip.data.isLarge && !isHighTide) {
-            gameState = 'GROUNDED';
-            handleGroundedShip();
-          } else {
-            gameState = 'INSPECTING';
-            openInspectionPanel();
-          }
+          gameState = 'INSPECTING';
+          openInspectionPanel();
         }
       } else if (gameState === 'LEAVING_ACCEPT') {
         currentShip.x += currentShip.speed * 1.5;
@@ -353,7 +347,7 @@
       dayStats.groundedShips++;
       dayStats.total++;
       setTimeout(() => {
-        alert(`🚨 ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" ENCALHOU pois a maré estava BAIXA!`);
+        alert(`🚨 ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" ENCALHOU ao tentar entrar pois a maré estava BAIXA!`);
         gameState = 'LEAVING_REJECT';
         currentShip.flipped = true;
       }, 300);
@@ -376,10 +370,17 @@
 
     acceptBtn.addEventListener('click', () => {
       docPanel.classList.add('hidden');
-      dayStats.total++;
-      dayStats.accepted++;
-      if (currentShip.data.isHazard) dayStats.hazardsAccepted++;
-      gameState = 'LEAVING_ACCEPT';
+
+      // Se tentar aceitar um navio grande na maré baixa, ele encalha
+      if (currentShip.data.isLarge && !isHighTide) {
+        gameState = 'GROUNDED';
+        handleGroundedShip();
+      } else {
+        dayStats.total++;
+        dayStats.accepted++;
+        if (currentShip.data.isHazard) dayStats.hazardsAccepted++;
+        gameState = 'LEAVING_ACCEPT';
+      }
     });
 
     rejectBtn.addEventListener('click', () => {
