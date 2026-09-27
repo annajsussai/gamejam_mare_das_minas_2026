@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Gerenciador do Porto - Simulação de Maré e Inspeção</title>
+  <title>Gerenciador do Porto - Inspeção Dinâmica</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
@@ -19,7 +19,6 @@
       font-family: 'Press Start 2P', monospace;
     }
 
-    /* Scrollbar personalizada para telas menores no modo horizontal */
     .custom-scroll::-webkit-scrollbar {
       width: 6px;
     }
@@ -36,59 +35,50 @@
 
   <div class="w-full max-w-5xl max-h-[100dvh] bg-slate-900 border-2 sm:border-4 border-amber-600 rounded-lg p-1.5 sm:p-3 shadow-2xl flex flex-col gap-1.5 sm:gap-3 my-auto">
     
-    <!-- Top Bar Status -->
+    <!-- Top Bar Status (Sem controle manual da maré) -->
     <div class="flex justify-between items-center bg-slate-800 p-1.5 sm:p-3 rounded border border-slate-700 text-xs sm:text-base">
       <div class="flex items-center gap-2 sm:gap-4">
         <span class="pixel-font text-yellow-400 text-[10px] sm:text-sm">DIA <span id="currentDay">1</span> / 3</span>
-        <span class="text-sm sm:text-xl text-cyan-300">NAVIO: <span id="shipCount">1</span> / <span id="maxShips">4</span></span>
+        <span class="text-sm sm:text-xl text-cyan-300">NAVIO: <span id="shipCount">1</span> / 4</span>
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
-        <span class="text-sm sm:text-xl hidden xs:inline">MARÉ:</span>
-        <span id="tideStatusBadge" class="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm font-bold rounded pixel-font bg-blue-600 text-white">BAIXA</span>
-        <button id="toggleTideBtn" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-2 sm:px-3 py-1 rounded border border-amber-300 text-[9px] sm:text-xs pixel-font transition active:scale-95">
-          ALTERAR MARÉ
-        </button>
+        <span class="text-sm sm:text-xl">SISTEMA PORTUÁRIO ATIVO</span>
       </div>
     </div>
 
     <!-- GAME CANVAS CONTAINER -->
     <div class="relative w-full aspect-[16/9] bg-sky-900 rounded overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
       
-      <!-- Canvas de fundo e jogo -->
+      <!-- Canvas -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Document Modal / Panel overlay na tela -->
+      <!-- Document Modal / Panel -->
       <div id="docPanel" class="hidden absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-md max-h-[85vh] overflow-y-auto custom-scroll bg-amber-50 border-2 sm:border-4 border-amber-900 text-slate-900 p-2.5 sm:p-4 rounded shadow-2xl z-20">
         <div class="border-b-2 border-amber-800 pb-1.5 mb-2 flex justify-between items-center">
-          <h2 class="pixel-font text-[10px] sm:text-xs text-amber-900 tracking-wider">MANIFESTO DE CARGA DE ENTRADA</h2>
+          <h2 class="pixel-font text-[10px] sm:text-xs text-amber-900 tracking-wider">MANIFESTO DE CARGA DA EMBARCAÇÃO</h2>
           <span class="bg-amber-200 text-amber-900 text-[10px] sm:text-xs px-1.5 py-0.5 rounded font-bold border border-amber-400">OFICIAL</span>
         </div>
 
-        <div class="space-y-2 text-sm sm:text-base leading-snug">
-          <p><strong class="text-amber-950">EMBARCAÇÃO:</strong> <span id="docName" class="font-bold text-blue-900"></span></p>
-          <p><strong class="text-amber-950">ROTA:</strong> <span id="docRoute"></span></p>
-          <p><strong class="text-amber-950">CARGA:</strong> <span id="docCargo" class="font-semibold"></span></p>
-          <p><strong class="text-amber-950">PORTE / CALADO:</strong> <span id="docDraft"></span></p>
-          
-          <!-- Narração do jogo -->
-          <div class="bg-amber-100/80 p-2 rounded border border-amber-300 text-amber-900 italic text-xs sm:text-sm">
-            📢 <strong class="not-italic text-amber-950">Narração:</strong> <span id="docNarrative"></span>
-          </div>
+        <div class="space-y-2 text-sm sm:text-base leading-snug font-sans">
+          <p><strong class="text-amber-950 font-mono">IDENTIFICAÇÃO:</strong> <span id="docName" class="font-bold text-blue-900"></span></p>
+          <p><strong class="text-amber-950 font-mono">ROTA:</strong> <span id="docRoute" class="text-slate-800"></span></p>
+          <p><strong class="text-amber-950 font-mono">CARGA:</strong> <span id="docCargo" class="font-semibold text-slate-900"></span></p>
+          <p><strong class="text-amber-950 font-mono">NÍVEL DE TOXICIDADE:</strong> <span id="docToxicity" class="font-bold"></span></p>
+          <p><strong class="text-amber-950 font-mono">TAMANHO (CALADO / PROFUNDIDADE NECESSÁRIA):</strong> <span id="docSize" class="font-bold text-amber-900"></span></p>
+        </div>
 
-          <!-- Fala / Mensagem do Navio -->
-          <div class="bg-blue-50 p-2 rounded border border-blue-200 text-blue-900 italic text-xs sm:text-sm">
-            💬 <strong class="not-italic text-blue-950">Mensagem da Tripulação:</strong> "<span id="docShipQuote"></span>"
+        <!-- Narração / Fala Integradas -->
+        <div class="mt-3 space-y-2">
+          <div class="bg-amber-100/90 p-2 rounded border border-amber-300 text-amber-950 italic text-xs sm:text-sm">
+            📢 <strong>Narração:</strong> <span id="docNarrative"></span>
+          </div>
+          <div class="bg-blue-50 p-2 rounded border border-blue-200 text-blue-950 italic text-xs sm:text-sm">
+            💬 <strong>Fala da Embarcação:</strong> "<span id="docQuote"></span>"
           </div>
         </div>
 
-        <!-- Indicador visual explicativo -->
-        <div id="visualCueNotice" class="mt-2 p-1.5 bg-red-100 border border-red-400 text-red-900 text-xs rounded flex items-center gap-1.5 hidden">
-          <span class="text-base sm:text-xl">⚠️</span>
-          <span id="visualCueText" class="font-sans text-[11px] sm:text-xs">Atenção para marcas visuais no casco!</span>
-        </div>
-
-        <!-- Decisões -->
-        <div class="mt-3 flex gap-2 sm:gap-3">
+        <!-- Botões de Ação -->
+        <div class="mt-4 flex gap-2 sm:gap-3 font-mono">
           <button id="acceptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 sm:py-2 px-2 rounded border-b-2 sm:border-b-4 border-emerald-800 active:border-b-0 active:translate-y-1 text-xs sm:text-base transition">
             ✓ ACEITAR ENTRADA
           </button>
@@ -102,11 +92,11 @@
       <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col justify-center items-center p-3 sm:p-6 text-center">
         <div class="bg-slate-800 border-2 sm:border-4 border-amber-500 p-3 sm:p-6 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scroll shadow-2xl">
           <h2 class="pixel-font text-yellow-400 text-sm sm:text-lg mb-1 sm:mb-2">RELATÓRIO DO DIA <span id="reportDay">1</span></h2>
-          <p class="text-slate-300 text-xs sm:text-sm mb-2 sm:mb-4">Resumo das operações portuárias</p>
+          <p class="text-slate-300 text-xs sm:text-sm mb-2">Resumo das Decisões do Porto</p>
 
           <div class="grid grid-cols-3 gap-1.5 sm:gap-2 my-2 sm:my-4 text-center">
             <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
-              <div class="text-[10px] sm:text-xs text-slate-400">RECEBIDOS</div>
+              <div class="text-[10px] sm:text-xs text-slate-400">AVALIADOS</div>
               <div id="repTotal" class="text-lg sm:text-2xl font-bold text-white">0</div>
             </div>
             <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
@@ -114,18 +104,16 @@
               <div id="repAccepted" class="text-lg sm:text-2xl font-bold text-emerald-400">0</div>
             </div>
             <div class="bg-slate-700 p-1.5 sm:p-2 rounded border border-slate-600">
-              <div class="text-[10px] sm:text-xs text-rose-400">DISPENSADOS</div>
+              <div class="text-[10px] sm:text-xs text-rose-400">RECUSADOS</div>
               <div id="repRejected" class="text-lg sm:text-2xl font-bold text-rose-400">0</div>
             </div>
           </div>
 
-          <div id="reportImpact" class="p-2 sm:p-3 my-2 sm:my-3 rounded text-left text-xs sm:text-sm font-sans bg-slate-900 border border-slate-700 space-y-1">
-            <!-- Mensagens sobre incidentes ecológicos -->
-          </div>
+          <div id="reportImpact" class="p-2 sm:p-3 my-2 rounded text-left text-xs sm:text-sm font-sans bg-slate-900 border border-slate-700 space-y-1"></div>
 
           <div class="mt-3 sm:mt-4">
             <button id="nextDayBtn" class="pixel-font bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 sm:px-6 py-2 sm:py-3 rounded border-b-2 sm:border-b-4 border-amber-700 text-xs sm:text-sm active:translate-y-1 transition">
-              CONTINUAR PARA PRÓXIMO DIA
+              CONTINUAR
             </button>
           </div>
         </div>
@@ -133,9 +121,9 @@
 
     </div>
 
-    <!-- Instruções rápidas -->
+    <!-- Dica de gameplay -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
-      <span>💡 Observe marcas visuais no navio. Navios grandes (Calado Grande) encalham na Maré Baixa!</span>
+      <span>💡 A maré varia involuntariamente a cada navio. Fique de olho no Tamanho/Calado e no Nível de Toxicidade!</span>
     </div>
 
   </div>
@@ -146,222 +134,158 @@
 
     // UI Elements
     const docPanel = document.getElementById('docPanel');
-    const toggleTideBtn = document.getElementById('toggleTideBtn');
-    const tideStatusBadge = document.getElementById('tideStatusBadge');
     const acceptBtn = document.getElementById('acceptBtn');
     const rejectBtn = document.getElementById('rejectBtn');
     const reportModal = document.getElementById('reportModal');
     const nextDayBtn = document.getElementById('nextDayBtn');
 
-    // Assets de Imagens
-    const images = {
-      cenario: new Image(),
-      mar: new Image(),
-      marfrente: new Image(),
-      boia: new Image()
-    };
-
+    // Assets
+    const images = { cenario: new Image(), mar: new Image(), marfrente: new Image(), boia: new Image() };
     let assetsLoaded = false;
 
-    // Carregamento dos Assets da pasta assets/
     function loadAssets(callback) {
-      const sources = {
-        cenario: 'assets/cenario.png',
-        mar: 'assets/mar.png',
-        marfrente: 'assets/marfrente.png',
-        boia: 'assets/boia.png'
-      };
-
-      let loadedCount = 0;
-      const totalImages = Object.keys(sources).length;
-
-      for (let key in sources) {
-        images[key] = new Image();
-        images[key].src = sources[key];
-        images[key].onload = () => {
-          loadedCount++;
-          if (loadedCount === totalImages) {
-            assetsLoaded = true;
-            callback();
-          }
-        };
-        images[key].onerror = () => {
-          console.warn(`Asset assets/${key}.png não encontrado, utilizando fallback visual.`);
-          loadedCount++;
-          if (loadedCount === totalImages) {
-            assetsLoaded = true;
-            callback();
-          }
-        };
+      const sources = { cenario: 'assets/cenario.png', mar: 'assets/mar.png', marfrente: 'assets/marfrente.png', boia: 'assets/boia.png' };
+      let loaded = 0, total = Object.keys(sources).length;
+      for (let k in sources) {
+        images[k] = new Image();
+        images[k].src = sources[k];
+        images[k].onload = images[k].onerror = () => { if (++loaded === total) { assetsLoaded = true; callback(); } };
       }
     }
 
-    // Game Config & State
-    let currentDay = 1;
-    let shipIndex = 0;
-    let isHighTide = false; // Começa na Maré Baixa
-    let gameState = 'APPROACHING'; // APPROACHING, INSPECTING, LEAVING_ACCEPT, LEAVING_REJECT, GROUNDED, DAY_END
-
-    // Estatísticas do dia
-    let dayStats = {
-      total: 0,
-      accepted: 0,
-      rejected: 0,
-      hazardsAccepted: 0,
-      groundedShips: 0
-    };
-
-    const maxShipsPerDay = { 1: 4, 2: 3, 3: 3 };
-
-    // Banco de Dados de Navios (Atualizado com os textos e mensagens da Letícia)
-    const shipDatabase = [
-      // Dia 1
-      [
-        {
-          name: "MV Esperança",
-          route: "Santos -> Paranaguá",
-          cargo: "Medicamentos e Vacinas",
-          draft: "Pequeno (3m)",
-          narration: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
-          quote: "Minha carga é preciosa. Cada entrega pode fazer a diferença.",
-          hazard: false,
-          visualCue: null
-        },
-        {
-          name: "Sabor da Terra",
-          route: "Salvador -> Recife",
-          cargo: "Alimentos e Grãos",
-          draft: "Grande (10m)",
-          narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
-          quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?",
-          hazard: false,
-          visualCue: null
-        },
-        {
-          name: "Estrutura Viva",
-          route: "Vitória -> Porto Local",
-          cargo: "Equipamentos de Infraestrutura",
-          draft: "Médio (5m)",
-          narration: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
-          quote: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença.",
-          hazard: false,
-          visualCue: null
-        },
-        {
-          name: "Mar Limpo",
-          route: "Santos -> Porto Local",
-          cargo: "Grãos e Alimentos",
-          draft: "Pequeno (4m)",
-          narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
-          quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?",
-          hazard: false,
-          visualCue: null
-        }
-      ],
-      // Dia 2
-      [
-        {
-          name: "Tritão das Marés",
-          route: "Internacional -> Indefinido",
-          cargo: "Espécies Exóticas / Bio-Risco",
-          draft: "Médio (6m)",
-          narration: "São espécies que chegam a um ambiente onde não pertencem, podendo se espalhar e competir com espécies nativas.",
-          quote: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações e, quando encontram um novo ambiente, podem se espalhar e alterar o equilíbrio da vida costeira.",
-          hazard: true,
-          visualCue: 'nets'
-        },
-        {
-          name: "Pesca Certa",
-          route: "Costa Sul -> Porto Local",
-          cargo: "Pescado Irregular",
-          draft: "Pequeno (4m)",
-          narration: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas, reduzir os recursos pesqueiros e causar danos ao ambiente.",
-          quote: "Apenas uma pesca rápida na costa, sem problemas por aqui...",
-          hazard: true,
-          visualCue: 'nets'
-        },
-        {
-          name: "Gigante dos Mares",
-          route: "Xangai -> Porto Local",
-          cargo: "Maquinário Pesado",
-          draft: "Grande (12m)",
-          narration: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
-          quote: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença.",
-          hazard: false,
-          visualCue: null
-        }
-      ],
-      // Dia 3
-      [
-        {
-          name: "Sombra do Vento",
-          route: "Desconhecida",
-          cargo: "Resíduos Químicos / Materiais Perigosos",
-          draft: "Médio (6m)",
-          narration: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco.",
-          quote: "Transportamos produtos industriais pesados. Exige cuidado no manuseio.",
-          hazard: true,
-          visualCue: 'toxic'
-        },
-        {
-          name: "Anjo dos Mares",
-          route: "Rio Grande -> Porto Local",
-          cargo: "Medicamentos e Vacinas",
-          draft: "Pequeno (3m)",
-          narration: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
-          quote: "Minha carga é preciosa. Cada entrega pode fazer a diferença.",
-          hazard: false,
-          visualCue: null
-        },
-        {
-          name: "Bandeirante",
-          route: "Itajaí -> Porto Local",
-          cargo: "Alimentos Processados",
-          draft: "Grande (11m)",
-          narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
-          quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?",
-          hazard: false,
-          visualCue: null
-        }
-      ]
+    // Configuração dos 6 Tipos de Navios (Bons e Ruins)
+    const SHIP_TYPES = [
+      // 1. MEDICAMENTOS (Bom)
+      {
+        typeCategory: "NAVIO DE MEDICAMENTOS",
+        names: ["MV Esperança", "Anjo dos Mares", "Vida Marítima"],
+        cargo: "Medicamentos, Vacinas e Insumos Hospitalares",
+        toxicity: "Nulo (0/5)",
+        isHazard: false,
+        size: "Pequeno (3m de calado - navega em maré baixa ou alta)",
+        isLarge: false,
+        narration: "Medicamentos, vacinas e equipamentos médicos. Uma carga essencial que precisa chegar com segurança.",
+        quote: "Minha carga é preciosa. Cada entrega pode fazer a diferença."
+      },
+      // 2. ALIMENTOS (Bom)
+      {
+        typeCategory: "NAVIO DE ALIMENTOS",
+        names: ["Sabor da Terra", "Bandeirante", "Grão de Ouro"],
+        cargo: "Grãos, Cereais e Mantimentos Alimentícios",
+        toxicity: "Nulo (0/5)",
+        isHazard: false,
+        size: "Grande (10m a 12m de calado - exige maré alta para não encalhar)",
+        isLarge: true,
+        narration: "Grãos, cereais e mantimentos abastecem comunidades e ajudam a garantir o acesso à alimentação.",
+        quote: "Levo alimento para quem precisa. Vamos garantir que minha carga chegue em boas condições?"
+      },
+      // 3. EQUIPAMENTOS (Bom)
+      {
+        typeCategory: "NAVIO DE EQUIPAMENTOS",
+        names: ["Estrutura Viva", "Gigante dos Mares", "Força Naval"],
+        cargo: "Geradores, Maquinários e Ferramentas de Infraestrutura",
+        toxicity: "Baixo (1/5 - óleos de maquinário selados)",
+        isHazard: false,
+        size: "Médio (6m a 8m de calado - navega na maioria das marés)",
+        isLarge: false,
+        narration: "Geradores, ferramentas e materiais importantes para reconstrução e infraestrutura.",
+        quote: "Tenho equipamentos importantes a bordo. Cada item pode fazer a diferença."
+      },
+      // 4. ESPÉCIES INVASORAS (Ruim)
+      {
+        typeCategory: "NAVIO COM ESPÉCIES INVASORAS",
+        names: ["Tritão das Marés", "Viajante Biológico", "Clandestino do Mar"],
+        cargo: "Carga Geral com Água de Lastro Não Tratada / Bio-Risco",
+        toxicity: "Médio-Alto (3/5 - Risco Biológico e Ecológico)",
+        isHazard: true,
+        size: "Médio (6m de calado)",
+        isLarge: false,
+        narration: "São espécies que chegam a um ambiente onde não pertencem, podendo se espalhar e competir com espécies nativas.",
+        quote: "Cuidado! Nem tudo que atravessa o oceano deveria chegar a estas águas. Alguns organismos podem viajar escondidos nas embarcações e, quando encontram um novo ambiente, podem se espalhar e alterar o equilíbrio da vida costeira."
+      },
+      // 5. PESCA IRREGULAR (Ruim)
+      {
+        typeCategory: "PESCA IRREGULAR",
+        names: ["Pesca Certa", "Rede Sombra", "Mar Furtivo"],
+        cargo: "Pescado sem Licenciamento Ambiental / Áreas Protegidas",
+        toxicity: "Baixo-Médio (2/5 - Impacto Direto na Fauna Marinha)",
+        isHazard: true,
+        size: "Pequeno (4m de calado)",
+        isLarge: false,
+        narration: "Atenção! Nem toda embarcação de pesca atua dentro das regras. Práticas irregulares podem ameaçar espécies marinhas, reduzir os recursos pesqueiros e causar danos ao ambiente.",
+        quote: "Apenas uma pesca rápida na costa, sem problemas por aqui..."
+      },
+      // 6. MATERIAIS PERIGOSOS (Ruim)
+      {
+        typeCategory: "MATERIAIS PERIGOSOS",
+        names: ["Sombra do Vento", "Risco Químico", "Tóxico Mar"],
+        cargo: "Substâncias Químicas, Resíduos Industriais e Materiais Tóxicos",
+        toxicity: "Crítico (5/5 - Alto Risco de Contaminação)",
+        isHazard: true,
+        size: "Grande (11m de calado - exige maré alta)",
+        isLarge: true,
+        narration: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco.",
+        quote: "Perigo! Algumas cargas exigem cuidados especiais. Se forem transportadas ou armazenadas de maneira inadequada, podem contaminar a água e o solo e colocar a vida costeira em risco."
+      }
     ];
 
-    // Objeto do Navio Ativo
+    const PORTS = [
+      "Santos -> Porto Local", "Salvador -> Recife", "Vitória -> Porto Local", 
+      "Roterdã -> Porto Local", "Paranaguá -> Itajaí", "Porto Internacional -> Indefinido"
+    ];
+
+    // Variáveis de Estado
+    let currentDay = 1;
+    let shipsEvaluated = 0;
+    const maxShipsPerDay = 4;
+    let isHighTide = false; // Maré sorteada internamente por navio
+    let gameState = 'APPROACHING';
+
+    let dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
+
     let currentShip = {
-      x: -140,
-      y: 335,
-      width: 120,
-      height: 70,
-      speed: 2,
-      flipped: false,
-      data: null
+      x: -140, y: 335, width: 120, height: 70, speed: 2, flipped: false, data: null
     };
 
-    // Desenha o Fundo (cenario.png)
+    // Função que sorteia um navio aleatório e uma maré aleatória
+    function generateRandomShip() {
+      const template = SHIP_TYPES[Math.floor(Math.random() * SHIP_TYPES.length)];
+      const randomName = template.names[Math.floor(Math.random() * template.names.length)];
+      const randomRoute = PORTS[Math.floor(Math.random() * PORTS.length)];
+
+      // Sorteio ALEATÓRIO E INTERNO da Maré (50% de chance alta ou baixa)
+      isHighTide = Math.random() < 0.5;
+
+      return {
+        name: randomName,
+        category: template.typeCategory,
+        route: randomRoute,
+        cargo: template.cargo,
+        toxicity: template.toxicity,
+        size: template.size,
+        isLarge: template.isLarge,
+        isHazard: template.isHazard,
+        narration: template.narration,
+        quote: template.quote
+      };
+    }
+
+    // Desenho do Cenário e Mar
     function drawScenario() {
       if (images.cenario.complete && images.cenario.naturalWidth > 0) {
         ctx.drawImage(images.cenario, 0, 0, 800, 450);
       } else {
-        // Fallback gráfico se a imagem ainda não carregou
-        ctx.fillStyle = "#1e3a8a";
-        ctx.fillRect(0, 0, 800, 250);
-        ctx.fillStyle = "#78350f";
-        ctx.fillRect(0, 250, 800, 200);
+        ctx.fillStyle = "#1e3a8a"; ctx.fillRect(0, 0, 800, 250);
+        ctx.fillStyle = "#78350f"; ctx.fillRect(0, 250, 800, 200);
       }
     }
 
-    // Desenha o Mar e a Bóia
     function drawSeaAndBuoy() {
-      // Maré Alta = Y 315px
-      // Maré Baixa = Y 370px
       const targetSeaY = isHighTide ? 315 : 370;
-
       if (!canvas.seaY) canvas.seaY = targetSeaY;
       canvas.seaY += (targetSeaY - canvas.seaY) * 0.05;
-
       const seaY = canvas.seaY;
 
-      // Desenhar Fundo do Mar (mar.png)
       if (images.mar.complete && images.mar.naturalWidth > 0) {
         ctx.drawImage(images.mar, 0, seaY, 800, 450 - seaY);
       } else {
@@ -369,15 +293,12 @@
         ctx.fillRect(0, seaY, 800, 450 - seaY);
       }
 
-      // Desenhar Navio
       drawShip();
 
-      // Desenhar Frente do Mar / Ondas (marfrente.png)
       if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
-      // Desenhar Bóia Flutuando na Água
       if (images.boia.complete && images.boia.naturalWidth > 0) {
         const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
         ctx.drawImage(images.boia, 0, 0, 64, 64, 680, buoyY, 48, 48);
@@ -386,9 +307,7 @@
 
     function drawShip() {
       if (!currentShip.data) return;
-
       ctx.save();
-
       currentShip.y = (canvas.seaY || 370) - 35;
 
       if (currentShip.flipped) {
@@ -400,76 +319,38 @@
       const x = currentShip.x;
       const y = currentShip.y;
 
-      // Casco Principal do Navio
-      ctx.fillStyle = "#1d4ed8";
+      // Casco
+      ctx.fillStyle = currentShip.data.isHazard ? "#991b1b" : "#1d4ed8";
       ctx.fillRect(x, y + 20, currentShip.width, 35);
 
-      // Proa do navio
+      // Proa
       ctx.beginPath();
       ctx.moveTo(x + currentShip.width, y + 20);
       ctx.lineTo(x + currentShip.width + 20, y + 20);
       ctx.lineTo(x + currentShip.width, y + 55);
-      ctx.fillStyle = "#1e40af";
+      ctx.fillStyle = currentShip.data.isHazard ? "#7f1d1d" : "#1e40af";
       ctx.fill();
 
-      // Cabine superior
-      ctx.fillStyle = "#f8fafc";
-      ctx.fillRect(x + 15, y, 35, 20);
-      ctx.fillStyle = "#0284c7";
-      ctx.fillRect(x + 35, y + 4, 10, 8);
-
-      // Chaminé
-      ctx.fillStyle = "#dc2626";
-      ctx.fillRect(x + 20, y - 8, 8, 8);
-
-      // Sinais visuais ambientais no casco
-      const cue = currentShip.data.visualCue;
-
-      if (cue === 'oil') {
-        ctx.fillStyle = "#18181b";
-        ctx.beginPath();
-        ctx.ellipse(x + 40, y + 45, 25, 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillRect(x + 30, y + 38, 12, 10);
-      } else if (cue === 'nets') {
-        ctx.strokeStyle = "#ca8a04";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(x + 60, y + 30);
-        ctx.lineTo(x + 55, y + 55);
-        ctx.lineTo(x + 75, y + 50);
-        ctx.stroke();
-        ctx.fillStyle = "#ef4444";
-        ctx.fillRect(x + 58, y + 38, 6, 6);
-      } else if (cue === 'toxic') {
-        ctx.fillStyle = "#22c55e";
-        ctx.fillRect(x + 60, y + 8, 14, 12);
-        ctx.fillStyle = "#000";
-        ctx.fillRect(x + 64, y + 10, 6, 8);
-      }
+      // Cabine
+      ctx.fillStyle = "#f8fafc"; ctx.fillRect(x + 15, y, 35, 20);
+      ctx.fillStyle = "#0284c7"; ctx.fillRect(x + 35, y + 4, 10, 8);
+      ctx.fillStyle = "#dc2626"; ctx.fillRect(x + 20, y - 8, 8, 8);
 
       ctx.restore();
     }
 
     function updateGame() {
-      // Atualizar contadores
       document.getElementById('currentDay').innerText = currentDay;
-      document.getElementById('shipCount').innerText = Math.min(shipIndex + 1, maxShipsPerDay[currentDay]);
-      document.getElementById('maxShips').innerText = maxShipsPerDay[currentDay];
+      document.getElementById('shipCount').innerText = Math.min(shipsEvaluated + 1, maxShipsPerDay);
 
-      // Atualizar Badge da Maré
-      tideStatusBadge.innerText = isHighTide ? "ALTA" : "BAIXA";
-      tideStatusBadge.className = `px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm font-bold rounded pixel-font ${isHighTide ? 'bg-cyan-500 text-slate-950' : 'bg-blue-600 text-white'}`;
-
-      // Movimentação do Navio
       if (gameState === 'APPROACHING') {
         currentShip.x += currentShip.speed;
 
         if (currentShip.x >= 380) {
           currentShip.x = 380;
 
-          const isBigDraft = currentShip.data.draft.includes("Grande");
-          if (isBigDraft && !isHighTide) {
+          // Validação da Mecânica de Maré Baixa x Navio Grande (Encalhe)
+          if (currentShip.data.isLarge && !isHighTide) {
             gameState = 'GROUNDED';
             handleGroundedShip();
           } else {
@@ -479,23 +360,18 @@
         }
       } else if (gameState === 'LEAVING_ACCEPT') {
         currentShip.x += currentShip.speed * 1.5;
-        if (currentShip.x > 850) {
-          nextShip();
-        }
+        if (currentShip.x > 850) nextShip();
       } else if (gameState === 'LEAVING_REJECT') {
         currentShip.x -= currentShip.speed * 1.5;
-        if (currentShip.x < -150) {
-          nextShip();
-        }
+        if (currentShip.x < -150) nextShip();
       }
     }
 
     function handleGroundedShip() {
       dayStats.groundedShips++;
       dayStats.total++;
-      
       setTimeout(() => {
-        alert(`🚨 ATENÇÃO: O navio "${currentShip.data.name}" ENCALHOU! Calado muito grande para a Maré Baixa!`);
+        alert(`🚨 ACIDENTE PORTUÁRIO: O navio "${currentShip.data.name}" era GRANDE DEMAIS e ENCALHOU pois a maré estava BAIXA!`);
         gameState = 'LEAVING_REJECT';
         currentShip.flipped = true;
       }, 300);
@@ -503,42 +379,26 @@
 
     function openInspectionPanel() {
       const data = currentShip.data;
-      document.getElementById('docName').innerText = data.name;
+      document.getElementById('docName').innerText = `${data.name} (${data.category})`;
       document.getElementById('docRoute').innerText = data.route;
       document.getElementById('docCargo').innerText = data.cargo;
-      document.getElementById('docDraft').innerText = data.draft;
+      
+      const toxEl = document.getElementById('docToxicity');
+      toxEl.innerText = data.toxicity;
+      toxEl.className = data.isHazard ? "font-bold text-rose-600" : "font-bold text-emerald-600";
+
+      document.getElementById('docSize').innerText = data.size;
       document.getElementById('docNarrative').innerText = data.narration;
-      document.getElementById('docShipQuote').innerText = data.quote;
-
-      const cueNotice = document.getElementById('visualCueNotice');
-      const cueText = document.getElementById('visualCueText');
-
-      if (data.visualCue === 'oil') {
-        cueNotice.classList.remove('hidden');
-        cueText.innerText = "SINAL VISUAL DETECTADO: Mancha de óleo no casco!";
-      } else if (data.visualCue === 'nets') {
-        cueNotice.classList.remove('hidden');
-        cueText.innerText = "SINAL VISUAL DETECTADO: Redes ou organismos clandestinos pendurados!";
-      } else if (data.visualCue === 'toxic') {
-        cueNotice.classList.remove('hidden');
-        cueText.innerText = "SINAL VISUAL DETECTADO: Brilho de material perigoso!";
-      } else {
-        cueNotice.classList.add('hidden');
-      }
+      document.getElementById('docQuote').innerText = data.quote;
 
       docPanel.classList.remove('hidden');
     }
 
-    // Eventos de Decisão
     acceptBtn.addEventListener('click', () => {
       docPanel.classList.add('hidden');
       dayStats.total++;
       dayStats.accepted++;
-
-      if (currentShip.data.hazard) {
-        dayStats.hazardsAccepted++;
-      }
-
+      if (currentShip.data.isHazard) dayStats.hazardsAccepted++;
       gameState = 'LEAVING_ACCEPT';
     });
 
@@ -546,22 +406,15 @@
       docPanel.classList.add('hidden');
       dayStats.total++;
       dayStats.rejected++;
-
       currentShip.flipped = true;
       gameState = 'LEAVING_REJECT';
     });
 
-    // Alternar Maré (Alta <-> Baixa)
-    toggleTideBtn.addEventListener('click', () => {
-      isHighTide = !isHighTide;
-    });
-
     function spawnShip() {
-      const dayShips = shipDatabase[currentDay - 1];
-      if (shipIndex < dayShips.length) {
+      if (shipsEvaluated < maxShipsPerDay) {
         currentShip.x = -130;
         currentShip.flipped = false;
-        currentShip.data = dayShips[shipIndex];
+        currentShip.data = generateRandomShip();
         gameState = 'APPROACHING';
       } else {
         triggerEndOfDay();
@@ -569,13 +422,12 @@
     }
 
     function nextShip() {
-      shipIndex++;
+      shipsEvaluated++;
       spawnShip();
     }
 
     function triggerEndOfDay() {
       gameState = 'DAY_END';
-
       document.getElementById('reportDay').innerText = currentDay;
       document.getElementById('repTotal').innerText = dayStats.total;
       document.getElementById('repAccepted').innerText = dayStats.accepted;
@@ -585,13 +437,13 @@
       impactBox.innerHTML = "";
 
       if (dayStats.hazardsAccepted > 0) {
-        impactBox.innerHTML += `<p class="text-rose-400">⚠️ ALERTA AMBIENTAL: ${dayStats.hazardsAccepted} navio(s) com riscos entraram no porto!</p>`;
+        impactBox.innerHTML += `<p class="text-rose-400">⚠️ ALERTA AMBIENTAL: ${dayStats.hazardsAccepted} embarcação(ões) nociva(s) foram autorizada(s)!</p>`;
       } else {
-        impactBox.innerHTML += `<p class="text-emerald-400">🌱 EXCELENTE: Nenhum risco ambiental detectado nos navios aceitos hoje.</p>`;
+        impactBox.innerHTML += `<p class="text-emerald-400">🌱 EXCELENTE: O ecossistema marinho permaneceu seguro hoje.</p>`;
       }
 
       if (dayStats.groundedShips > 0) {
-        impactBox.innerHTML += `<p class="text-amber-400">⚓ INCIDENTE: ${dayStats.groundedShips} navio(s) encalharam na maré baixa.</p>`;
+        impactBox.innerHTML += `<p class="text-amber-400">⚓ INCIDENTES: ${dayStats.groundedShips} navio(s) de grande calado encalharam no canal.</p>`;
       }
 
       reportModal.classList.remove('hidden');
@@ -599,32 +451,25 @@
 
     nextDayBtn.addEventListener('click', () => {
       reportModal.classList.add('hidden');
-
       if (currentDay < 3) {
         currentDay++;
-        shipIndex = 0;
-        dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
-        spawnShip();
       } else {
-        alert("🎉 PARABÉNS! Você completou os 3 dias de gestão do Porto e proteção do Ecossistema!");
+        alert("🎉 Turno de 3 dias encerrado com sucesso! Reiniciando simulação...");
         currentDay = 1;
-        shipIndex = 0;
-        dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
-        spawnShip();
       }
+      shipsEvaluated = 0;
+      dayStats = { total: 0, accepted: 0, rejected: 0, hazardsAccepted: 0, groundedShips: 0 };
+      spawnShip();
     });
 
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       drawScenario();
       drawSeaAndBuoy();
       updateGame();
-
       requestAnimationFrame(gameLoop);
     }
 
-    // Inicialização do Jogo
     window.onload = () => {
       loadAssets(() => {
         spawnShip();
