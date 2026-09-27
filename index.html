@@ -75,6 +75,7 @@
       box-shadow: 0 2px 0 rgba(0,0,0,0.3);
     }
 
+    /* Botão personalizado com fundo assets/bg_btn.png */
     .bg-btn-custom {
       background-image: url('assets/bg_btn.png');
       background-size: 100% 100%;
@@ -88,26 +89,13 @@
       transform: translateY(2px);
     }
 
-    .bg-btn-custom-red {
-      background-image: url('assets/bg_btn.png');
-      background-size: 100% 100%;
-      background-position: center;
-      background-repeat: no-repeat;
-      image-rendering: pixelated;
-      color: #ffffff;
-      filter: hue-rotate(300deg) saturate(1.8) brightness(0.9);
-      text-shadow: 1px 1px #000;
-    }
-    .bg-btn-custom-red:active {
-      transform: translateY(2px);
-    }
-
     .pixel-card {
       background-color: rgba(255, 255, 255, 0.85);
       border: 2px solid #543d2b;
       box-shadow: 2px 2px 0px rgba(84, 61, 43, 0.2);
     }
 
+    /* Tela de Relatório Final Proporcional */
     #finalScreen {
       position: fixed;
       inset: 0;
@@ -132,6 +120,7 @@
       padding: 20px;
     }
 
+    /* Animação de chacoalhar para encalhe */
     @keyframes shake {
       0% { transform: translate(0, 0) rotate(0deg); }
       20% { transform: translate(-4px, 2px) rotate(-1deg); }
@@ -160,17 +149,20 @@
     <!-- GAME CANVAS CONTAINER -->
     <div class="relative w-full aspect-[16/9] bg-sky-900 rounded overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
       
+      <!-- Canvas do Jogo -->
       <canvas id="gameCanvas" width="800" height="450" class="w-full h-full object-contain block"></canvas>
 
-      <!-- Alerta Ambiental -->
+      <!-- Notificação de Encalhe / Acidente -->
       <div id="alertBox" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-md bg-slate-950/95 border-4 border-rose-600 rounded p-4 text-center z-40 shadow-2xl">
         <h3 class="pixel-font text-rose-500 text-xs sm:text-sm mb-2">ALERTA AMBIENTAL</h3>
         <p id="alertMessage" class="font-mono text-sm sm:text-base text-slate-200 mb-4 leading-relaxed"></p>
-        <button id="closeAlertBtn" class="pixel-font bg-btn-custom-red px-6 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider">CONTINUAR INSPEÇÃO</button>
+        <!-- Botão customizado com assets/bg_btn.png -->
+        <button id="closeAlertBtn" class="pixel-font bg-btn-custom px-6 py-2 text-xs sm:text-sm font-bold uppercase">OK</button>
       </div>
 
-      <!-- Manifesto de Carga -->
+      <!-- Document Modal / Panel -->
       <div id="docPanel" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[78%] max-w-md aspect-[1/1.05] doc-bg text-[#3b281a] p-5 sm:p-7 z-20 flex flex-col justify-between rounded-sm shadow-2xl">
+        
         <div class="border-b-2 border-[#543d2b]/40 pb-2 text-center">
           <span class="pixel-font text-[8px] sm:text-[10px] text-[#543d2b] uppercase tracking-widest block">AUTORIDADE PORTUÁRIA</span>
           <h2 class="pixel-font text-[12px] sm:text-[15px] uppercase tracking-tight text-[#2b1b10] mt-1">MANIFESTO DE CARGA</h2>
@@ -219,11 +211,13 @@
             RECUSAR
           </button>
         </div>
+
       </div>
 
       <!-- Relatório de Fim de Dia -->
       <div id="reportModal" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-xs z-30 flex flex-col justify-center items-center p-2 sm:p-3 text-center">
         <div class="report-bg relative p-4 sm:p-7 pt-5 sm:pt-8 w-[98%] max-w-2xl aspect-[2.1/1] flex flex-col justify-between text-slate-900 shadow-2xl overflow-hidden">
+          
           <div class="text-center w-full mt-1">
             <h2 class="pixel-font text-[#4a154b] text-[12px] sm:text-lg uppercase tracking-wider font-bold">RELATÓRIO DE INSPEÇÃO</h2>
           </div>
@@ -256,12 +250,13 @@
               CONTINUAR &rarr;
             </button>
           </div>
+
         </div>
       </div>
 
     </div>
 
-    <!-- Rodapé -->
+    <!-- Dica rodapé + Quantidade de Navios -->
     <div class="bg-slate-800 p-1.5 sm:p-2 rounded text-slate-300 text-xs sm:text-sm flex justify-between items-center px-2 sm:px-4">
       <span>DICA: Navios tóxicos ou grandes durante maré baixa DEVEM ser recusados!</span>
       <span class="text-xs sm:text-base text-cyan-300 font-bold whitespace-nowrap ml-2">NAVIO: <span id="shipCount">1</span> / 4</span>
@@ -296,7 +291,7 @@
       <p id="finalMessage" class="font-mono text-xs sm:text-sm text-slate-300 bg-slate-950/60 p-3 rounded border border-slate-800 mb-4 leading-relaxed text-left"></p>
 
       <div class="flex justify-center">
-        <button id="restartBtn" class="pixel-font bg-btn-custom px-8 py-2.5 text-xs sm:text-sm font-bold uppercase">JOGAR NOVAMENTE</button>
+        <button id="restartBtn" class="pixel-font pixel-btn-purple px-6 py-2 text-xs sm:text-sm font-bold">JOGAR NOVAMENTE</button>
       </div>
     </div>
   </div>
@@ -304,6 +299,7 @@
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+
     ctx.imageSmoothingEnabled = false;
 
     const docPanel = document.getElementById('docPanel');
@@ -315,7 +311,16 @@
     const alertMessage = document.getElementById('alertMessage');
     const closeAlertBtn = document.getElementById('closeAlertBtn');
 
-    const images = {};
+    // Mapeamento atualizado sem o navio.png antigo
+    const images = { 
+      cenario: new Image(), 
+      mar: new Image(), 
+      marfrente: new Image(), 
+      boia: new Image(), 
+      personagem: new Image(),
+      cargueiro: new Image(),
+      pesqueiroIrregular: new Image()
+    };
 
     function loadAssets(callback) {
       const sources = { 
@@ -325,7 +330,6 @@
         boia: 'assets/boia.png',
         personagem: 'assets/personagem.png',
         cargueiro: 'assets/cargueiro.png',
-        navio_grande: 'assets/navio_grande.png',
         pesqueiroIrregular: 'assets/cargueiro.png'
       };
       let loaded = 0, total = Object.keys(sources).length;
@@ -359,7 +363,7 @@
         isHazard: false,
         size: "Grande (12m)",
         isLarge: true,
-        imgKey: "navio_grande",
+        imgKey: "cargueiro",
         width: 280,
         height: 145
       },
@@ -411,7 +415,7 @@
         isHazard: true,
         size: "Grande (11m)",
         isLarge: true,
-        imgKey: "navio_grande",
+        imgKey: "cargueiro",
         width: 280,
         height: 145
       }
@@ -472,7 +476,11 @@
         const sx = (currentFrameIndex % sheetColumns) * frameWidth;
         const sy = Math.floor(currentFrameIndex / sheetColumns) * frameHeight;
 
-        ctx.drawImage(pImg, sx, sy, frameWidth, frameHeight, 510, 75, 170, 110);
+        ctx.drawImage(
+          pImg, 
+          sx, sy, frameWidth, frameHeight, 
+          510, 75, 170, 110
+        );
       }
     }
 
@@ -489,6 +497,7 @@
         ctx.translate(offsetX, offsetY);
       }
 
+      // 1. Fundo do mar
       if (images.mar.complete && images.mar.naturalWidth > 0) {
         ctx.drawImage(images.mar, 0, seaY, 800, 450 - seaY);
       } else {
@@ -496,6 +505,7 @@
         ctx.fillRect(0, seaY, 800, 450 - seaY);
       }
 
+      // 2. Boia ATRAZ do navio
       if (images.boia.complete && images.boia.naturalWidth > 0) {
         const buoyY = seaY - 45 + Math.sin(Date.now() / 400) * 3;
         let srcX = 0, srcY = 0;
@@ -506,11 +516,14 @@
         ctx.drawImage(images.boia, srcX, srcY, 64, 64, 680, buoyY, 48, 48);
       }
 
+      // 3. Espuma / Frente da água
       if (images.marfrente.complete && images.marfrente.naturalWidth > 0) {
         ctx.drawImage(images.marfrente, 0, seaY - 15, 800, 60);
       }
 
+      // 4. Navio na FRENTE da boia
       drawShip();
+
       ctx.restore();
     }
 
@@ -572,7 +585,7 @@
       dayStats.falseAccepts++;
       dayStats.total++;
 
-      pendingAlertMessage = `ENCALHE CRÍTICO: O navio ${currentShip.data.name} era grande demais e encalhou devido à maré baixa! O impacto rompeu o casco, bloqueou o canal de acesso e gerou sérios danos ao ecossistema bentônico.`;
+      pendingAlertMessage = `ALERTA DE ENCALHE: O navio ${currentShip.data.name} encalhou devido à maré baixa! O casco foi rompido, causando bloqueio no canal e risco severo à fauna bentônica local.`;
 
       setTimeout(() => {
         isShaking = false;
