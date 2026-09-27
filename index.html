@@ -29,11 +29,11 @@
     touch-action: manipulation;
   }
 
-  /* ---------- TELA (proporção ajustada para ficar 20% mais alta) ---------- */
+  /* ---------- TELA (altura aumentada em 20% no aspect-ratio) ---------- */
   #introScreen {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 7.5;
+    aspect-ratio: 16 / 11;
     overflow: hidden;
     border-radius: 6px;
     border: 1px solid #334155; /* slate-700 */
@@ -58,7 +58,6 @@
     transform: scale(1.04);
   }
 
-  /* leve movimento de "respiração" no fundo, tipo maré */
   @keyframes bgDrift {
     0%   { transform: scale(1.04) translateY(0px); }
     50%  { transform: scale(1.06) translateY(-6px); }
@@ -74,7 +73,6 @@
       linear-gradient(180deg, rgba(2,7,11,0.4) 0%, rgba(2,7,11,0.2) 30%, rgba(2,7,11,0.2) 70%, rgba(2,7,11,0.6) 100%);
   }
 
-  /* scanlines sutis pra dar clima retrô sem pesar no texto */
   #introScan {
     position: absolute;
     inset: 0;
@@ -140,7 +138,6 @@
     50%, 100% { opacity: 0; }
   }
 
-  /* ---------- BOTÃO DE AVANÇAR (setinha no canto inferior direito) ---------- */
   #advanceBtn {
     position: absolute;
     right: 8px;
@@ -348,7 +345,6 @@
 </div>
 
 <script>
-  // ---------- referências dos elementos ----------
   var introScreen = document.getElementById('introScreen');
   var introNarrationBox = document.getElementById('introNarrationBox');
   var introNarration = document.getElementById('introNarration');
@@ -358,13 +354,11 @@
   var objectiveBox = document.getElementById('objectiveBox');
   var startIntroBtn = document.getElementById('startIntroBtn');
 
-  // ---------- textos da narração ----------
   var introTexts = [
     "“O porto desperta antes mesmo do sol. Embarcações começam a surgir no horizonte. Algumas trazem alimentos, medicamentos e equipamentos essenciais. Outras podem carregar ameaças para as águas e para a vida costeira.”",
     "“Mas nem sempre é possível saber o que existe por trás de cada carga. Nos próximos três dias, o porto estará sob sua responsabilidade. Observe. Investigue. Decida.”"
   ];
 
-  // ---------- variáveis globais de controle da máquina de escrever ----------
   var indiceTextoAtual = 0;
   var indiceCaractereAtual = 0;
   var timeoutDigitacao = null;
@@ -473,7 +467,6 @@
     }, 600);
   });
 
-  // ---------- INICIALIZAÇÃO COM DELAY DE 1.5s PARA MOSTRAR SÓ O FUNDO ----------
   setTimeout(function() {
     mostrarTexto(0);
   }, 1500);
